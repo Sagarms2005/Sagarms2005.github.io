@@ -131,6 +131,8 @@
   --t-fast: 160ms;
   --t-med: 280ms;
   --t-slow: 420ms;
+  --m-draw: 360ms;                                    /* underline and fill sweeps (css/fx/atmos.css) */
+  --m-press: 110ms;                                   /* pressed states */
 }
 
 :root[data-theme="dark"] {
@@ -1419,7 +1421,7 @@ html:has(.palette[open]) { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   /* The tokens (not a universal selector, which loses to class rules on specificity) so every transition collapses. */
-  :root { --t-fast: 1ms; --t-med: 1ms; --t-slow: 1ms; }
+  :root { --t-fast: 1ms; --t-med: 1ms; --t-slow: 1ms; --m-draw: 1ms; --m-press: 1ms; }
   *, *::before, *::after { transition-duration: 1ms; animation: none; }
   .js .reveal--pending { opacity: 1; transform: none; }
 }
