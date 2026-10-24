@@ -1,0 +1,22 @@
+# Safety checks for the portfolio. Read-only: this workflow never deploys and never touches
+# GitHub Pages settings, so it is safe whichever Pages source (branch or Actions) is selected.
+name: checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run portfolio checks
+        run: node scripts/check.mjs

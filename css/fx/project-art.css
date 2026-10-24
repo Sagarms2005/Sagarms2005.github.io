@@ -1,0 +1,187 @@
+/* css/fx/project-art.css — PROJECT-ART module: four hand-drawn illustrations (inline SVG, resolved "poster" frame
+   in the markup) shown as a header in each open project panel, plus a floating preview card for a hovered collapsed row,
+   parked in the empty margin right of the list so it never covers another row's text (js/fx/project-art.js). Colors come from the page tokens, so dark mode is native.
+   One visual language: 1.2px hairlines, ink + one vermilion accent, radii 2 / 4, mono 7-unit labels. */
+
+.art {
+  --a-ink: color-mix(in srgb, var(--ink) 78%, transparent);
+  --a-soft: color-mix(in srgb, var(--ink) 42%, transparent);
+  --a-faint: color-mix(in srgb, var(--ink) 18%, transparent);
+  --a-wash: color-mix(in srgb, var(--ink) 5%, transparent);
+  --a-mid: color-mix(in srgb, var(--ink) 16%, transparent);
+  --a-card: var(--paper);
+  --a-hot: color-mix(in srgb, var(--accent) 15%, transparent);
+  --a-sw: var(--hair);
+  margin: 0;
+  width: 100%;
+  max-width: 32rem;
+}
+@media (min-width: 860px) { .art { max-width: 38rem; } }   /* same measure as the text column beneath it */
+
+/* ---- panel header ---- */
+.project__art-slot { padding: var(--s2) 0 var(--s5); }
+@media (min-width: 860px) {
+  .project__art-slot { margin-left: calc(var(--meta-w) + var(--col-gap)); }
+}
+
+.art__frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  contain: layout paint;   /* the per-frame SVG repaints stay inside the frame */
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background-color: var(--paper-2);
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 11%, transparent) 0.9px, transparent 1.3px);
+  background-size: 16px 16px;
+}
+.art__svg { display: block; width: 100%; height: 100%; }
+
+.art__cap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s3);
+  margin-top: var(--s2);
+  font: 400 var(--fs-label) / 1.5 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.art__tag, .art__phase { white-space: nowrap; }
+.art__tag::before { content: ""; display: inline-block; width: 0.5rem; height: 1px; margin-right: 0.5rem; vertical-align: 0.28em; background: currentColor; }
+.art__cap { position: relative; }
+.art__phase { overflow: hidden; text-overflow: ellipsis; transition: opacity var(--t-fast) var(--ease); }
+.art__hint { position: absolute; right: 0; top: 0; opacity: 0; color: var(--accent); pointer-events: none; transition: opacity var(--t-fast) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .art.is-live .art__frame:hover + .art__cap .art__phase { opacity: 0; }
+  .art.is-live .art__frame:hover + .art__cap .art__hint { opacity: 1; }
+}
+@media (hover: none), (pointer: coarse) { .art__hint { display: none; } }
+@media (max-width: 359px) { .art__cap { letter-spacing: 0.02em; } }   /* the caption wraps onto a second line rather than truncating */
+.art__phase b { font-weight: 400; transition: color var(--t-fast) var(--ease); }
+.art__phase i { font-style: normal; opacity: 0.55; }
+.art__phase b.is-on { color: var(--accent); }
+
+/* ---- SVG vocabulary (shared by all four) ---- */
+.art__svg :where(path, rect, circle, ellipse, polyline, line) {
+  fill: none;
+  stroke: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.art .k  { stroke: var(--a-ink);  stroke-width: var(--a-sw); }
+.art .k2 { stroke: var(--a-soft); stroke-width: var(--a-sw); }
+.art .k3 { stroke: var(--a-faint); stroke-width: var(--a-sw); }
+.art .ac { stroke: var(--accent); stroke-width: var(--a-sw); }
+.art .f1 { fill: var(--a-card); }
+.art .f2 { fill: var(--a-wash); }
+.art .f3 { fill: var(--a-soft); }
+.art .f4 { fill: var(--a-mid); }
+.art .acf { fill: var(--a-hot); }
+.art .acd { fill: var(--accent); }
+.art .acf-fill { fill: color-mix(in srgb, var(--accent) 19%, transparent); }
+.art .barf { fill: var(--a-soft); }
+.art .dash { stroke-dasharray: 3 3; }
+.art .k3.dash { stroke: color-mix(in srgb, var(--ink) 38%, transparent); }   /* empty slots (gallery, containers) read at rest, not at 18 % */
+.art .trk { stroke: color-mix(in srgb, var(--ink) 34%, transparent); fill: var(--a-wash); }   /* tally tracks */
+.art .ants { stroke-dasharray: 4 3; stroke-width: 1.35px; }
+.art .chk { stroke: var(--on-accent); stroke-width: 1.7px; }
+.art .scan { fill: var(--accent); }
+.art .s1 { opacity: 0.025; } .art .s2 { opacity: 0.05; } .art .s3 { opacity: 0.08; } .art .s4 { opacity: 0.12; }
+.art__svg text {
+  font: 500 7px var(--font-mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+.art__svg text.t6 { font-size: 6px; }
+.art__svg text.t65 { font-size: 6.5px; }
+.art__svg text.ac-t { fill: var(--accent); }
+.art__svg text.cl-s { display: none; }   /* one-letter candidate labels: phones only */
+.art__svg text.d { font-size: 16px; letter-spacing: 0; fill: var(--ink); }
+/* Phones: the drawing scales with its column, so labels are sized from the measured scale (--art-k, set by the
+   module; 1 without it) to land near 11.5 px on screen. The tiny pill/proxy labels would not fit and are dropped. */
+@media (max-width: 520px) {
+  .art__svg text { font-size: clamp(7px, calc(11.5px / var(--art-k, 1)), 12.5px); letter-spacing: 0.04em; }
+  .art__svg text.t6, .art__svg text.t65 { display: none; }
+  .art__svg text.cl-s { display: inline; dominant-baseline: central; font-size: clamp(7px, calc(10px / var(--art-k, 1)), 10.5px); letter-spacing: 0; }
+  .art__svg text.t-sm { font-size: clamp(7px, calc(9.5px / var(--art-k, 1)), 10px); letter-spacing: 0; }   /* CLOUDWATCH / BILLING ALERT sit in a 90-unit box */
+}
+
+/* ---- live (JS) state ---- */
+.art.is-live .art__frame { cursor: pointer; transform-origin: 50% 50%; }
+
+/* "Source on GitHub" under the stack tags of an open panel: a quiet mono link */
+.project__src { justify-self: start; font: 400 var(--fs-small) var(--font-mono); }
+
+/* ---- floating preview ---- */
+.art-peek { position: fixed; left: 0; top: 0; z-index: 45; width: 0; height: 0; pointer-events: none; display: none; }
+.art-peek.is-live { display: block; }
+.art-peek__sheet,
+.art-peek__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18.375rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+.art-peek__sheet { height: 13.125rem; background: var(--paper-2); }
+/* The connector (positioned by the module): a hairline from the card back to the end of the hovered row, ending in a small arrowhead. */
+.art-peek__lead {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 0;
+  border-top: 1px solid var(--ink-3);
+  color: var(--ink-3);
+  opacity: 0;
+  pointer-events: none;
+}
+.art-peek__lead::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -3.5px;
+  width: 6px;
+  height: 6px;
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.art-peek__card {
+  padding: 6px 6px 2px;
+  box-shadow: 0 22px 44px -22px rgb(0 0 0 / 0.34), 0 3px 10px -4px rgb(0 0 0 / 0.14);
+  backface-visibility: hidden;
+}
+:root[data-theme="dark"] .art-peek__card { box-shadow: 0 22px 44px -18px rgb(0 0 0 / 0.7), 0 3px 10px -4px rgb(0 0 0 / 0.4); }
+.art-peek .art { max-width: none; }
+.art-peek .art__frame { aspect-ratio: auto; width: 17.5rem; height: 10.9375rem; }
+.art-peek .art:not(.is-shown) { display: none; }
+.art-peek .art__hint { display: none; }
+/* the card is a glance: shapes and the phase line only. Labels at preview size would be 5-6 px, so they are left to the panel. */
+.art-peek .art__svg text:not(.d) { display: none; }
+.art-peek .art__tag { display: none; }
+/* margin too narrow for the full card: it is scaled down by the module, so the caption (illegible at that size) is dropped */
+.art-peek.is-tight .art__cap { display: none; }
+.art-peek.is-tight .art-peek__card { padding-bottom: 6px; }
+.art-peek.is-tight .art-peek__sheet { height: 11.8125rem; }
+.art-peek .art__cap { justify-content: center; margin-top: 0.375rem; padding-bottom: 0.25rem; font-size: 0.6875rem; letter-spacing: 0.05em; }
+
+@media (prefers-reduced-motion: reduce), print {
+  .art-peek { display: none !important; }
+}
+
+/* "Hover a row for a preview": only where the preview exists (fine pointer, motion allowed, room on the line) and the module is up */
+.art-hint { display: none; }
+@media (min-width: 1000px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .art-hint { display: inline; visibility: hidden; opacity: 0; transition: opacity var(--t-slow) var(--ease), visibility 0s linear var(--t-slow); }
+  .art-hint.is-on { visibility: visible; opacity: 1; transition-delay: 700ms, 0s; }
+}
+@media print { .art-hint { display: none; } }

@@ -1,0 +1,414 @@
+/* css/fx/terminal.css — TERMINAL + DELIGHT module (js/fx/terminal.js).
+   1. Footer opener   2. Terminal dialog   3. Output vocabulary   4. Theme reveal (View Transitions)
+   5. Headline reveal  6. Motion, touch, print.  Colors come from the base tokens only, so both themes are native. */
+
+/* 1. Footer opener ---------------------------------------------------------- */
+
+.footer__term {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.footer__term-glyph { color: var(--accent); }
+.footer__term-label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--accent);
+  transition: color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer__term:hover .footer__term-label { color: var(--accent); }
+}
+.footer__term-kbd { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .footer__term-kbd { display: inline-block; }
+}
+
+/* 2. Terminal dialog -------------------------------------------------------- */
+
+.tty {
+  --term-fs: 0.8125rem;
+  --term-fs-in: 0.875rem;
+  --term-pad: var(--s5);
+  width: min(44rem, calc(100% - 2 * var(--s4)));
+  height: min(34rem, 74vh);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 32px 80px -28px rgb(var(--ink-rgb) / 0.5);
+}
+.tty[open] {
+  display: flex;
+  flex-direction: column;
+  animation: term-in 320ms var(--ease) backwards;
+}
+.tty::backdrop { background: rgb(var(--ink-rgb) / 0.4); }
+:root[data-theme="dark"] .tty::backdrop { background: rgb(0 0 0 / 0.45); }
+.tty[open]::backdrop { animation: term-fade 260ms var(--ease) backwards; }
+.tty.is-closing { animation: term-out 170ms var(--ease) forwards; }
+.tty.is-closing::backdrop { animation: term-fade 170ms var(--ease) reverse forwards; }
+
+/* The page behind stays put while the terminal is open. */
+html:has(.tty[open]) { overflow: hidden; }
+
+.tty__bar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 2.75rem;
+  padding: 0 var(--s2) 0 var(--term-pad);
+  border-bottom: 1px solid var(--rule);
+  font: 400 var(--fs-label) var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  touch-action: none;
+}
+.tty__icon { color: var(--accent); font-weight: 500; }
+.tty__who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tty__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tty__close:hover { color: var(--accent); background: var(--paper-2); }
+}
+.tty__x { display: none; }
+
+.tty__log {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: var(--s4) var(--term-pad);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: 400 var(--term-fs) / 1.7 var(--font-mono);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.tty__log:focus-visible { outline-offset: -3px; }
+
+.tty__chips {
+  display: flex;
+  flex: none;
+  gap: var(--s2);
+  padding: var(--s2) var(--term-pad);
+  overflow-x: auto;
+  border-top: 1px solid var(--rule);
+  background: var(--paper-2);
+  scrollbar-width: none;
+}
+.tty__chips::-webkit-scrollbar { display: none; }
+.tty__chips:empty { display: none; }
+.tty__chip {
+  flex: none;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 var(--fs-label) var(--font-mono);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tty__chip:hover { border-color: var(--accent); color: var(--accent); }
+}
+.tty__chip:active { background: var(--tint); }
+.tty.is-tight .tty__chips { display: none; }
+
+.tty__form {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1ch;
+  min-height: 3.25rem;
+  padding: 0 var(--term-pad);
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+  font: 400 var(--term-fs-in) / 1.4 var(--font-mono);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+.tty__form:focus-within { box-shadow: inset 0 2px 0 var(--accent); }
+.tty__ps { flex: none; color: var(--accent); font-weight: 500; white-space: nowrap; user-select: none; }
+.tty__field { position: relative; flex: 1; min-width: 0; }
+.tty__input {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  caret-color: var(--accent);
+  font: inherit;
+  letter-spacing: 0;
+}
+.tty__input::placeholder { color: var(--ink-3); opacity: 1; }
+.tty__ghost {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: var(--ink-3);
+  font: inherit;
+  letter-spacing: 0;
+  white-space: pre;
+  pointer-events: none;
+}
+.tty__ghost-pad { visibility: hidden; }
+
+.tty__tab {
+  flex: none;
+  min-height: 2.25rem;
+  padding: 0 var(--s3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 var(--fs-label) var(--font-mono);
+  cursor: pointer;
+}
+.tty__tab:active { background: var(--tint); }
+
+/* Phones and narrow windows: a bottom sheet, dismissed by dragging the title bar down. */
+@media (max-width: 720px) {
+  .tty {
+    --term-pad: var(--s4);
+    --term-fs-in: 1rem; /* 16px: iOS does not zoom the page when the prompt takes focus */
+    position: fixed;
+    inset: auto 0 var(--vv-b, 0px) 0;
+    width: 100%;
+    height: min(80vh, 36rem);
+    height: min(80dvh, 36rem);
+    max-height: calc(var(--vv-h, 100dvh) - 0.5rem);
+    margin: 0;
+    border-inline: 0;
+    border-bottom: 0;
+    translate: 0 var(--drag, 0px);
+    transition: translate 240ms var(--ease);
+    box-shadow: 0 -24px 60px -24px rgb(var(--ink-rgb) / 0.5);
+  }
+  .tty.is-dragging { transition: none; }
+  .tty[open] { animation-name: term-sheet-in; }
+  .tty.is-closing { animation-name: term-sheet-out; }
+  .tty__bar { min-height: 3.25rem; padding-top: 0.5rem; }
+  .tty__bar::before {
+    content: "";
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    width: 2.25rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--rule);
+    transform: translateX(-50%);
+  }
+  .tty__who { font-size: 0.6875rem; }
+}
+
+/* 3. Output vocabulary ------------------------------------------------------ */
+
+.t-block + .t-block { margin-top: var(--s3); }
+.t-line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  animation: t-in 240ms var(--ease) backwards;
+  animation-delay: calc(min(var(--i, 0), 20) * 16ms);
+}
+.t-cmd { color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.t-ps { color: var(--accent); user-select: none; }
+.t-h { color: var(--ink); font-weight: 500; }
+.t-dim { color: var(--ink-3); }
+.t-acc { color: var(--accent); }
+.t-err { color: var(--accent); }
+.t-ok { color: var(--accent); font-weight: 500; }
+.t-gap { height: 0.7em; }
+.t-blk { display: block; }
+.t-ind { padding-left: 2ch; }
+.t-a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; text-decoration-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .t-a:hover { color: var(--accent); }
+}
+.tty__copy { margin-left: 0.5ch; padding: 0.1rem 0.6rem; border: 1px solid var(--rule); border-radius: 999px; background: transparent; color: var(--ink-2); font: inherit; font-size: 0.85em; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) {
+  .tty__copy:hover { border-color: var(--accent); color: var(--accent); }
+}
+
+.t-kv { display: grid; grid-template-columns: var(--kw, 10ch) minmax(0, 1fr); column-gap: 1ch; }
+.t-k { color: var(--ink-3); }
+.t-k.t-acc { color: var(--accent); }
+.t-li { padding-left: 2ch; text-indent: -2ch; }
+.t-li::before { content: "\203A  "; content: "\203A  " / ""; color: var(--accent); }
+.t-files { display: flex; flex-wrap: wrap; gap: 0 3ch; }
+.t-files span { white-space: nowrap; }
+
+.t-hint { color: var(--ink-3); }
+.t-hint kbd { margin-inline: 0.1em; }
+
+/* neofetch: an identity card with a pixel monogram */
+.t-fetch { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s2) 3ch; padding: var(--s2) 0; }
+.t-logo { flex: none; width: 4.4rem; height: 4.4rem; color: var(--accent); fill: currentColor; }
+.t-px { transform-box: fill-box; transform-origin: center; animation: t-px 460ms var(--ease) backwards; animation-delay: calc(var(--k, 0) * 16ms + 80ms); }
+.t-info { flex: 1; min-width: 14rem; }
+.t-swatches { display: flex; gap: 2px; margin-top: var(--s2); }
+.t-sw { width: 2.4ch; height: 1.1em; border: 1px solid var(--rule); }
+.t-sw:nth-child(1) { background: var(--ink); }
+.t-sw:nth-child(2) { background: var(--ink-2); }
+.t-sw:nth-child(3) { background: var(--ink-3); }
+.t-sw:nth-child(4) { background: var(--accent); }
+.t-sw:nth-child(5) { background: var(--rule); }
+.t-sw:nth-child(6) { background: var(--paper); }
+
+/* sudo hire sagar: a block progress bar, then the grant */
+.t-bar { display: inline-flex; gap: 2px; vertical-align: -0.1em; }
+.t-bar i {
+  width: 0.6ch;
+  height: 1em;
+  background: var(--accent);
+  animation: t-fill 1ms linear backwards;
+  animation-delay: calc(var(--k) * 34ms);
+}
+.t-grant { animation: t-in 240ms var(--ease) backwards, t-flash 1100ms var(--ease) backwards; }
+
+/* coffee */
+.t-cup { display: block; line-height: 1.35; }
+.t-steam { display: inline-block; color: var(--ink-3); animation: t-steam 1.6s ease-in-out infinite; }
+.t-steam + .t-steam { animation-delay: 0.5s; }
+
+/* 4. Theme reveal: the new theme grows as a circle out of the control that asked for it -------- */
+
+:root.is-theme-vt::view-transition-group(root) { animation: none; }
+:root.is-theme-vt::view-transition-old(root),
+:root.is-theme-vt::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+:root.is-theme-vt::view-transition-old(root) { z-index: 1; }
+:root.is-theme-vt::view-transition-new(root) {
+  z-index: 2;
+  clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0));
+  animation: term-reveal 580ms var(--ease-out) both;
+}
+
+/* 5. Headline reveal: words are wrapped by JS, and only for headlines still below the fold -------- */
+
+.hl .hl__w {
+  display: inline-block;
+  clip-path: inset(-0.25em -0.2em -0.12em -0.2em);
+}
+.hl .hl__i {
+  display: inline-block;
+  transform: translateY(128%) rotate(4deg);
+  transform-origin: 0 100%;
+}
+.hl.is-in .hl__i {
+  transform: none;
+  transition: transform 760ms var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.hl.is-done .hl__w { clip-path: none; }
+
+/* 6. Motion, touch, print --------------------------------------------------- */
+
+@keyframes term-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+}
+@keyframes term-out {
+  to { opacity: 0; transform: translateY(8px) scale(0.99); }
+}
+@keyframes term-sheet-in {
+  from { transform: translateY(100%); }
+}
+@keyframes term-sheet-out {
+  to { transform: translateY(100%); }
+}
+@keyframes term-fade {
+  from { opacity: 0; }
+}
+@keyframes term-reveal {
+  from { clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0)); }
+  to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0)); }
+}
+@keyframes t-in {
+  from { opacity: 0; transform: translateY(5px); }
+}
+@keyframes t-px {
+  from { opacity: 0; transform: scale(0.2); }
+}
+@keyframes t-fill {
+  from { background: var(--rule); }
+}
+@keyframes t-flash {
+  from { background: var(--tint); }
+}
+@keyframes t-steam {
+  0%, 100% { opacity: 0.35; transform: translateY(2px); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+@keyframes term-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .footer__term:hover .footer__term-cur,
+  .footer__term:focus-visible .footer__term-cur { animation: term-blink 1s steps(1) infinite; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tty[open], .tty.is-closing, .tty[open]::backdrop, .tty.is-closing::backdrop,
+  .t-line, .t-px, .t-bar i, .t-steam, .t-grant { animation: none; }
+  .tty.is-closing { opacity: 0; }
+  .hl .hl__i { transform: none; }
+  .hl.is-in .hl__i { transition: none; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tty { --term-fs: 0.8125rem; --term-fs-in: 1rem; }
+  .tty__esc { display: none; }
+  .tty__x { display: block; }
+  .tty__chip { min-height: 2.75rem; padding-inline: var(--s4); }
+  .footer__term { min-height: 2.75rem; }
+  .tty__form { min-height: 3.5rem; }
+}
+
+@media (max-width: 480px) {
+  .t-kv--wide { grid-template-columns: minmax(0, 1fr); }
+  .t-kv--wide .t-k { margin-top: var(--s1); }
+}
+
+@media print {
+  .tty, .footer__term { display: none; }
+  .hl .hl__i { transform: none; }
+  .hl .hl__w { clip-path: none; }
+}

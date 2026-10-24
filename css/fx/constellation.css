@@ -1,0 +1,208 @@
+/* css/fx/constellation.css — the "stack map" in #skills (js/fx/constellation.js).
+   With JS on, the figure reserves its final box from the first paint (visibility:hidden, same
+   structure and aspect-ratio as when live) so the lazy script loading can never grow the page under a
+   smooth scroll or shift what follows. No-JS, print and module failure take the figure out of the flow
+   and the plain skills list below it carries on alone. */
+
+.constellation {
+  display: none;
+  margin: 0 0 var(--s6);
+  font-family: var(--font-mono);
+}
+.js .constellation { display: block; visibility: hidden; }
+.js .constellation.is-live { visibility: visible; }
+.js .constellation[data-fx-failed] { display: none; }
+
+/* The skill bar sits above the map on wider screens and grows when a skill is picked (sentence + links +
+   Clear). Its final box is reserved from the first paint (it is only unhidden after load) and sized for the
+   skill with the most links, so neither the map nor the lazy-load timing ever moves the page. */
+.js .skillbar[hidden] { display: flex; visibility: hidden; }
+.skillbar--reserved,
+.js .skillbar:has(~ .constellation:not([data-fx-failed])) {
+  align-content: flex-start;
+  min-height: calc(var(--fs-small) * 1.6 * 5.25);
+}
+
+/* Phones: a pick can list up to five links at 44px each, far too tall to reserve above the map. The bar
+   moves under the map instead (still directly above the list it describes), so tapping a dot never
+   moves the map under the finger. */
+@media (max-width: 699px) {
+  #skills > .container { display: flex; flex-direction: column; }
+  #skills .skillbar { order: 1; min-height: 0; }
+  #skills .skills { order: 2; }
+  #skills .constellation { order: 3; margin: var(--s6) 0 0; }   /* the map follows the plain list on phones */
+}
+
+/* The plain grouped list is what a recruiter or a parser wants first, so it comes first in the markup. The
+   stack map is the enhancement: above the list on wide screens, below it on phones. */
+@media (min-width: 700px) {
+  #skills > .container { display: flex; flex-direction: column; }
+  #skills .skillbar { order: 1; }
+  #skills .constellation { order: 2; }
+  #skills .skills { order: 3; }
+}
+
+/* The stage reserves its box from the first paint (aspect-ratio), so sizing the canvas never shifts layout. */
+.constellation__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 7;
+  min-height: 320px;                       /* keeps a usable box where aspect-ratio is unsupported */
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  contain: layout paint;
+  isolation: isolate;
+}
+@media (max-width: 380px) { .constellation__stage { aspect-ratio: 4 / 9; } }                /* the narrowest phones need height, not width, to name everything */
+@media (min-width: 560px) { .constellation__stage { aspect-ratio: 5 / 4; } }   /* taller than before: tablets get room for 12px names instead of a shrunken wide map */
+@media (min-width: 900px) { .constellation__stage { aspect-ratio: 3 / 2; } }
+@media (min-width: 1200px) { .constellation__stage { aspect-ratio: 2 / 1; } }
+
+/* Survey-paper dot grid, faded toward the edges. Decorative; costs one static layer. */
+.constellation__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(circle at center, rgb(var(--ink-rgb) / 0.16) 0.75px, transparent 1.25px);
+  background-size: 24px 24px;
+  background-position: 12px 12px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 78% at 50% 50%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 78% at 50% 50%, #000 30%, transparent 100%);
+}
+
+/* Registration ticks in the four corners, like the edge of a survey sheet. */
+.constellation__stage::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  opacity: 0.55;
+  --tick: linear-gradient(var(--ink-3), var(--ink-3));
+  background:
+    var(--tick) top left / 10px 1px no-repeat, var(--tick) top left / 1px 10px no-repeat,
+    var(--tick) top right / 10px 1px no-repeat, var(--tick) top right / 1px 10px no-repeat,
+    var(--tick) bottom left / 10px 1px no-repeat, var(--tick) bottom left / 1px 10px no-repeat,
+    var(--tick) bottom right / 10px 1px no-repeat, var(--tick) bottom right / 1px 10px no-repeat;
+}
+
+.constellation__tag {
+  position: absolute;
+  top: 16px;
+  left: 22px;
+  display: none;
+  font: 400 0.6875rem / 1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.constellation__tag--end { left: auto; right: 22px; font-variant-numeric: tabular-nums; }
+.constellation__tag:empty { display: none; }
+
+/* The resting invitation: a small accent line at the top of the map, with a slow beat, until the first
+   hover, tap or drag (the module adds is-ready after the reveal and is-touched on first use). */
+.constellation__hint {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  transform: translateX(-50%);
+  font: 500 0.6875rem / 1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent);                   /* 5.7:1 on paper, higher in dark */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.constellation__hint::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: constellation-beat 2.6s ease-in-out infinite;
+}
+.constellation.is-ready:not(.is-touched) .constellation__hint { opacity: 1; }
+.constellation.is-touched .constellation__hint::before { animation: none; }
+@keyframes constellation-beat {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.55); opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .constellation__hint { transition: none; }
+  .constellation__hint::before { animation: none; }
+}
+@media (max-width: 559px) { .constellation__hint { top: 12px; left: 16px; transform: none; } }
+@media (min-width: 560px) { .constellation__tag { display: block; } }
+
+.constellation__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Vertical page scroll always wins on touch; nodes are only ever tapped there. */
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.constellation__caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3) var(--s5);
+  padding-top: var(--s3);
+  font: 400 var(--fs-small) / 1.5 var(--font-mono);
+  color: var(--ink-3);
+}
+
+/* Fixed two-line box: hovering never changes the height of the page. */
+.constellation__readout {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 3em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.constellation__readout b { color: var(--ink); font-weight: 500; }
+
+.constellation__legend {
+  display: none;
+  flex: none;
+  gap: var(--s4);
+  white-space: nowrap;
+}
+@media (min-width: 700px) { .constellation__legend { display: inline-flex; } }
+.constellation__key { display: inline-flex; align-items: center; gap: 0.45em; }
+.constellation__key svg { color: var(--ink-2); }
+
+/* Phones: the key sits above the map (it explains the shapes before you read them), the readout below. */
+@media (max-width: 699px) {
+  .js .constellation { display: flex; flex-direction: column; }
+  .js .constellation[data-fx-failed] { display: none; }
+  .constellation__caption { display: contents; }
+  .constellation__legend { display: inline-flex; order: -1; gap: var(--s4); padding-bottom: var(--s3); font: 400 var(--fs-small) / 1.5 var(--font-mono); color: var(--ink-3); }
+  .constellation__readout { padding-top: var(--s3); }
+}
+
+/* Skill lists: plain-text items (no project names them) center in the same row height as the toggle buttons,
+   so Linux or RDS never sits above its neighbors; in "AWS (EC2, S3, ...)" the buttons hug their label so
+   the commas stay tight. */
+.skills .inline-list { align-items: center; }
+@media (hover: none), (pointer: coarse) {
+  .skills li > span > .term { min-width: 0; padding-inline: 0.6em; margin-inline: -0.6em; }
+}
+
+@media print {
+  .js .constellation, .js .constellation.is-live { display: none; }
+}

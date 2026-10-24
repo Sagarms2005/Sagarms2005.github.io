@@ -1,0 +1,550 @@
+/* css/fx/pipeline.css: "How I ship" scrollytelling (module: js/fx/pipeline.js).
+   Everything below is scoped to two classes the module adds: `.is-armed` (the section's final layout, applied as soon as
+   the script runs so the page does not grow later) and `.is-live` (the stage is built). Reduced motion, no-JS, print
+   and any failure keep the static diagram + list from styles.css untouched. */
+
+@property --ship-mx { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
+@property --ship-my { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
+@property --wr { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+.ship.is-live {
+  --ship-top: var(--masthead-h);
+  /* the page color as it really renders: paper under the grain overlay, so the sticky band is seamless */
+  --ship-bg: color-mix(in srgb, var(--paper) 98.4%, #000);
+  --ship-ghost: color-mix(in srgb, var(--ink-3) 42%, transparent);
+}
+
+/* The static diagram stays in the DOM as the fallback; the live one replaces it on screen. */
+.ship.is-live .ship__svg { display: none; }
+
+.ship__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s3);
+  font: 400 var(--fs-label) / 1.5 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---- Layout: the story uses the full container width from tablet up ---------------------------- */
+
+@media (min-width: 860px) {
+  .ship.is-armed > .split__body { display: contents; }
+  .ship.is-armed .ship__title,
+  .ship.is-armed .ship__lede { grid-column: 2; }
+  .ship.is-armed .ship__grid { grid-column: 1 / -1; }
+}
+.ship.is-armed .ship__grid { gap: 0; margin-top: var(--s6); }
+
+@media (min-width: 960px) {
+  .ship.is-armed .ship__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+    column-gap: var(--col-gap);
+    align-items: start;
+  }
+}
+/* Pin the stage only when the viewport has room for it beside the text (it never covers the steps on short or
+   zoomed windows: below 640px of height everything flows like the static list). */
+@media (min-width: 960px) and (min-height: 640px) {
+  .ship.is-live .ship__figure {
+    position: sticky;
+    top: calc(var(--ship-top) + var(--s5));
+  }
+}
+
+/* Phones and tablets: the stage is a compact sticky band above the steps. */
+@media (max-width: 959.98px) {
+  .ship.is-armed .ship__figure {
+    margin-inline: calc(var(--gutter) * -1);
+    padding: var(--s2) var(--gutter) var(--s1);
+    background: var(--ship-bg);
+  }
+  .ship.is-armed .ship__hud { margin-top: var(--s2); }
+  .ship.is-armed .ship__nav { margin-top: 0; margin-bottom: -0.275rem; }
+  .ship.is-armed .ship__caption { margin-top: 0; font-size: 0.6875rem; }
+  .ship.is-armed .ship__step:first-child { margin-top: 0.75rem; }
+  .ship.is-armed .ship__step:last-child { padding-bottom: clamp(0.5rem, 2svh, 1.25rem); }
+}
+@media (max-width: 959.98px) and (min-height: 640px) {
+  .ship.is-live .ship__figure {
+    position: sticky;
+    top: var(--ship-top);
+    z-index: 3;
+  }
+  .ship.is-live .ship__figure::after {
+    content: "";
+    position: absolute;
+    inset: 100% 0 auto;
+    height: 1rem;
+    background: linear-gradient(var(--ship-bg), transparent);
+    pointer-events: none;
+  }
+}
+
+/* ---- Stage: blueprint dot grid + a spotlight that follows the pointer or the active part ------- */
+
+.ship.is-armed .ship__stage {
+  position: relative;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(0.5rem, 2vw, 0.9rem);
+}
+.ship.is-armed .ship__stage.is-quiet,
+.ship.is-armed .ship__stage.is-quiet * { transition: none !important; }
+
+.ship.is-live .ship__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--ink-3) 34%, transparent) 0.9px, transparent 1.5px);
+  background-size: 16px 16px;
+  background-position: 50% 50%;
+}
+/* The same grid in vermilion, revealed through a soft mask that glides to the active part or the pointer. */
+.ship__glow {
+  --ship-mx: 50%;
+  --ship-my: 50%;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--accent) 0.9px, transparent 1.5px);
+  background-size: 16px 16px;
+  background-position: 50% 50%;
+  -webkit-mask-image: radial-gradient(circle var(--ship-r) at var(--ship-mx) var(--ship-my), #000 0%, transparent 100%);
+  mask-image: radial-gradient(circle var(--ship-r) at var(--ship-mx) var(--ship-my), #000 0%, transparent 100%);
+  opacity: 0;
+  transition: --ship-mx 700ms var(--ease), --ship-my 700ms var(--ease), opacity 600ms var(--ease);
+}
+.ship.is-live.is-started .ship__glow { opacity: 0.85; }
+
+/* A one-off ring of vermilion dots that ripples out from a part when its step arrives. */
+.ship__wave {
+  --wx: 50%;
+  --wy: 50%;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background-image: radial-gradient(circle, var(--accent) 1.1px, transparent 1.7px);
+  background-size: 16px 16px;
+  background-position: 50% 50%;
+  -webkit-mask-image: radial-gradient(circle at var(--wx) var(--wy), transparent calc(var(--wr) - 44px), #000 calc(var(--wr) - 10px), #000 var(--wr), transparent calc(var(--wr) + 12px));
+  mask-image: radial-gradient(circle at var(--wx) var(--wy), transparent calc(var(--wr) - 44px), #000 calc(var(--wr) - 10px), #000 var(--wr), transparent calc(var(--wr) + 12px));
+}
+.ship__wave.is-a { animation: ship-wave-a 1100ms var(--ease) 1 both; }
+.ship__wave.is-b { animation: ship-wave-b 1100ms var(--ease) 1 both; }
+@keyframes ship-wave-a { from { --wr: 0px; opacity: 1; } to { --wr: 460px; opacity: 0; } }
+@keyframes ship-wave-b { from { --wr: 0px; opacity: 1; } to { --wr: 460px; opacity: 0; } }
+.ship__stage.is-pointing .ship__glow { transition: --ship-mx 90ms linear, --ship-my 90ms linear, opacity 600ms var(--ease); }
+
+/* The diagram is one 320 x 278 composition. It is never squeezed to fit a height: its width is chosen per screen so the
+   scale stays >= 0.85 (phones: 12-15 units of type => >= 10 px on screen, even at 320px wide) and ~1.1 beside the steps
+   (type units are smaller there, so labels land at 11-14 px). The stage grows with the diagram, never the other way round. */
+.ship.is-armed .ship__stage { --ship-r: 6.5rem; --ship-w: 17.5rem; }
+@media (min-width: 600px) { .ship.is-armed .ship__stage { --ship-w: 22.5rem; --ship-r: 8rem; } }
+/* Until the stage is built the static (tall) diagram would be squashed into this box, so it waits invisibly: the stage
+   keeps its final footprint and nothing below moves when the live diagram swaps in. */
+.ship.is-armed:not(.is-live) .ship__svg { visibility: hidden; width: min(100%, var(--ship-w)); height: auto; aspect-ratio: 320 / 278; }
+/* ...and the caption keeps the room the HUD and stepper will take. */
+.ship.is-armed:not(.is-live) .ship__caption { margin-top: 6.125rem; }
+@media (max-width: 959.98px) { .ship.is-armed:not(.is-live) .ship__caption { margin-top: 5.0625rem; } }
+@media (max-width: 959.98px) and ((hover: none) or (pointer: coarse)) { .ship.is-armed:not(.is-live) .ship__caption { margin-top: 5.725rem; } }
+
+.ship__live {
+  --f-name: 12.8px; --f-sub: 10.4px; --f-tag: 10px; --f-bd: 10px;
+  display: block;
+  width: min(100%, var(--ship-w, 22.5rem));
+  height: auto;
+  overflow: visible;
+  color: var(--ink-3);
+}
+@media (max-width: 599.98px) {
+  .ship__live { --f-name: 15px; --f-sub: 12.5px; --f-tag: 12px; --f-bd: 12px; }
+}
+.ship__live text { pointer-events: none; }
+.ship__live .ship__name { font-size: var(--f-name); }
+.ship__live .ship__sub { font-size: var(--f-sub); }
+.ship__live .ship__tag { font-size: var(--f-tag); }
+
+/* ---- Diagram parts: stroke-draw, fade, spring ---------------------------------------------------- */
+
+.ship__p { --d: 0ms; }
+.ship__p .ship__hit { fill: transparent; stroke: none; pointer-events: none; }
+@media (hover: hover) and (pointer: fine) {
+  .ship__p .ship__hit { pointer-events: all; cursor: pointer; }
+}
+
+/* Only the not-yet-built box outline is dimmed. Labels never go through opacity (see .ship__text below), so
+   every word stays readable at >= 4.5:1 while its part is still waiting. */
+.ship__ghost {
+  fill: none;
+  stroke: var(--ship-ghost);
+  stroke-width: 1;
+  opacity: 0.7;
+  transition: opacity 320ms var(--ease);
+}
+.ship__p.is-built .ship__ghost { opacity: 0; transition-delay: var(--d); }
+.ship__p.is-hot:not(.is-built) .ship__ghost { stroke: var(--accent); }
+
+.ship__draw {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 3;   /* a long gap: a plain "1 1" leaves a dot at the end of a path that is still undrawn */
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 240ms var(--ease), stroke var(--t-med) var(--ease);
+}
+.ship__draw.is-link { stroke: var(--ink-3); }
+.ship__draw.is-accent { stroke: var(--accent); }
+.ship__p.is-built .ship__draw {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 860ms var(--ease) calc(var(--d) + var(--i, 0) * 80ms), stroke var(--t-med) var(--ease);
+}
+.ship__p.is-active .ship__draw:not(.is-link),
+.ship__p.is-hot .ship__draw:not(.is-link) { stroke: var(--accent); }
+.ship__p.is-active .ship__draw.is-link:not(.is-accent),
+.ship__p.is-hot .ship__draw.is-link:not(.is-accent) { stroke: var(--ink-2); }
+
+.ship__fill {
+  fill: var(--paper);
+  stroke: none;
+  opacity: 0;
+  transition: opacity 160ms var(--ease), fill var(--t-med) var(--ease);
+}
+.ship__p.is-built .ship__fill {
+  opacity: 1;
+  transition: opacity 420ms var(--ease) calc(var(--d) + 200ms), fill var(--t-med) var(--ease);
+}
+.ship__p.is-active .ship__fill:not(.ship__node),
+.ship__p.is-hot .ship__fill:not(.ship__node) { fill: color-mix(in srgb, var(--accent) 9%, var(--paper)); }
+/* Pipeline pulse: the module lights one of the three nodes at a time. */
+.ship__node.is-on { fill: var(--accent); }
+
+.ship__frame {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  transition: stroke var(--t-med) var(--ease);
+}
+.ship__wipe {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 12;
+  stroke-dasharray: 1 3;   /* a long gap: a plain "1 1" leaves a dot at the end of a path that is still undrawn */
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 240ms var(--ease);
+}
+.ship__p.is-built .ship__wipe { stroke-dashoffset: 0; transition: stroke-dashoffset 1100ms var(--ease) var(--d); }
+.ship__p.is-active .ship__frame,
+.ship__p.is-hot .ship__frame { stroke: var(--accent); }
+
+/* Labels: a pending part shows its words in the muted ink, a built part brightens them to full ink. A halo in the
+   surface color (paint-order: stroke) keeps the blueprint dots and dashed frame from running through the letters. */
+.ship__live text.ship__text {
+  --halo: var(--paper);
+  paint-order: stroke;
+  stroke: var(--halo);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  transition: fill var(--t-med) var(--ease), stroke var(--t-med) var(--ease);
+}
+.ship__live .ship__name { fill: var(--ink-3); }
+.ship__p.is-built .ship__name { fill: var(--ink); transition-delay: calc(var(--d) + 380ms), 0ms; }
+.ship__p.is-active .ship__text:not(.ship__tag),
+.ship__p.is-hot .ship__text:not(.ship__tag) { --halo: color-mix(in srgb, var(--accent) 9%, var(--paper)); }
+
+/* The sparkline is a drawing, not words: it fades and rises in with its part. */
+.ship__trace {
+  opacity: 0.26;
+  transform: translateY(5px);
+  transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+}
+.ship__p.is-built .ship__trace {
+  opacity: 1;
+  transform: none;
+  transition: opacity 560ms var(--ease) calc(var(--d) + 380ms), transform 560ms var(--ease) calc(var(--d) + 380ms);
+}
+
+.ship__bd { transform: scale(0); transform-box: fill-box; transform-origin: center; transition: transform 160ms var(--ease); }
+.ship__bd circle { fill: var(--accent); }
+.ship__bd text { font: 500 var(--f-bd, 12px) var(--font-mono); fill: var(--on-accent); }
+.ship__p.is-built .ship__bd { transform: scale(1); transition: transform 560ms var(--ease-spring) calc(var(--d) + 560ms); }
+.ship__p.is-active .ship__bd { transform: scale(1.18); transition: transform 420ms var(--ease-spring); }
+
+.ship__objs rect { fill: var(--accent); opacity: 0; transform: translateY(-5px); transition: opacity 160ms, transform 160ms; }
+.ship__p.is-built .ship__objs rect { opacity: 0.9; transform: none; transition: opacity 420ms var(--ease) calc(var(--d) + 900ms), transform 560ms var(--ease-spring) calc(var(--d) + 900ms); }
+.ship__objs rect:nth-child(2) { transition-delay: calc(var(--d) + 1000ms); }
+.ship__objs rect:nth-child(3) { transition-delay: calc(var(--d) + 1100ms); }
+
+.ship__spark { fill: none; stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
+
+/* Billing-alert bell: swings and pings once each time step 5 is reached. */
+.ship__bell-body { transform-origin: 0 -6px; }
+.ship__ping { fill: none; stroke: var(--accent); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.ship__bell.is-ringing .ship__bell-body { animation: ship-ring 900ms var(--ease) 1; }
+.ship__bell.is-ringing .ship__ping { animation: ship-ping 1200ms var(--ease) 2; }
+.ship__bell.is-ringing .ship__ping--2 { animation-delay: 380ms; }
+@keyframes ship-ring {
+  0% { transform: rotate(0); }
+  16% { transform: rotate(17deg); }
+  36% { transform: rotate(-13deg); }
+  56% { transform: rotate(8deg); }
+  76% { transform: rotate(-4deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes ship-ping {
+  0% { opacity: 0.7; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(2); }
+}
+
+/* Comet packets: small HTML dots on their own compositor layers over the diagram. */
+.ship__flow { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+.ship__pkt { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; will-change: transform, opacity; }
+.ship__pkt::before,
+.ship__pkt::after { content: ""; position: absolute; background: var(--accent); }
+.ship__pkt::after { left: -2.8px; top: -2.8px; width: 5.6px; height: 5.6px; border-radius: 50%; }
+.ship__pkt::before { left: -22px; top: -1px; width: 22px; height: 2px; background: linear-gradient(to right, transparent, var(--accent)); }
+
+/* ---- HUD, stepper ---------------------------------------------------------------------------------- */
+
+.ship__hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: var(--s3);
+}
+.ship__readout {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  min-width: 0;
+  font: 500 var(--fs-small) / 1.4 var(--font-mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
+.ship__ctr { color: var(--accent); }
+.ship__win { display: block; height: 1.4em; overflow: hidden; }
+.ship__strip { display: block; transform: translateY(calc(var(--i, 0) * -1.4em)); transition: transform 560ms var(--ease-spring); }
+.ship__strip > span { display: block; height: 1.4em; white-space: nowrap; }
+.ship__lbl { min-width: 0; overflow: hidden; color: var(--ink); }
+
+.ship__skip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  flex: none;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--ink-3);
+  border-radius: var(--radius);
+  font: 500 var(--fs-label) var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.ship__skip .icon { transition: transform var(--t-med) var(--ease); }
+/* 320px phones: the counter, the label and "Skip this" share one row, so each tightens a little */
+@media (max-width: 359px) {
+  .ship__hud { gap: var(--s2); }
+  .ship__readout { gap: 0.4em; font-size: 0.6875rem; letter-spacing: 0; }
+  .ship__skip { padding-inline: 0.6rem; letter-spacing: 0.04em; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ship__skip:hover { color: var(--accent); border-color: var(--accent); }
+  .ship__skip:hover .icon { transform: translateY(3px); }
+}
+
+/* The step buttons are real 44px targets; the nav's negative margin hands back the 10px above and below the 2px bar. */
+.ship__nav { margin-top: 0.175rem; margin-bottom: -0.375rem; }
+/* the walkthrough link in the projects index: a 32px box (44px on touch), set by the tap-target rules in css/styles.css */
+.arrow-link[href="#how-i-ship"] { min-height: 1.5rem; }
+.ship__nav ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.ship__seg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.ship__seg::before,
+.ship__seg i {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+}
+/* The active bar doubles in thickness by scaling, not by animating height (which would lay out on every frame). */
+.ship__seg::before { background: var(--rule); transition: transform var(--t-med) var(--ease); }
+.ship__seg i { background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 520ms var(--ease), scale var(--t-med) var(--ease); }
+.ship__seg.is-reached i { transform: scaleX(1); }
+.ship__seg.is-active::before { transform: scaleY(2); }
+.ship__seg.is-active i { scale: 1 2; }
+@media (hover: hover) and (pointer: fine) {
+  .ship__seg:hover::before { transform: scaleY(2); }
+  .ship__seg:hover i { scale: 1 2; }
+}
+.ship__seg:focus-visible { outline-offset: 2px; }
+
+/* ---- Steps ------------------------------------------------------------------------------------------ */
+
+.ship.is-armed .ship__steps { border-top: 0; counter-reset: none; }
+/* Each step is as tall as its own words plus a breath: the number sits on the verb's line, and nothing is held back as a
+   screen-fraction runway, so the pinned story is a third shorter or better. The last step is only as tall as it takes
+   for the stage to stay pinned for a short beat after it is reached (--ship-tail, set by the script). */
+.ship.is-armed .ship__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.7rem;
+  align-items: baseline;
+  align-content: start;
+  padding: 0 0 var(--s4) 2.1rem;
+  border-bottom: 0;
+}
+.ship.is-armed .ship__step > div { display: contents; }
+.ship.is-armed .ship__steps .ship__no { margin: 0; grid-column: 1; grid-row: 1; }
+.ship.is-armed .ship__steps .ship__verb { grid-column: 2; grid-row: 1; line-height: 1.15; }
+.ship.is-armed .ship__steps .ship__step p { grid-column: 2; grid-row: 2; margin-top: 0.3rem; }
+.ship.is-armed .ship__steps .ship__tags { grid-column: 2; grid-row: 3; }
+.ship.is-armed .ship__step:last-child { padding-bottom: clamp(1.5rem, 6svh, 3rem); }
+@media (min-width: 960px) {
+  .ship.is-armed .ship__step { padding-left: 2.75rem; padding-bottom: 0.875rem; }
+  .ship.is-armed .ship__step:last-child { padding-bottom: var(--s5); min-height: var(--ship-tail, 14rem); }
+}
+/* Phones and tablets: the (decorative) tech chips are left out, which keeps each step about 100px tall, so the steps
+   move past the sticky stage quickly. */
+@media (max-width: 959.98px) {
+  .ship.is-armed .ship__steps .ship__verb { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2rem); }
+  .ship.is-armed .ship__tags { display: none; }
+}
+
+.ship.is-armed .ship__no {
+  display: block;
+  margin-bottom: var(--s1);
+  font: 500 var(--fs-small) / 1.6 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  transition: color var(--t-med) var(--ease);
+}
+.ship.is-armed .ship__no::before { content: "0" / ""; }
+.ship.is-armed .ship__verb {
+  font-size: clamp(1.7rem, 1.2rem + 1vw, 2.15rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--ink-3);
+  transition: color var(--t-med) var(--ease);
+}
+.ship.is-armed .ship__step p { max-width: 34ch; margin-top: var(--s2); font-size: var(--fs-body); color: var(--ink-3); transition: color var(--t-med) var(--ease); }
+.ship__tags { margin-top: 0.5rem; }
+.ship__tags li { color: var(--ink-3); transition: color var(--t-med) var(--ease), border-color var(--t-med) var(--ease); }
+
+.ship.is-live .ship__step.is-active .ship__no,
+.ship.is-live .ship__step.is-hot .ship__no { color: var(--accent); }
+.ship.is-live .ship__step.is-active .ship__verb,
+.ship.is-live .ship__step.is-hot .ship__verb { color: var(--ink); }
+.ship.is-live .ship__step.is-active p,
+.ship.is-live .ship__step.is-hot p { color: var(--ink-2); }
+.ship.is-live .ship__step.is-active .ship__tags li { color: var(--ink-2); border-color: var(--ink-3); }
+.ship.is-live .ship__step.is-past .ship__no { color: var(--accent); }
+
+/* Progress rail: a hairline through the step dots, filled continuously while a step is in view. */
+.ship__dot {
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1px solid var(--ink-3);
+  border-radius: 50%;
+  background: var(--paper);
+  transition: background-color var(--t-med) var(--ease), border-color var(--t-med) var(--ease), box-shadow var(--t-slow) var(--ease), transform var(--t-slow) var(--ease-spring);
+}
+.ship.is-live .ship__step::before,
+.ship.is-live .ship__step::after {
+  content: "";
+  position: absolute;
+  left: calc(0.35rem - 0.5px);
+  top: 0.75rem;
+  width: 1px;
+  height: 100%;
+  transform-origin: top;
+}
+.ship.is-live .ship__step::before { background: var(--rule); }
+.ship.is-live .ship__step::after { background: var(--accent); transform: scaleY(0); transition: transform 420ms var(--ease); }
+.ship.is-live .ship__step:last-child::before,
+.ship.is-live .ship__step:last-child::after { display: none; }
+.ship.is-live .ship__step.is-past::after { transform: scaleY(1); }
+.ship.is-live .ship__step.is-active::after { transform: scaleY(var(--sp, 0)); transition: none; }
+.ship.is-live .ship__step.is-past .ship__dot,
+.ship.is-live .ship__step.is-active .ship__dot { background: var(--accent); border-color: var(--accent); }
+.ship.is-live .ship__step.is-active .ship__dot { transform: scale(1.35); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); }
+
+@media (min-width: 960px) {
+  .ship__dot { top: 0.35rem; }
+  .ship.is-live .ship__step::before,
+  .ship.is-live .ship__step::after { left: calc(0.35rem - 0.5px); top: 0.7rem; }
+}
+
+/* ---- Lite: touch screens and the low quality tier get the final state at once. A step change would otherwise start
+   100+ SVG transitions (stroke-dashoffset, fill, stroke, opacity) on a main thread that is already busy scrolling. ---- */
+
+@media (hover: none), (pointer: coarse) {
+  .ship.is-live .ship__live *, .ship.is-live .ship__glow, .ship.is-live .ship__tags li { transition: none; }
+}
+.is-lowfx .ship.is-live .ship__live *, .is-lowfx .ship.is-live .ship__glow, .is-lowfx .ship.is-live .ship__tags li { transition: none; }
+
+/* ---- Print and reduced motion fall back to the static diagram + list ------------------------------- */
+
+@media print {
+  .ship.is-live .ship__svg { display: block; }
+  .ship__live, .ship__hud, .ship__nav, .ship__dot, .ship__tags { display: none; }
+  .ship.is-armed .ship__figure { position: static; margin: 0; padding: 0; }
+  .ship.is-armed .ship__figure::after, .ship.is-armed .ship__stage::before, .ship.is-armed .ship__stage::after { display: none; }
+  .ship.is-armed .ship__stage { height: auto; display: block; }
+  .ship.is-armed .ship__svg { visibility: visible; width: 100%; max-width: 22rem; aspect-ratio: auto; }
+  .ship.is-armed .ship__step, .ship.is-armed .ship__step:last-child { min-height: 0; padding: var(--s4) 0; border-bottom: 1px solid var(--rule); }
+  .ship.is-armed .ship__step::before, .ship.is-armed .ship__step::after { display: none; }
+  .ship.is-armed .ship__verb, .ship.is-armed .ship__step p { color: var(--ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ship.is-live .ship__live *, .ship.is-live .ship__strip { transition: none; animation: none; }
+}
+
+/* ---- Windows High Contrast / forced colors: state must not rely on custom colors ------------------ */
+@media (forced-colors: active) {
+  .ship__seg::before { top: calc(50% - 1.5px); height: 3px; background: ButtonText; }
+  .ship__seg i { top: calc(50% - 1.5px); height: 3px; background: Highlight; forced-color-adjust: none; }
+  .ship__seg.is-active { outline: 2px solid Highlight; outline-offset: 2px; }
+  .ship__seg.is-reached i,
+  .ship__seg.is-active i { background: Highlight; }
+  .ship.is-live .ship__step.is-active { outline: 2px solid Highlight; outline-offset: 4px; }
+  .ship__draw, .ship__frame, .ship__ghost { stroke: CanvasText; forced-color-adjust: none; }
+  .ship__skip { border-color: ButtonText; }
+  .ship__live text.ship__text { stroke: Canvas; }
+  .ship__p.is-active .ship__draw:not(.is-link),
+  .ship__p.is-active .ship__frame { stroke: Highlight; }
+  .ship__live text, .ship__svg text, .ship__live .ship__name, .ship__p.is-built .ship__name { fill: CanvasText; }
+  .ship__bd circle { fill: Highlight; }
+  .ship__bd text { fill: HighlightText; }
+  .ship__dot, .ship.is-live .ship__step::before { border-color: CanvasText; background: Canvas; }
+  .ship.is-live .ship__step.is-past .ship__dot,
+  .ship.is-live .ship__step.is-active .ship__dot { background: Highlight; border-color: Highlight; forced-color-adjust: none; }
+  .ship__glow, .ship__wave, .ship.is-live .ship__stage::before, .ship__pkt { display: none; }
+}

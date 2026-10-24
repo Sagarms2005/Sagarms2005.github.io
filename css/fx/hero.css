@@ -1,0 +1,410 @@
+/* ==========================================================================
+   css/fx/hero.css — HERO module (js/fx/hero.js)
+
+   1. Ambient presence   the retuned video loop: how clearly it reads, and the scrim that keeps text legible
+   2. Live field         the contour-field canvas
+   3. Name               per-letter boxes for the proximity effect (static markup, so nothing shifts)
+   4. Avatar ring        a hairline ring that draws itself
+   5. Intro              first visit per session only (<html class="hero-intro">, set by the inline flag in the hero)
+   6. CTAs + motion switch
+   7. Hero copy          stack line, e-mail label, statement accent, avatar size
+   ========================================================================== */
+
+/* 1. Ambient presence ------------------------------------------------------- */
+
+/* Every knob lives in styles.css; this retunes them for the v2 loop (warm glows, no lines: the live field draws those).
+   The layer stack is flat on purpose: the poster and the video are fully opaque and one paper-colored veil sits over
+   them (media-opacity = how much of the loop shows through), so there is no mask, filter or group opacity on the media
+   box. Each of those forces an offscreen pass that is re-run on every video frame, which stutters software compositors. */
+:root {
+  /* How much of the loop shows through the veil. The v4 loop (bigger drift, a little more chroma) keeps its darkest and
+     lightest frames inside the contrast budget, so the veil can be thin: the motion reads instead of hiding behind paper.
+     Worst-case text contrast over all 24 sampled frames is re-measured in both themes whenever the loop changes. */
+  --hero-media-opacity: 0.9;
+  /* The foot of the hero resolves to the page color as the paper grain (body::before) darkens it: no seam. */
+  --hero-foot: color-mix(in srgb, rgb(var(--paper-rgb)), black calc(var(--grain-opacity) * 32%));
+  --hero-scrim:
+    linear-gradient(to bottom, rgb(var(--paper-rgb) / 0) 64%, var(--hero-foot) 100%),
+    linear-gradient(90deg, rgb(var(--paper-rgb) / 0.14), rgb(var(--paper-rgb) / 0) 72%),
+    linear-gradient(rgb(var(--paper-rgb) / calc(1 - var(--hero-media-opacity))), rgb(var(--paper-rgb) / calc(1 - var(--hero-media-opacity))));
+  /* The only place the poster is declared. A url() inside a custom property resolves against the stylesheet that uses
+     the variable, and only .hero__media::before below uses it. */
+  --hero-poster: url("../../assets/video/ambient-light.jpg");
+  /* The accent used for hero text that sits over the moving loop: a notch deeper than --accent so it clears 4.5:1 on phones too. */
+  --hero-em: color-mix(in srgb, var(--accent) 74%, var(--ink));
+}
+
+:root[data-theme="dark"] {
+  --hero-media-opacity: 0.92;
+  --hero-poster: url("../../assets/video/ambient-dark.jpg");
+  --hero-em: color-mix(in srgb, var(--accent) 86%, white);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --hero-media-opacity: 0.92;
+    --hero-poster: url("../../assets/video/ambient-dark.jpg");
+    --hero-em: color-mix(in srgb, var(--accent) 86%, white);
+  }
+}
+
+.hero__media {
+  opacity: 1;
+  filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+  background:
+    radial-gradient(60% 70% at 85% 10%, rgb(var(--ink-rgb) / 0.07), transparent 70%),
+    radial-gradient(50% 60% at 5% 90%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%);
+}
+
+/* The theme's poster: painted by CSS, so it shows with the video absent, failed, or switched off. */
+.hero__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-poster) center / cover no-repeat;
+}
+
+/* The <video>: js/fx/hero.js loads the current theme's loop into it. It fades in over a poster that is the same picture, so there is no dip. */
+.hero__loop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1400ms var(--ease);
+}
+.hero__loop.is-playing { opacity: var(--hero-video-opacity); }
+.hero__loop.is-swapping { transition: none; }
+
+/* 2. Live field ------------------------------------------------------------- */
+
+/* Sized by the box, never by the bitmap (hero.js sets the bitmap). The lines thin out toward the foot of the hero inside the
+   canvas itself, in bands of solid color, rather than through a CSS mask on a layer that changes every frame. */
+.hero__field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+.hero__field.is-ready { opacity: 1; }
+.hero__field[data-fx-failed] { display: none; }
+
+/* 3. Name ------------------------------------------------------------------- */
+
+/* The name is set at display size, where Newsreader's optical-size axis makes it wider than the text-size faces the fallback in
+   styles.css is scaled to (the italic M S most of all: 337 px against 301 px at 1440). Its own pair of fallback faces, measured at
+   216 px, keeps the first paint of the name within a few px of the final one: the swap no longer jumps the M S sideways. */
+@font-face {
+  font-family: "Newsreader Display Fallback";
+  src: local("Georgia");
+  font-weight: 300 600;
+  size-adjust: 95.8%;
+  ascent-override: 78%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Newsreader Display Fallback";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 300 600;
+  size-adjust: 97.4%;
+  ascent-override: 76%;
+  descent-override: 27%;
+  line-gap-override: 0%;
+}
+.hero__name { font-family: "Newsreader", "Newsreader Display Fallback", Georgia, "Times New Roman", serif; }
+
+/* The visible name is aria-hidden letter boxes; the h1's accessible name is the .sr-only copy.
+   Words stay unbreakable, exactly as the old nowrap/&nbsp; pairing did. */
+.hw { display: inline-block; white-space: nowrap; }
+.hg { display: inline-block; }
+/* The space inside "M S": an explicit box in em, so the pair sits the same distance apart at every width and font. */
+.hg--gap { width: 0.17em; }
+/* The copy of the name that is only there for screen readers must not end up in a selection beside the letters ("SSagar"). */
+.hero__name .sr-only { user-select: none; -webkit-user-select: none; }
+.hg__g {
+  display: inline-block;
+  font-variation-settings: "wght" calc(300 + var(--p, 0) * 190);
+  /* hero.js locks each .hg to its resting width and sets --dw (how much wider the heavy weight is): the glyph recenters. */
+  margin-left: calc(var(--p, 0) * var(--dw, 0em) * -0.5);
+}
+/* Per-letter boxes lose the font's kerning; these put the pairs back (Newsreader, in em, so they scale with the type). */
+.hw:not(.hw--em) > .hg:nth-child(1) { margin-right: -0.0027em; }
+.hw:not(.hw--em) > .hg:nth-child(2) { margin-right: -0.0032em; }
+.hw:not(.hw--em) > .hg:nth-child(3) { margin-right: -0.0115em; }
+.hw:not(.hw--em) > .hg:nth-child(5) { margin-right: -0.0236em; }
+.hw:not(.hw--em) .hg__g { color: color-mix(in srgb, var(--accent) calc(var(--p, 0) * 100%), var(--ink)); }
+
+.hero--calm .hg__g { font-variation-settings: normal; margin-left: 0; }
+
+.hero--live .hg { will-change: transform; }
+
+/* 4. Avatar ring ------------------------------------------------------------ */
+
+.hero__avatar { position: relative; flex: none; display: block; line-height: 0; }
+.hero__avatar .avatar { outline: 0; }
+
+.avatar-ring {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke-width: 1;
+}
+.avatar-ring__track { stroke: var(--rule); }
+.avatar-ring__arc {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.24 0.76;
+  transform: rotate(-80deg);
+  transform-origin: 50% 50%;
+}
+
+/* 5. Intro ------------------------------------------------------------------ */
+
+/* The whole choreography is CSS on already-painted markup, so it finishes by itself even if the script never loads.
+   Letters rise behind a mask (the clip is only ever on while a letter is still arriving); nothing changes size. */
+/* Copy only ever moves (transform), so the first paint already carries every word; the letters keep a quarter of their opacity. */
+@keyframes hero-up {
+  from { transform: translateY(14px); }
+  to { transform: none; }
+}
+@keyframes hero-glyph {
+  from { transform: translateY(0.5em); opacity: 0.25; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes hero-window {
+  from, to { clip-path: inset(-0.16em -0.3em -0.36em -0.3em); }
+}
+@keyframes hero-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes hero-lap {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The Bangalore chip's ping plays four times (about 10 s) and stops: nothing keeps animating once the hero has settled. */
+  .chip__dot::after { animation-iteration-count: 4; }
+
+  /* The base's own rise (no intro: revisits, touch screens, small CPUs) also leaves the copy visible from the first paint. */
+  .hero__meta, .hero__name, .hero__lede { animation-name: hero-up; animation-duration: 600ms; }
+  .hero__name { animation-duration: 700ms; }
+
+  /* While the intro is flagged these replace the base's own one-shot rise on the meta row, the name and the lede. */
+  .js.hero-intro .hero__meta { animation: hero-up 640ms var(--ease) 40ms backwards; }
+  .js.hero-intro .hero__name,
+  .js.hero-intro .hero__lede { animation: none; }
+
+  .js.hero-intro .hg {
+    --at: calc(110ms + var(--i, 0) * 32ms);
+    animation: hero-window 760ms linear var(--at) backwards;
+  }
+  .js.hero-intro .hg__g { animation: hero-glyph 760ms var(--ease-out) var(--at) backwards; }
+
+  .js.hero-intro .hero__lede .split__meta { animation: hero-up 560ms var(--ease) 480ms backwards; }
+  .js.hero-intro .hero__statement { animation: hero-up 620ms var(--ease) 500ms backwards; }
+  .js.hero-intro .hero__actions > * { animation: hero-up 520ms var(--ease) backwards; }
+  .js.hero-intro .hero__actions > :nth-child(1) { animation-delay: 640ms; }
+  .js.hero-intro .hero__actions > :nth-child(2) { animation-delay: 700ms; }
+  .js.hero-intro .hero__actions > :nth-child(3) { animation-delay: 760ms; }
+  .js.hero-intro .hero__actions > :nth-child(n + 4) { animation-delay: 820ms; }
+  .js.hero-intro .glance { animation: hero-up 560ms var(--ease) 780ms backwards; }
+
+  .js.hero-intro .avatar-ring__track { stroke-dasharray: 1; animation: hero-draw 900ms var(--ease) 120ms backwards; }
+  .js.hero-intro .avatar-ring__arc { animation: hero-lap 1000ms var(--ease-out) 200ms backwards; }
+  .js.hero-intro .hero__field { transition: none; }
+
+  /* Everything above holds at its first frame until the flag in the hero adds .hero-go (display face loaded, or 0.55 s). */
+  .js.hero-intro:not(.hero-go) :is(.hero__meta, .hg, .hg__g, .hero__lede .split__meta, .hero__statement, .hero__actions > *, .glance, .avatar-ring__track, .avatar-ring__arc) {
+    animation-play-state: paused;
+  }
+}
+
+/* 6. CTAs + motion switch --------------------------------------------------- */
+
+.hero--live .hero__actions .btn { will-change: transform; }
+
+/* A finger dragged across the hero moves the lens. Only vertical panning (and pinch zoom) is left to the browser, so
+   the page still scrolls freely and a sideways drag cannot trigger the browser's swipe-back gesture. */
+.hero--live { touch-action: pan-y pinch-zoom; }
+
+/* Room for the switch below the glance row on small screens (the base padding is 2rem there). */
+.hero { padding-bottom: clamp(2.9rem, 4vw, 3rem); }
+
+/* Pause control (WCAG 2.2.2): the ambient video and field run for longer than five seconds. It sits in the hero's own
+   bottom padding, outside the flow, so showing it moves nothing. 44px hit area around a 32px ring. */
+.hero__motion {
+  position: absolute;
+  right: max(var(--gutter), calc((100% - var(--max)) / 2));
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease);
+}
+.hero__motion::before {
+  content: "";
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: rgb(var(--paper-rgb) / 0.7);
+  transition: border-color var(--t-fast) var(--ease);
+}
+.hero__motion .icon { position: relative; width: 1.125rem; height: 1.125rem; }
+@media (hover: hover) and (pointer: fine) {
+  .hero__motion:hover { color: var(--accent); }
+  .hero__motion:hover::before { border-color: var(--accent); }
+}
+/* The 2 px ring is drawn round the 32 px circle (it fits inside the 44 px box), so .hero { overflow: hidden } can never clip it. */
+.hero__motion:focus-visible { outline: 0; }
+.hero__motion:focus-visible::before { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hero__motion-play { display: none; }
+html[data-motion="off"] .hero__motion-pause { display: none; }
+html[data-motion="off"] .hero__motion-play { display: inline; }
+
+/* The Bangalore chip's ping is decoration like the rest: the pause switch stops it too. */
+html[data-motion="off"] .chip__dot::after { animation: none; }
+
+/* 7. Hero copy -------------------------------------------------------------- */
+
+.hero__statement em { color: var(--hero-em); font-weight: 400; }
+
+/* The stack in one mono line. Each item carries the separator that follows it and never breaks in the middle,
+   so a wrap leaves whole items ("Docker ·") on the next line, never a line that starts with a dot. 12 px is the floor on phones. */
+.hero__stack {
+  margin-top: var(--s4);
+  font: 400 clamp(0.75rem, 2.8vw, 0.8125rem) / 1.6 var(--font-mono);
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+}
+
+/* Phones that wrap the stack: it is two lines with the web face, so the second is reserved from the first paint
+   (the fallback faces are width-matched, this covers a face that is not). */
+@media (max-width: 420px) {
+  .hero__stack { min-height: 3.2em; }
+}
+
+/* The meta column beside the statement is empty (the address lives on the Email me button): the pitch keeps the
+   content column every other section uses. */
+@media (min-width: 860px) {
+  .hero__lede > .split__body { grid-column: 2; }
+}
+
+/* The portrait: 76 px on phones, 100 px from 600 px up (the ring is sized in percent, so it follows). */
+.hero__avatar .avatar { --avatar-size: 4.75rem; }
+@media (min-width: 600px) {
+  .hero__avatar .avatar { --avatar-size: 6.25rem; }
+}
+.glance abbr { text-decoration: none; }
+
+@media (min-width: 600px) {
+  .hero__stack { letter-spacing: 0; }
+}
+
+/* The Resume button is the one file in a row of links: a hairline document glyph in the accent says so, quietly (the Email button
+   keeps the only filled button and the only arrow). The glyph lifts on hover instead of sliding like the arrow does. */
+.btn--file { gap: 0.5rem; }
+.btn--file .btn__glyph { color: var(--hero-em); }
+@media (hover: hover) and (pointer: fine) {
+  .btn--file:hover .btn__glyph { transform: translateY(-2px); }
+}
+
+/* The address in the first screen: the last item of the button row. Under 1200 px it is a row of its own (under the 2 x 2 grid on
+   phones, under the buttons beyond); from 1200 px the column is wide enough for it beside LinkedIn. Every target is 44 px tall. */
+.hero__mail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--s3);
+  grid-column: 1 / -1;
+  margin: calc(var(--s2) * -1) 0 0;
+}
+.hero__address {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font: 500 clamp(0.75rem, 3.7vw, 0.8125rem) / 1.2 var(--font-mono);
+  letter-spacing: 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.3em;
+  transition: color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero__address:hover { color: var(--accent); }
+}
+.hero__copy { background: rgb(var(--paper-rgb) / 0.55); }
+@media (min-width: 600px) {
+  .hero__mail { flex-basis: 100%; margin: 0; }   /* a row of its own, flush with the buttons... */
+}
+@media (min-width: 1200px) {
+  .hero__mail { flex-basis: auto; margin-left: var(--s2); }   /* ...until the column is wide enough to hold it beside LinkedIn */
+}
+
+/* 8. Wide screens ------------------------------------------------------------ */
+
+/* The column stays 70 rem (so the hero lines up with every section below it) but the name keeps growing with the screen instead
+   of stopping at 216 px: it reaches the width of the column (about 3.9 em wide, so 17.4 rem fills 70 rem) at 1920 and stops
+   there, so it can never wrap onto two lines. The statement grows with it. Nothing else moves: the 12-column rhythm of the lede (meta column + body) is untouched. */
+@media (min-width: 1440px) {
+  .hero {
+    --fs-hero: clamp(13.5rem, 13.5rem + (100vw - 90rem) * 0.125, 17.4rem);
+    --fs-statement: clamp(2.6rem, 2.6rem + (100vw - 90rem) * 0.02, 3.2rem);
+  }
+}
+
+/* Sideways on a phone (~390 px tall): the name is capped, and the buttons sit beside the pitch instead of under it,
+   so the primary action is on the first screen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero__name { font-size: min(var(--fs-hero), 24vh); margin-block: 1rem 0.75rem; }
+  .hero__lede > .split__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--s6);
+    align-items: start;
+  }
+  .hero__actions { display: grid; grid-column: 2; grid-row: 1 / span 2; margin-top: 0; grid-template-columns: repeat(2, auto); }
+  .hero__stack { margin-top: var(--s3); }
+  .glance { grid-column: 1 / -1; margin-top: var(--s5); }
+}
+
+@media (min-width: 640px) {
+  /* Beside the glance row, in the empty third column, instead of floating in the foot of the hero. */
+  .hero__motion { bottom: clamp(2.9rem, 4vw, 3rem); }
+}
+
+@media print {
+  .hero__field, .hero__motion { display: none; }
+}
+
+/* Forced colors: drop the decorative photo/gradient layers so the browser draws no backplates behind the heading */
+@media (forced-colors: active) {
+  .hero__media, .hero__field { display: none; }
+}

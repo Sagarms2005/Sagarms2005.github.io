@@ -1,0 +1,1308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sagar M S — Software Engineer</title>
+  <meta name="description" content="Sagar M S is a software engineer in Bangalore who builds, containerizes and ships software, from the first commit to AWS. Java, Python, Node.js, MySQL, AWS, Docker, CI/CD.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F4F0E8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#171411" media="(prefers-color-scheme: dark)">
+
+  <!-- Canonical address and share card. Crawlers need absolute URLs, so the public origin https://sagarms2005.github.io/
+       appears here (and only here in this file). If the repository is named differently, change these four URLs
+       together with robots.txt, sitemap.xml and SITE_ORIGIN in scripts/check.mjs (and the <base href> in 404.html). -->
+  <link rel="canonical" href="https://sagarms2005.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sagar M S">
+  <meta property="og:url" content="https://sagarms2005.github.io/">
+  <meta property="og:title" content="Sagar M S — Software Engineer">
+  <meta property="og:description" content="Sagar M S is a software engineer in Bangalore who builds, containerizes and ships software, from the first commit to AWS. Java, Python, Node.js, MySQL, AWS, Docker, CI/CD.">
+  <meta property="og:image" content="https://sagarms2005.github.io/assets/images/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sagar M S, Software Engineer. Cloud, automation and AI applications with AWS, Docker, CI/CD, Python and Node.js.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sagar M S — Software Engineer">
+  <meta name="twitter:description" content="Sagar M S is a software engineer in Bangalore who builds, containerizes and ships software, from the first commit to AWS. Java, Python, Node.js, MySQL, AWS, Docker, CI/CD.">
+  <meta name="twitter:image" content="https://sagarms2005.github.io/assets/images/og.png">
+  <meta name="twitter:image:alt" content="Sagar M S, Software Engineer. Cloud, automation and AI applications with AWS, Docker, CI/CD, Python and Node.js.">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23A9361A'/%3E%3Ctext x='16' y='23.5' text-anchor='middle' font-family='Georgia,serif' font-size='22' font-style='italic' fill='%23F4F0E8'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+
+  <!-- Resolve the theme before first paint (no flash). `js` gates every hide-until-enhanced style;
+       if js/main.js never reports `js-ready`, the failsafe drops `js` and the plain page takes over. -->
+  <script>
+    (function () {
+      var root = document.documentElement, theme = null;
+      root.classList.add('js');
+      try { theme = localStorage.getItem('theme'); } catch (e) {}
+      if (theme !== 'light' && theme !== 'dark') {
+        try { theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) { theme = 'light'; }
+      }
+      root.setAttribute('data-theme', theme);
+      // The hero poster is the largest paint on the page: ask for it now, not once the stylesheets have been read.
+      var poster = document.createElement('link');
+      poster.rel = 'preload';
+      poster.as = 'image';
+      poster.href = 'assets/video/ambient-' + theme + '.jpg';
+      poster.setAttribute('fetchpriority', 'high');
+      document.head.appendChild(poster);
+      // A #deep-link, a reload or a back/forward trip opens already in place: smooth scrolling is held back until the
+      // page has settled, so the restored position is not animated from the top.
+      var nav = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+      if (window.location.hash || (nav && (nav.type === 'reload' || nav.type === 'back_forward'))) root.classList.add('is-landing');
+      // Sections far below the viewport are left undrawn until they come near (content-visibility, css/styles.css). A view
+      // that opens part-way down (a #deep-link, or a reload / back trip to a page that was scrolled) skips that: the
+      // browser restores an exact position, so it gets the plain, fully laid-out page for the rest of the visit.
+      var restored = !!window.location.hash;
+      if (!restored && nav && (nav.type === 'reload' || nav.type === 'back_forward')) {
+        try { restored = Number(sessionStorage.getItem('last-y')) > 120; } catch (e) { restored = true; }
+      }
+      if (restored) root.classList.add('no-cv');
+      window.addEventListener('pagehide', function () {
+        try { sessionStorage.setItem('last-y', String(Math.round(window.pageYOffset))); } catch (e) { /* storage blocked */ }
+      });
+      window.addEventListener('load', function () {
+        window.setTimeout(function () { root.classList.remove('is-landing'); }, 120);
+        window.setTimeout(function () {
+          if (!root.classList.contains('js-ready')) root.classList.remove('js');
+        }, 1500);
+      });
+    }());
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Only what the first screen cannot do without is asked for early: the stylesheet at high priority and the roman Latin
+       file of the display face (the name, the headings). The italic and the mono files (about 180 KB together) are
+       left to the browser, which fetches them the moment the stylesheet is applied and text needs them: asked for in
+       the head they only compete with the CSS and JavaScript of a slow link (about 0.4 s later first paint and 0.6 s
+       later hero text on 1.6 Mbps in testing). If Google ever re-versions the file the preload just goes unused. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" fetchpriority="high">
+  <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/newsreader/v26/cY9AfjOCX1hbuyalUrK4397yjA.woff2" crossorigin>
+  <!-- Non-blocking: media="print" keeps the stylesheet off the critical path, onload applies it. The page paints in the
+       fallback serif/mono first and swaps when the faces arrive; a slow or blocked fonts host never holds the page back. -->
+  <link rel="stylesheet" id="font-sheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap"></noscript>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/fx/hero.css">
+  <!-- Styles for effects that sit far below the first screen. Same off-the-critical-path trick as the fonts: they are
+       fetched at low priority and applied on load (a #deep-link or reload flips them on at once, see the script below),
+       and the <noscript> copies keep them for visitors without JavaScript. -->
+  <link rel="stylesheet" href="css/fx/project-art.css" media="print" data-late onload="this.media='all'">
+  <link rel="stylesheet" href="css/fx/constellation.css" media="print" data-late onload="this.media='all'">
+  <link rel="stylesheet" href="css/fx/terminal.css" media="print" data-late onload="this.media='all'">
+  <link rel="stylesheet" href="css/fx/pipeline.css" media="print" data-late onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="css/fx/project-art.css">
+    <link rel="stylesheet" href="css/fx/constellation.css">
+    <link rel="stylesheet" href="css/fx/terminal.css">
+    <link rel="stylesheet" href="css/fx/pipeline.css">
+  </noscript>
+  <script>
+    // Opening part-way down the page (a #deep-link, reload or back): those sections may be on screen straight away.
+    if (document.documentElement.classList.contains('is-landing')) {
+      [].forEach.call(document.querySelectorAll('link[data-late]'), function (link) { link.media = 'all'; });
+    }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sagar M S",
+    "jobTitle": "Software Engineer",
+    "email": "2005sagarms@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Bangalore", "addressCountry": "IN" },
+    "worksFor": { "@type": "Organization", "name": "IMTMA" },
+    "sameAs": [
+      "https://github.com/Sagarms2005",
+      "https://www.linkedin.com/in/sagar-m-s-867102337/",
+      "https://leetcode.com/u/2005sagarms/"
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ───────────── Sticky masthead + section index ───────────── -->
+  <header class="masthead" id="masthead">
+    <div class="masthead__bar container">
+      <a class="brand" href="#top" aria-label="Sagar M S, back to top">
+        <span class="brand__mark" aria-hidden="true">S</span>
+        <span class="brand__name">Sagar M S</span>
+      </a>
+
+      <nav class="index" id="index" aria-label="Sections">
+        <ol class="index__list">
+          <li><a class="index__link" href="#about"><span class="index__no">01</span>About</a></li>
+          <li><a class="index__link" href="#experience"><span class="index__no">02</span>Experience</a></li>
+          <li><a class="index__link" href="#projects"><span class="index__no">03</span>Projects</a></li>
+          <li><a class="index__link" href="#skills"><span class="index__no">04</span>Skills</a></li>
+          <li><a class="index__link" href="#education"><span class="index__no">05</span>Education</a></li>
+          <li><a class="index__link" href="#achievements"><span class="index__no">06</span>Credentials</a></li>
+          <li><a class="index__link" href="#contact"><span class="index__no">07</span>Contact</a></li>
+        </ol>
+      </nav>
+
+      <p class="masthead__current" aria-hidden="true"><span class="masthead__current-no"></span> <span class="masthead__current-label"></span></p>
+
+      <div class="masthead__tools">
+        <button class="tool tool--palette" type="button" data-palette-open aria-label="Jump to a section or search" aria-haspopup="dialog" hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+          <kbd class="tool__kbd" data-kbd>Ctrl K</kbd>
+        </button>
+        <button class="tool tool--theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme">
+          <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
+          <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+        </button>
+        <button class="tool tool--menu" type="button" data-menu-toggle aria-expanded="false" aria-controls="index" aria-label="Menu">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path class="icon__bar icon__bar--a" d="M4 9h16"/><path class="icon__bar icon__bar--b" d="M4 15h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="masthead__progress" aria-hidden="true"><span class="masthead__progress-bar"></span></div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ───────────── Hero ───────────── -->
+    <section class="hero" id="top" tabindex="-1" aria-labelledby="hero-title">
+      <!-- First visit of the session only: flag the intro before the hero first paints. CSS plays it
+           (css/fx/hero.css) once the display face has loaded (1 s at most, so a slow font never holds the page);
+           js/fx/hero.js adds the live field. Skipped for reduced motion, touch screens, small CPUs, revisits, deep links and ?nointro. -->
+      <script>
+        (function () {
+          var d = document.documentElement;
+          try {
+            if (sessionStorage.getItem('hero-intro') || location.hash || /[?&]nointro/.test(location.search) ||
+                matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(pointer: coarse)').matches ||
+                (navigator.hardwareConcurrency || 8) <= 4) return;
+            sessionStorage.setItem('hero-intro', '1');
+            d.classList.add('hero-intro');
+            var go = function () { d.classList.add('hero-go'); };
+            var timer = setTimeout(go, 1000);
+            var faces = function () {
+              if (document.fonts && document.fonts.load) {
+                Promise.all([document.fonts.load('300 1em Newsreader'), document.fonts.load('italic 300 1em Newsreader')])
+                  .then(function () { clearTimeout(timer); go(); }, go);
+              } else { clearTimeout(timer); go(); }
+            };
+            var sheet = document.getElementById('font-sheet');
+            if (sheet && sheet.media === 'print') sheet.addEventListener('load', faces); else faces();
+          } catch (e) { d.classList.remove('hero-intro'); }
+        }());
+      </script>
+
+      <!-- Ambient layers, bottom to top: gradient fallback, the theme's poster (both painted by the CSS), the video once
+           it plays, then the live contour field (js/fx/hero.js). No poster attribute: only the current theme's files load. -->
+      <div class="hero__media" aria-hidden="true">
+        <video class="hero__loop" muted loop playsinline preload="metadata" tabindex="-1" disablepictureinpicture disableremoteplayback></video>
+      </div>
+      <canvas class="hero__field" data-fx="hero-field" aria-hidden="true"></canvas>
+
+      <div class="container hero__inner">
+        <div class="hero__meta">
+          <div class="hero__id">
+            <span class="hero__avatar">
+              <img class="avatar" src="assets/images/profile-hero-240.jpg" srcset="assets/images/profile-hero-160.jpg 160w, assets/images/profile-hero-240.jpg 240w" sizes="(min-width: 600px) 100px, 76px" width="100" height="100" decoding="async" alt="Portrait of Sagar M S">
+              <svg class="avatar-ring" viewBox="0 0 82 82" aria-hidden="true" focusable="false"><circle class="avatar-ring__track" cx="41" cy="41" r="40.5" pathLength="1"/><circle class="avatar-ring__arc" cx="41" cy="41" r="40.5" pathLength="1"/></svg>
+            </span>
+            <p class="hero__role">
+              <span class="label">Software Engineer</span>
+              <span class="hero__role-line"><span class="nowrap">Full-stack ·</span> <span class="nowrap">Cloud ·</span> <span class="nowrap">Automation · AI</span></span>
+            </p>
+          </div>
+          <p class="chip">
+            <span class="chip__dot" aria-hidden="true"></span>
+            <span>Bangalore<span class="chip__time-wrap" hidden> · <span class="chip__time" data-clock>--:--</span> IST</span></span>
+          </p>
+        </div>
+
+        <h1 class="hero__name" id="hero-title"><span class="sr-only">Sagar M S</span><span class="hero__glyphs" aria-hidden="true"><span class="hw"><span class="hg" style="--i:0"><span class="hg__g">S</span></span><span class="hg" style="--i:1"><span class="hg__g">a</span></span><span class="hg" style="--i:2"><span class="hg__g">g</span></span><span class="hg" style="--i:3"><span class="hg__g">a</span></span><span class="hg" style="--i:4"><span class="hg__g">r</span></span></span> <em class="hw hw--em"><span class="hg" style="--i:5"><span class="hg__g">M</span></span><span class="hg hg--gap" style="--i:6">&nbsp;</span><span class="hg" style="--i:7"><span class="hg__g">S</span></span></em></span></h1>
+
+        <div class="hero__lede split">
+          <div class="split__body">
+            <p class="hero__statement">I build, containerize and ship software, <em>from the first commit to&nbsp;AWS.</em></p>
+            <p class="hero__stack"><span class="sr-only">Stack: </span><span class="nowrap">Java ·</span> <span class="nowrap">Python ·</span> <span class="nowrap">Node.js ·</span> <span class="nowrap">MySQL ·</span> <span class="nowrap">AWS ·</span> <span class="nowrap">Docker ·</span> <span class="nowrap">CI/CD</span></p>
+            <div class="hero__actions">
+              <a class="btn btn--solid" href="mailto:2005sagarms@gmail.com" title="2005sagarms@gmail.com">
+                Email me
+                <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--ghost btn--file" href="assets/sagar-m-s-resume.pdf" target="_blank" rel="noopener noreferrer"><svg class="icon icon--sm btn__glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7.5L19 8v12.5H7zM14.5 3.5V8H19M10 13h6M10 16.5h6"/></svg>Resume<span class="btn__tag" aria-hidden="true">PDF</span><span class="sr-only"> (PDF, opens in a new tab)</span></a>
+              <a class="btn btn--ghost" href="https://github.com/Sagarms2005" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+              <a class="btn btn--ghost" href="https://www.linkedin.com/in/sagar-m-s-867102337/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+              <!-- The address itself, in the first screen: selectable text, a 44 px mailto target, and a copy button (js/fx/hero.js shows it). -->
+              <p class="hero__mail">
+                <a class="hero__address" href="mailto:2005sagarms@gmail.com">2005sagarms@gmail.com</a>
+                <button class="copy hero__copy" type="button" data-hero-copy aria-label="Copy email address" hidden>
+                  <svg class="icon icon--sm copy__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 8.5v-2a1.5 1.5 0 0 0-1.5-1.5H6.5A1.5 1.5 0 0 0 5 6.5V14a1.5 1.5 0 0 0 1.5 1.5h2"/></svg>
+                  <svg class="icon icon--sm copy__check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+                  <span class="copy__label">Copy</span>
+                </button>
+              </p>
+            </div>
+
+            <dl class="glance">
+              <div class="glance__item"><dt class="label">Now</dt><dd>Software Engineer, IMTMA <span class="glance__note">since Feb 2026 · exhibition and visitor-management apps</span></dd></div>
+              <div class="glance__item"><dt class="label">Education</dt><dd><abbr title="Bachelor of Engineering">B.E.</abbr> Computer Science <span class="glance__note">Malnad College, <span class="nowrap">2023 – 2026</span></span></dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <button class="hero__motion" type="button" aria-label="Pause background motion" title="Pause background motion" hidden>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path class="hero__motion-pause" d="M9 6.5v11M15 6.5v11"/><path class="hero__motion-play" d="M8.5 6.5v11l9-5.5Z"/></svg>
+      </button>
+    </section>
+
+    <!-- ───────────── 01 About ───────────── -->
+    <section class="section" id="about" tabindex="-1" aria-labelledby="about-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">01</span> / About</p>
+          <h2 class="section__title split__body" id="about-title">Full-stack, cloud and automation — with <em>AI</em> where it helps.</h2>
+        </header>
+
+        <div class="split">
+          <div class="about__rail split__meta reveal">
+            <!-- Decorative twin of the hero portrait (alt="" so a screen reader hears it once). Hidden below 860 px, where it would only push the text down. -->
+            <figure class="portrait">
+              <img src="assets/images/profile-about-200.jpg" srcset="assets/images/profile-about-200.jpg 200w, assets/images/profile-about-400.jpg 400w" sizes="190px" width="200" height="200" loading="lazy" decoding="async" alt="">
+            </figure>
+            <dl class="facts">
+              <div class="facts__row"><dt class="label">Based in</dt><dd>Bangalore, India</dd></div>
+              <div class="facts__row"><dt class="label">Languages</dt><dd>English, Kannada</dd></div>
+              <div class="facts__row"><dt class="label">Interests</dt><dd>Cloud Computing, Automation, System Design, Listening to Music</dd></div>
+            </dl>
+          </div>
+          <div class="prose split__body reveal">
+            <p class="prose__lead">Software engineer with hands-on experience in full-stack development, AWS cloud, automation and AI-based applications. I work in Java, Python, Node.js, PHP and MySQL, build REST APIs, and ship them with Docker and&nbsp;AWS.</p>
+            <p>At IMTMA I work on exhibition and visitor-management applications and manage Docker-based deployments, Nginx configuration and AWS infrastructure for application&nbsp;hosting. My education is a B.E. in Computer Science at Malnad College of Engineering (2023 –&nbsp;2026).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── 02 Experience ───────────── -->
+    <section class="section" id="experience" tabindex="-1" aria-labelledby="experience-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">02</span> / Experience</p>
+          <h2 class="section__title split__body" id="experience-title">Cloud intern, then <em>software engineer.</em></h2>
+        </header>
+
+        <div class="timeline" data-timeline>
+          <article class="entry split reveal" id="role-imtma" data-role="imtma" data-tech="Java|Node.js|Python|PHP|MySQL|REST APIs|AWS|Docker|Nginx">
+            <span class="entry__dot" aria-hidden="true"></span>
+            <div class="entry__meta split__meta">
+              <p class="meta-date">Feb 2026 – Present</p>
+              <p class="meta-tech">Java, Node.js, Python, PHP, MySQL, REST APIs, Docker, Nginx, AWS</p>
+            </div>
+            <div class="entry__body split__body">
+              <h3 class="entry__title">Software Engineer <span class="entry__org">at IMTMA</span></h3>
+              <ul class="entry__list">
+                <li>Developed web applications using Java, Node.js, Python, PHP and&nbsp;MySQL.</li>
+                <li>Built AI-powered features and automation workflows for exhibition and visitor-management applications, alongside real-time monitoring and event&nbsp;applications.</li>
+                <li>Integrated REST APIs, databases and AWS cloud services for application deployment and&nbsp;operation.</li>
+                <li>Managed Docker-based deployments, Nginx configuration and AWS cloud infrastructure for application&nbsp;hosting.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry split reveal" id="role-crystallize" data-role="crystallize" data-tech="AWS|EC2|S3|IAM|VPC|CI/CD">
+            <span class="entry__dot" aria-hidden="true"></span>
+            <div class="entry__meta split__meta">
+              <p class="meta-date">Feb 2023 – Apr 2023</p>
+              <p class="meta-tech">AWS: EC2, S3, IAM, VPC · CI/CD</p>
+            </div>
+            <div class="entry__body split__body">
+              <h3 class="entry__title">Cloud Intern <span class="entry__org">at Crystallize Technologies</span></h3>
+              <p class="entry__note">640-hour internship</p>
+              <ul class="entry__list">
+                <li>Worked with AWS services (EC2, S3, IAM, VPC) for deployment and&nbsp;testing.</li>
+                <li>Assisted in CI/CD pipeline setup, debugging and&nbsp;documentation.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── 03 Projects ───────────── -->
+    <section class="section" id="projects" tabindex="-1" aria-labelledby="projects-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">03</span> / Projects</p>
+          <div class="split__body">
+            <h2 class="section__title" id="projects-title">Selected work, <em>newest first.</em></h2>
+            <p class="section__aside">
+              <span class="section__hint">Select a row to open it.</span>
+              <button class="link-btn" type="button" data-projects-toggle hidden>Expand all</button>
+              <span class="art-hint" aria-hidden="true">Hover a row for a preview</span>
+            </p>
+          </div>
+        </header>
+
+        <ol class="projects reveal" data-fx="project-art" data-fx-src="js/fx/project-art.js">
+
+          <li class="project is-open" id="project-photo" data-project="photo" data-tech="Flask|AWS Rekognition|AWS|MySQL|Node.js|PHP">
+            <h3 class="project__row">
+              <button class="project__toggle" type="button" id="project-1-btn" aria-expanded="true" aria-controls="project-1-panel" aria-labelledby="project-1-title" aria-describedby="project-1-sum project-1-stack project-1-date">
+                <span class="project__no">01</span>
+                <span class="project__head">
+                  <span class="project__title" id="project-1-title">AI Event Photo Delivery System</span>
+                  <span class="project__summary" id="project-1-sum"><span>Face-matched event photos, delivered as personalized galleries.</span></span>
+                </span>
+                <span class="project__stack" id="project-1-stack"><span class="nowrap">Flask</span> <span class="nowrap">AWS Rekognition</span> <span class="nowrap">MySQL</span></span>
+                <span class="project__date" id="project-1-date">Apr 2026 – Jul 2026</span>
+                <svg class="project__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </h3>
+            <div class="project__panel" id="project-1-panel">
+              <div class="project__inner">
+                <div class="project__art-slot">
+                  <figure class="art" data-art="photo" aria-hidden="true">
+                    <div class="art__frame">
+                      <svg class="art__svg" data-art-svg="photo" viewBox="0 0 320 200" width="320" height="200" focusable="false" aria-hidden="true">
+                        <g class="k3" data-k="crop">
+                          <path d="M8 14V8h6M312 14V8h-6M8 186v6h6M312 186v6h-6"/>
+                        </g>
+                        <g data-k="world">
+                          <text class="t" x="20" y="19">PHOTOS</text>
+                          <text class="t" x="238" y="19">ATTENDEE</text>
+                          <text class="t" x="238" y="88">GALLERY</text>
+                          <g data-k="chip" transform="translate(238 26)">
+                            <rect class="ac f1" width="40" height="46" rx="4"/>
+                            <circle class="k" cx="20" cy="19" r="6.5"/>
+                            <path class="k" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                            <circle class="k" cx="20" cy="11.3" r="2.7"/>
+                          </g>
+                          <g data-k="tile" data-i="0" data-x="20" data-y="28" transform="translate(20 28)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M7.9 42C7.9 33 14 28.5 20 28.5S32.1 33 32.1 42"/>
+                              <path class="k2" d="M12.9 18.5C12.9 6 27.1 6 27.1 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="1" data-x="68" data-y="28" transform="translate(68 28)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph" style="opacity:.22">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                              <circle class="k2" cx="20" cy="11.3" r="2.7"/>
+                            </g>
+                            <rect data-k="halo" class="ac acf" width="40" height="46" rx="4" style="opacity:0"/>
+                            <rect data-k="ghost" class="ac dash" x="1" y="1" width="38" height="44" rx="3.5"/>
+                          </g>
+                          <g data-k="tile" data-i="2" data-x="116" data-y="28" transform="translate(116 28)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M6.9 42C6.9 33 13.5 28.5 20 28.5S33.1 33 33.1 42"/>
+                              <path class="k2" d="M12.9 18.5C12.9 6 27.1 6 27.1 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="3" data-x="164" data-y="28" transform="translate(164 28)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6"/>
+                              <path class="k2" d="M7.9 42C7.9 33 14 28.5 20 28.5S32.1 33 32.1 42"/>
+                              <path class="k2" d="M13.4 18.5C13.4 6.5 26.6 6.5 26.6 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="4" data-x="20" data-y="82" transform="translate(20 82)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M8.1 42C8.1 33 14.1 28.5 20 28.5S31.9 33 31.9 42"/>
+                              <path class="k2" d="M13.5 19L11.7 31M26.5 19L28.3 31"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="5" data-x="68" data-y="82" transform="translate(68 82)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M7.5 42C7.5 33 13.8 28.5 20 28.5S32.5 33 32.5 42"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="6" data-x="116" data-y="82" transform="translate(116 82)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph" style="opacity:.22">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                              <circle class="k2" cx="20" cy="11.3" r="2.7"/>
+                            </g>
+                            <rect data-k="halo" class="ac acf" width="40" height="46" rx="4" style="opacity:0"/>
+                            <rect data-k="ghost" class="ac dash" x="1" y="1" width="38" height="44" rx="3.5"/>
+                          </g>
+                          <g data-k="tile" data-i="7" data-x="164" data-y="82" transform="translate(164 82)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6"/>
+                              <path class="k2" d="M9 42C9 33 14.5 28.5 20 28.5S31 33 31 42"/>
+                              <path class="k2" d="M13.4 18.5C13.4 6.5 26.6 6.5 26.6 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="8" data-x="20" data-y="136" transform="translate(20 136)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M8.4 42C8.4 33 14.2 28.5 20 28.5S31.6 33 31.6 42"/>
+                              <path class="k2" d="M12.9 18.5C12.9 6 27.1 6 27.1 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="9" data-x="68" data-y="136" transform="translate(68 136)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph" style="opacity:.22">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                              <circle class="k2" cx="20" cy="11.3" r="2.7"/>
+                            </g>
+                            <rect data-k="halo" class="ac acf" width="40" height="46" rx="4" style="opacity:0"/>
+                            <rect data-k="ghost" class="ac dash" x="1" y="1" width="38" height="44" rx="3.5"/>
+                          </g>
+                          <g data-k="tile" data-i="10" data-x="116" data-y="136" transform="translate(116 136)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6"/>
+                              <path class="k2" d="M7.7 42C7.7 33 13.9 28.5 20 28.5S32.3 33 32.3 42"/>
+                              <path class="k2" d="M13.4 18.5C13.4 6.5 26.6 6.5 26.6 18.5"/>
+                            </g>
+                          </g>
+                          <g data-k="tile" data-i="11" data-x="164" data-y="136" transform="translate(164 136)">
+                            <rect class="k3 f1" width="40" height="46" rx="4"/>
+                            <g data-k="glyph">
+                              <circle class="k2" cx="20" cy="19" r="6.5"/>
+                              <path class="k2" d="M7 42C7 33 13.5 28.5 20 28.5S33 33 33 42"/>
+                            </g>
+                          </g>
+                          <rect data-k="slot" data-i="0" class="k3 dash" x="250" y="94" width="40" height="46" rx="4"/>
+                          <rect data-k="slot" data-i="1" class="k3 dash" x="244" y="99" width="40" height="46" rx="4"/>
+                          <rect data-k="slot" data-i="2" class="k3 dash" x="238" y="104" width="40" height="46" rx="4"/>
+                          <g data-k="fly" data-i="0" data-x="250" data-y="94" transform="translate(250 94)">
+                            <rect class="k f1" width="40" height="46" rx="4"/>
+                            <circle class="k" cx="20" cy="19" r="6.5"/>
+                            <path class="k" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                            <circle class="k" cx="20" cy="11.3" r="2.7"/>
+                          </g>
+                          <g data-k="fly" data-i="1" data-x="244" data-y="99" transform="translate(244 99)">
+                            <rect class="k f1" width="40" height="46" rx="4"/>
+                            <circle class="k" cx="20" cy="19" r="6.5"/>
+                            <path class="k" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                            <circle class="k" cx="20" cy="11.3" r="2.7"/>
+                          </g>
+                          <g data-k="fly" data-i="2" data-x="238" data-y="104" transform="translate(238 104)">
+                            <rect class="k f1" width="40" height="46" rx="4"/>
+                            <circle class="k" cx="20" cy="19" r="6.5"/>
+                            <path class="k" d="M8 42C8 33 14 28.5 20 28.5S32 33 32 42"/>
+                            <circle class="k" cx="20" cy="11.3" r="2.7"/>
+                          </g>
+                          <g data-k="ret" style="opacity:0">
+                            <path class="k" d="M-4 5V-4H5M35 -4H44V5M-4 41V50H5M35 50H44V41"/>
+                            <path data-k="retac" class="ac" style="opacity:0" d="M-4 5V-4H5M35 -4H44V5M-4 41V50H5M35 50H44V41"/>
+                          </g>
+                          <g data-k="mail" transform="translate(244 163)">
+                            <rect class="k f1" width="28" height="18" rx="2"/>
+                            <path class="k" d="M0.5 0.8L14 11 27.5 0.8"/>
+                            <circle data-k="badge" class="acd" cx="28" cy="1" r="3.6"/>
+                          </g>
+                          <circle data-k="ring" class="ac" cx="258" cy="172" r="14" style="opacity:0"/>
+                          <circle data-k="ring" class="ac" cx="258" cy="172" r="14" style="opacity:0"/>
+                        </g>
+                      </svg>
+                    </div>
+                    <figcaption class="art__cap"><span class="art__tag">Illustration</span><span class="art__phase" data-k="phase"><b>faces</b> <i>&rarr;</i> <b>gallery</b> <i>&rarr;</i> <b>email</b></span><span class="art__hint">move to steer the scan</span></figcaption>
+                  </figure>
+                </div>
+                <div class="project__content split">
+                  <div class="project__meta split__meta">
+                    <h4 class="label">Stack</h4>
+                    <ul class="tags">
+                      <li>Flask</li><li>AWS Rekognition</li><li>MySQL</li><li>Node.js</li><li>PHP</li>
+                    </ul>
+                  </div>
+                  <div class="project__body split__body">
+                    <h4 class="label">What it is</h4>
+                    <p class="project__what">An AI-powered event photo delivery system: attendees receive the photos that match their&nbsp;face.</p>
+                    <h4 class="label">Highlights</h4>
+                    <ul class="entry__list">
+                      <li>Face-based photo matching with Flask, AWS Rekognition and MySQL, with backend logic in Node.js, PHP and&nbsp;MySQL.</li>
+                      <li>Event management, photo upload and processing, and personalized gallery delivery with email&nbsp;notifications.</li>
+                      <li>Secure gallery access and automated photo distribution for event&nbsp;attendees.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="project" id="project-cloud" data-project="cloud" data-tech="Docker|Docker Compose|AWS|EC2|Nginx|IAM|GitHub Actions|CI/CD|S3|CloudWatch">
+            <h3 class="project__row">
+              <button class="project__toggle" type="button" id="project-2-btn" aria-expanded="true" aria-controls="project-2-panel" aria-labelledby="project-2-title" aria-describedby="project-2-sum project-2-stack project-2-date">
+                <span class="project__no">02</span>
+                <span class="project__head">
+                  <span class="project__title" id="project-2-title">Cloud-Based Web Deployment with CI/CD &amp; Containers</span>
+                  <span class="project__summary" id="project-2-sum"><span>A containerized app on AWS EC2 with a GitHub Actions CI/CD pipeline.</span></span>
+                </span>
+                <span class="project__stack" id="project-2-stack"><span class="nowrap">Docker</span> <span class="nowrap">AWS EC2</span> <span class="nowrap">GitHub Actions</span></span>
+                <span class="project__date" id="project-2-date">Dec 2025 – Mar 2026</span>
+                <svg class="project__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </h3>
+            <div class="project__panel" id="project-2-panel">
+              <div class="project__inner">
+                <div class="project__art-slot">
+                  <figure class="art" data-art="cloud" aria-hidden="true">
+                    <div class="art__frame">
+                      <svg class="art__svg" data-art-svg="cloud" viewBox="0 0 320 200" width="320" height="200" focusable="false" aria-hidden="true">
+                      <g class="k3" data-k="crop">
+                        <path d="M8 14V8h6M312 14V8h-6M8 186v6h6M312 186v6h-6"/>
+                      </g>
+                      <g data-k="world">
+                        <text class="t" x="20" y="16">GITHUB ACTIONS</text>
+                        <g data-k="pill" transform="translate(20 24)">
+                          <rect class="k f1" width="176" height="26" rx="4"/>
+                          <text class="t" x="88" y="15.2" text-anchor="middle">CI/CD PIPELINE</text>
+                        </g>
+                        <rect class="k f1" x="20" y="62" width="176" height="118" rx="4"/>
+                        <text class="t" x="30" y="75.5">EC2</text>
+                        <text class="t" x="176" y="75.5" text-anchor="end">IAM</text>
+                        <g transform="translate(180 69)">
+                          <rect class="k" x="0" y="3.6" width="8" height="6.2" rx="1"/>
+                          <path class="k" d="M1.8 3.6V2.3a2.2 2.2 0 0 1 4.4 0V3.6"/>
+                        </g>
+                        <rect class="k3 dash" x="36" y="88" width="44" height="26" rx="2"/>
+                        <rect class="k3 dash" x="86" y="88" width="44" height="26" rx="2"/>
+                        <rect class="k3 dash" x="136" y="88" width="44" height="26" rx="2"/>
+                        <rect class="k3 dash" x="36" y="120" width="44" height="26" rx="2"/>
+                        <rect class="k3 dash" x="86" y="120" width="44" height="26" rx="2"/>
+                        <g data-k="box" data-i="0" data-x="36" data-y="88" transform="translate(36 88)">
+                          <rect class="k f1" width="44" height="26" rx="2"/>
+                          <path class="k3" d="M11 5V21M22 5V21M33 5V21"/>
+                          <circle data-k="led" class="acd" cx="38.6" cy="20.2" r="1.7"/>
+                        </g>
+                        <g data-k="box" data-i="1" data-x="86" data-y="88" transform="translate(86 88)">
+                          <rect class="k f1" width="44" height="26" rx="2"/>
+                          <path class="k3" d="M11 5V21M22 5V21M33 5V21"/>
+                          <circle data-k="led" class="acd" cx="38.6" cy="20.2" r="1.7"/>
+                        </g>
+                        <g data-k="box" data-i="2" data-x="136" data-y="88" transform="translate(136 88)">
+                          <rect class="k f1" width="44" height="26" rx="2"/>
+                          <path class="k3" d="M11 5V21M22 5V21M33 5V21"/>
+                          <circle data-k="led" class="acd" cx="38.6" cy="20.2" r="1.7"/>
+                        </g>
+                        <g data-k="box" data-i="3" data-x="36" data-y="120" transform="translate(36 120)">
+                          <rect class="k f1" width="44" height="26" rx="2"/>
+                          <path class="k3" d="M11 5V21M22 5V21M33 5V21"/>
+                          <circle data-k="led" class="acd" cx="38.6" cy="20.2" r="1.7"/>
+                        </g>
+                        <g data-k="box" data-i="4" data-x="86" data-y="120" transform="translate(86 120)">
+                          <rect class="k f1" width="44" height="26" rx="2"/>
+                          <path class="k3" d="M11 5V21M22 5V21M33 5V21"/>
+                          <circle data-k="led" class="acd" cx="38.6" cy="20.2" r="1.7"/>
+                        </g>
+                        <rect class="k f1" x="36" y="156" width="144" height="10" rx="2"/>
+                        <text class="t t6" x="108" y="163.4" text-anchor="middle">NGINX</text>
+                        <g data-k="cw">
+                          <rect class="k f1" x="216" y="24" width="84" height="80" rx="4"/>
+                          <text class="t t-sm" x="224" y="37">CLOUDWATCH</text>
+                          <path class="k" d="M289 27.8V29.4M284.6 38C286 37 285.4 34 285.4 32.4C285.4 29.4 292.6 29.4 292.6 32.4C292.6 34 292 37 293.4 38ZM287.5 40a1.5 1.5 0 0 0 3 0"/>
+                          <path class="k3" d="M224 46H292"/>
+                          <circle class="f3" cx="227" cy="60" r="1.6"/>
+                          <text class="t t-sm" x="233" y="63">MONITORING</text>
+                          <circle class="f3" cx="227" cy="80" r="1.6"/>
+                          <text class="t t-sm" x="233" y="82">BILLING</text>
+                          <text class="t t-sm" x="233" y="94">ALERTS</text>
+                        </g>
+                        <g data-k="s3">
+                          <rect class="k f1" x="216" y="114" width="84" height="68" rx="4"/>
+                          <text class="t t-sm" x="224" y="127">S3</text>
+                          <text class="t t-sm" x="292" y="127" text-anchor="end">STORAGE</text>
+                          <ellipse class="k" cx="258" cy="152" rx="18" ry="5"/>
+                          <path class="k" d="M240 152L244 174C244 177.5 272 177.5 272 174L276 152"/>
+                          <path class="k2" d="M247 161H269"/>
+                          <path class="k2" d="M246 167H270"/>
+                        </g>
+                      </g>
+                    </svg>
+                    </div>
+                    <figcaption class="art__cap"><span class="art__tag">Illustration</span><span class="art__phase" data-k="phase"><b>ci/cd</b> <i>&middot;</i> <b>containers</b> <i>&middot;</i> <b>monitoring</b></span><span class="art__hint">click to replay</span></figcaption>
+                  </figure>
+                </div>
+                <div class="project__content split">
+                  <div class="project__meta split__meta">
+                    <h4 class="label">Stack</h4>
+                    <ul class="tags">
+                      <li>Docker</li><li>Docker Compose</li><li>AWS EC2</li><li>Nginx</li><li>IAM</li><li>GitHub Actions</li><li>S3</li><li>CloudWatch</li>
+                    </ul>
+                    <a class="text-link project__src" href="https://github.com/Sagarms2005/cloud-deployment-ci-cd" target="_blank" rel="noopener noreferrer">Source on GitHub<span class="sr-only"> (cloud-deployment-ci-cd repository, opens in a new tab)</span></a>
+                  </div>
+                  <div class="project__body split__body">
+                    <h4 class="label">What it is</h4>
+                    <p class="project__what">A web application deployed to AWS in containers, with an automated CI/CD&nbsp;pipeline.</p>
+                    <h4 class="label">What I built</h4>
+                    <ul class="entry__list">
+                      <li>Containerized the application using Docker and Docker Compose and deployed it on AWS EC2 with Nginx and IAM-based&nbsp;access.</li>
+                      <li>Implemented a GitHub Actions CI/CD pipeline and integrated S3 storage, CloudWatch monitoring and billing&nbsp;alerts.</li>
+                    </ul>
+                    <a class="arrow-link" href="#how-i-ship">How it ships
+                      <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="project" id="project-vnet" data-project="vnet" data-tech="PyTorch|V-Net">
+            <h3 class="project__row">
+              <button class="project__toggle" type="button" id="project-3-btn" aria-expanded="true" aria-controls="project-3-panel" aria-labelledby="project-3-title" aria-describedby="project-3-sum project-3-stack project-3-date">
+                <span class="project__no">03</span>
+                <span class="project__head">
+                  <span class="project__title" id="project-3-title">Blood Smear Segmentation using V-Net</span>
+                  <span class="project__summary" id="project-3-sum"><span>Deep learning to segment leukemia cells in blood smear images.</span></span>
+                </span>
+                <span class="project__stack" id="project-3-stack"><span class="nowrap">PyTorch</span> <span class="nowrap">V-Net</span></span>
+                <span class="project__date" id="project-3-date">Aug 2025 – Oct 2025</span>
+                <svg class="project__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </h3>
+            <div class="project__panel" id="project-3-panel">
+              <div class="project__inner">
+                <div class="project__art-slot">
+                  <figure class="art" data-art="vnet" aria-hidden="true">
+                    <div class="art__frame">
+                      <svg class="art__svg" data-art-svg="vnet" viewBox="0 0 320 200" width="320" height="200" focusable="false" aria-hidden="true">
+                        <g class="k3" data-k="crop">
+                          <path d="M8 14V8h6M312 14V8h-6M8 186v6h6M312 186v6h-6"/>
+                        </g>
+                        <g data-k="world">
+                          <g data-k="cell" data-i="0" data-wbc="1" data-r="19" data-a="1.5,4.2" data-s="3" data-ph="4.1" data-amp="1.6" data-sp="0.6" data-cx="78" data-cy="80" transform="translate(78 80)">
+                            <path class="k2 f2" d="M19.3 0C19.2 3.2 18.2 6.9 16.6 9.6C15 12.4 12.4 15 9.6 16.5C6.8 18 3.1 18.6 0 18.5C-3.1 18.4 -6.3 17.2 -9.1 15.7C-11.8 14.2 -14.6 12.1 -16.5 9.5C-18.3 6.9 -20.1 3.2 -20.2 0C-20.3 -3.2 -18.8 -7.2 -17 -9.8C-15.1 -12.4 -11.9 -14.4 -9.1 -15.8C-6.3 -17.2 -3.1 -17.9 0 -18C3.1 -18.1 6.7 -17.9 9.5 -16.5C12.3 -15.1 15.4 -12.5 17 -9.8C18.6 -7 19.4 -3.2 19.3 0Z"/>
+                            <path class="k3 f4" d="M10.9 -0.9C10.7 1 9.5 2.3 8.6 4.2C7.7 6.1 7 9.6 5.2 10.5C3.5 11.4 -0.4 10.7 -1.9 9.5C-3.4 8.3 -3 4.8 -4 3.1C-5 1.4 -6.9 1 -7.7 -0.9C-8.5 -2.8 -9.6 -6.7 -8.6 -8.3C-7.6 -9.9 -3.6 -10.2 -1.5 -10.3C0.6 -10.4 2.3 -9.6 4.2 -9.1C6.1 -8.6 9 -8.6 10.1 -7.2C11.2 -5.8 11.2 -2.8 10.9 -0.9Z"/>
+                            <circle class="k3 f3" cx="5.1" cy="-13.2" r="0.9"/>
+                            <circle class="k3 f3" cx="-11.5" cy="-8.9" r="0.9"/>
+                            <circle class="k3 f3" cx="-12.7" cy="6.3" r="0.9"/>
+                            <circle class="k3 f3" cx="3.8" cy="11.6" r="0.9"/>
+                            <circle class="k3 f3" cx="-9.6" cy="10" r="0.9"/>
+                            <path data-k="mask" class="acf-fill" d="M20.1 0C20 3.4 18.9 7.1 17.2 10C15.5 12.9 12.8 15.7 9.9 17.2C7 18.8 3.2 19.5 0 19.3C-3.2 19.2 -6.5 17.9 -9.4 16.3C-12.3 14.7 -15.3 12.6 -17.2 9.9C-19.1 7.2 -20.9 3.4 -21 0C-21.1 -3.3 -19.6 -7.5 -17.7 -10.2C-15.8 -12.9 -12.4 -15 -9.5 -16.4C-6.5 -17.8 -3.2 -18.6 0 -18.7C3.2 -18.8 7 -18.6 9.9 -17.2C12.9 -15.8 16 -13.1 17.7 -10.2C19.4 -7.3 20.2 -3.4 20.1 0Z"/>
+                            <path data-k="ants" class="ac ants" d="M20.7 0C20.6 3.5 19.5 7.3 17.8 10.3C16.1 13.3 13.3 16.2 10.3 17.8C7.3 19.4 3.3 20 0 19.9C-3.3 19.8 -6.7 18.5 -9.7 16.9C-12.7 15.3 -15.8 13.1 -17.8 10.3C-19.8 7.5 -21.6 3.5 -21.7 0C-21.8 -3.5 -20.3 -7.8 -18.3 -10.6C-16.3 -13.4 -12.8 -15.4 -9.8 -16.9C-6.7 -18.3 -3.3 -19.2 0 -19.3C3.3 -19.4 7.1 -19.2 10.2 -17.7C13.3 -16.2 16.6 -13.4 18.3 -10.5C20.1 -7.5 20.8 -3.5 20.7 0Z"/>
+                            <g data-k="detect" style="opacity:0">
+                              <path class="ac" d="M-4 0H4M0 -4V4"/>
+                              <circle class="ac" r="19" style="opacity:0"/>
+                            </g>
+                          </g>
+                          <g data-k="cell" data-i="1" data-wbc="1" data-r="20" data-a="2.9,2.4" data-s="10" data-ph="0.4" data-amp="1.6" data-sp="0.7" data-cx="150" data-cy="134" transform="translate(150 134)">
+                            <path class="k2 f2" d="M20.5 0C20.2 3.4 18.3 6.8 16.4 9.5C14.6 12.2 12.1 14.5 9.4 16.3C6.7 18.1 3.3 19.9 0 20.2C-3.3 20.5 -7.6 19.9 -10.5 18.2C-13.4 16.5 -16 13.2 -17.6 10.2C-19.2 7.2 -19.9 3.4 -19.8 0C-19.7 -3.3 -18.9 -7.1 -17.2 -9.9C-15.5 -12.7 -12.7 -15.4 -9.8 -17C-6.9 -18.6 -3.3 -19.3 0 -19.4C3.3 -19.5 7 -19 10.1 -17.5C13.2 -16 16.6 -13.5 18.3 -10.6C20 -7.7 20.8 -3.3 20.5 0Z"/>
+                            <path class="k3 f4" d="M9 -1C8.7 1.1 9.9 2.6 9.3 4.6C8.7 6.6 7.3 10.3 5.5 11C3.7 11.7 0.4 9.8 -1.6 8.8C-3.6 7.8 -5 6.4 -6.4 4.8C-7.8 3.2 -10 0.9 -9.9 -1C-9.8 -2.9 -7.3 -5 -5.8 -6.4C-4.3 -7.8 -3 -8.1 -1.1 -9.3C0.8 -10.5 3.5 -13.6 5.6 -13.4C7.7 -13.2 10.7 -10.1 11.3 -8C11.9 -5.9 9.3 -3.1 9 -1Z"/>
+                            <circle class="k3 f3" cx="-14" cy="0" r="0.9"/>
+                            <circle class="k3 f3" cx="-0.2" cy="14.3" r="0.9"/>
+                            <circle class="k3 f3" cx="-15.1" cy="-2.5" r="0.9"/>
+                            <circle class="k3 f3" cx="-8.5" cy="10.5" r="0.9"/>
+                            <circle class="k3 f3" cx="3.1" cy="-12.3" r="0.9"/>
+                            <path data-k="mask" class="acf-fill" d="M21.4 0C21.1 3.5 19 7.1 17.1 9.9C15.2 12.7 12.7 15.1 9.8 17C7 18.9 3.5 20.8 0 21.1C-3.5 21.4 -7.8 20.7 -10.9 18.9C-13.9 17.2 -16.7 13.8 -18.3 10.6C-19.9 7.5 -20.7 3.5 -20.6 0C-20.5 -3.5 -19.6 -7.4 -17.9 -10.3C-16.2 -13.2 -13.2 -16 -10.2 -17.7C-7.2 -19.3 -3.4 -20.1 0 -20.2C3.5 -20.3 7.3 -19.7 10.5 -18.2C13.7 -16.7 17.3 -14 19.1 -11C20.9 -8 21.7 -3.5 21.4 0Z"/>
+                            <path data-k="ants" class="ac ants" d="M22.1 0C21.8 3.6 19.7 7.3 17.7 10.2C15.7 13.1 13.1 15.7 10.1 17.6C7.2 19.5 3.6 21.5 0 21.8C-3.6 22.1 -8.1 21.3 -11.3 19.5C-14.4 17.7 -17.2 14.2 -18.9 10.9C-20.6 7.7 -21.4 3.6 -21.3 0C-21.2 -3.6 -20.3 -7.6 -18.5 -10.7C-16.7 -13.7 -13.6 -16.6 -10.5 -18.3C-7.4 -20 -3.6 -20.8 0 -20.9C3.6 -21 7.6 -20.4 10.9 -18.8C14.2 -17.2 17.8 -14.5 19.7 -11.4C21.6 -8.3 22.4 -3.6 22.1 0Z"/>
+                            <g data-k="detect" style="opacity:0">
+                              <path class="ac" d="M-4 0H4M0 -4V4"/>
+                              <circle class="ac" r="20" style="opacity:0"/>
+                            </g>
+                          </g>
+                          <g data-k="cell" data-i="2" data-wbc="1" data-r="17" data-a="0.9,6.2" data-s="17" data-ph="2.3" data-amp="1.7" data-sp="0.6" data-cx="222" data-cy="66" transform="translate(222 66)">
+                            <path class="k2 f2" d="M17.5 0C17.8 2.9 17.2 6.6 15.7 9.1C14.2 11.6 11.2 13.8 8.6 14.9C6 16.1 2.8 16.1 0 16C-2.8 15.9 -5.7 15.3 -8.2 14.1C-10.7 12.9 -13.4 11 -15 8.7C-16.5 6.4 -17.5 2.9 -17.5 0C-17.5 -2.9 -16.4 -6.1 -14.9 -8.6C-13.4 -11.1 -11.1 -13.4 -8.6 -14.8C-6.1 -16.2 -2.8 -17.1 0 -17C2.8 -16.9 5.8 -15.7 8.2 -14.2C10.6 -12.7 12.6 -10.6 14.2 -8.2C15.8 -5.8 17.3 -2.9 17.5 0Z"/>
+                            <path class="k3 f4" d="M12.4 -0.8C12.1 0.9 8.9 2.4 7.5 3.6C6.1 4.8 5.3 5.8 3.8 6.6C2.3 7.4 -0.1 8.7 -1.6 8.3C-3.1 7.9 -4.3 5.5 -5.3 4C-6.3 2.5 -7 1.1 -7.4 -0.8C-7.7 -2.7 -8.4 -5.9 -7.4 -7.2C-6.4 -8.5 -3 -8.7 -1.2 -8.6C0.6 -8.5 1.5 -7.1 3.3 -6.8C5.1 -6.5 8 -7.7 9.5 -6.7C11 -5.7 12.7 -2.5 12.4 -0.8Z"/>
+                            <circle class="k3 f3" cx="10.9" cy="6.1" r="0.9"/>
+                            <circle class="k3 f3" cx="-8.6" cy="7" r="0.9"/>
+                            <circle class="k3 f3" cx="3.7" cy="13.7" r="0.9"/>
+                            <circle class="k3 f3" cx="-8.3" cy="6.7" r="0.9"/>
+                            <circle class="k3 f3" cx="-9.9" cy="-8.5" r="0.9"/>
+                            <path data-k="mask" class="acf-fill" d="M18.2 0C18.5 3 17.9 6.8 16.3 9.4C14.8 12 11.6 14.2 8.9 15.4C6.2 16.6 2.9 16.8 0 16.7C-2.9 16.6 -5.9 16 -8.5 14.7C-11.1 13.4 -14 11.5 -15.6 9C-17.2 6.6 -18.2 3 -18.2 0C-18.2 -3 -17 -6.3 -15.5 -8.9C-13.9 -11.5 -11.5 -13.9 -8.9 -15.4C-6.3 -16.8 -2.9 -17.7 0 -17.6C2.9 -17.5 6 -16.3 8.5 -14.8C11 -13.3 13.2 -11 14.8 -8.5C16.4 -6 18 -3 18.2 0Z"/>
+                            <path data-k="ants" class="ac ants" d="M18.8 0C19.1 3.1 18.5 7 16.9 9.7C15.3 12.4 12 14.8 9.2 16C6.4 17.3 3 17.3 0 17.2C-3 17.1 -6.1 16.5 -8.8 15.2C-11.5 13.9 -14.4 11.8 -16.1 9.3C-17.8 6.8 -18.9 3.1 -18.9 0C-18.9 -3.1 -17.6 -6.5 -16 -9.2C-14.4 -11.8 -11.9 -14.4 -9.2 -15.9C-6.5 -17.4 -3 -18.3 0 -18.2C3 -18.1 6.3 -16.9 8.8 -15.3C11.4 -13.7 13.6 -11.4 15.3 -8.8C17 -6.2 18.5 -3.1 18.8 0Z"/>
+                            <g data-k="detect" style="opacity:0">
+                              <path class="ac" d="M-4 0H4M0 -4V4"/>
+                              <circle class="ac" r="17" style="opacity:0"/>
+                            </g>
+                          </g>
+                          <g data-k="cell" data-i="3" data-wbc="1" data-r="18" data-a="1.2,5.4" data-s="24" data-ph="4.8" data-amp="1.6" data-sp="0.6" data-cx="282" data-cy="138" transform="translate(282 138)">
+                            <path class="k2 f2" d="M18.3 0C18.5 3.1 17.9 6.9 16.4 9.5C14.9 12.1 11.8 14.6 9.1 15.8C6.4 17.1 2.9 17.2 0 17C-2.9 16.8 -5.8 16.1 -8.5 14.8C-11.2 13.5 -14.2 11.7 -16 9.2C-17.7 6.7 -19 3 -19 0C-19 -3 -17.5 -6.6 -15.8 -9.1C-14.1 -11.6 -11.4 -13.8 -8.8 -15.2C-6.2 -16.6 -3 -17.7 0 -17.7C3 -17.7 6.3 -16.9 8.9 -15.4C11.5 -13.9 13.8 -11.5 15.4 -8.9C17 -6.3 18.1 -3.1 18.3 0Z"/>
+                            <path class="k3 f4" d="M12.3 -0.9C12.1 0.9 9.6 2.6 8.3 4.1C7 5.6 6.1 7.6 4.4 8.3C2.8 9 -0.1 9.3 -1.6 8.5C-3.1 7.7 -3.4 5 -4.5 3.4C-5.6 1.8 -7.3 1 -8 -0.9C-8.7 -2.8 -9.6 -6.7 -8.5 -8.1C-7.4 -9.5 -3.3 -9.5 -1.3 -9.3C0.7 -9.1 1.7 -7.6 3.5 -7.2C5.3 -6.8 8.2 -7.9 9.7 -6.9C11.2 -5.9 12.5 -2.7 12.3 -0.9Z"/>
+                            <circle class="k3 f3" cx="12.7" cy="-3.4" r="0.9"/>
+                            <circle class="k3 f3" cx="10.9" cy="8.6" r="0.9"/>
+                            <circle class="k3 f3" cx="-12.4" cy="0.4" r="0.9"/>
+                            <circle class="k3 f3" cx="10.2" cy="8.2" r="0.9"/>
+                            <circle class="k3 f3" cx="13.2" cy="-1.2" r="0.9"/>
+                            <path data-k="mask" class="acf-fill" d="M19 0C19.2 3.2 18.6 7.1 17 9.8C15.4 12.6 12.3 15.2 9.5 16.5C6.7 17.8 3.1 17.9 0 17.7C-3.1 17.5 -6.1 16.8 -8.9 15.4C-11.7 14.1 -14.8 12.2 -16.6 9.6C-18.4 7 -19.8 3.2 -19.8 0C-19.8 -3.2 -18.2 -6.9 -16.4 -9.5C-14.6 -12.1 -11.8 -14.3 -9.1 -15.8C-6.4 -17.3 -3.1 -18.4 0 -18.4C3.1 -18.4 6.6 -17.5 9.3 -16C12 -14.5 14.4 -11.9 16 -9.2C17.6 -6.5 18.8 -3.2 19 0Z"/>
+                            <path data-k="ants" class="ac ants" d="M19.7 0C19.9 3.3 19.3 7.4 17.6 10.2C16 13 12.7 15.7 9.8 17C6.9 18.4 3.2 18.5 0 18.3C-3.2 18.1 -6.3 17.3 -9.2 15.9C-12.1 14.5 -15.3 12.6 -17.2 9.9C-19.1 7.3 -20.5 3.3 -20.5 0C-20.5 -3.3 -18.8 -7.1 -17 -9.8C-15.1 -12.5 -12.2 -14.8 -9.4 -16.3C-6.6 -17.8 -3.2 -18.9 0 -19C3.2 -19 6.9 -18.2 9.6 -16.6C12.4 -15 14.8 -12.3 16.5 -9.5C18.2 -6.7 19.5 -3.3 19.7 0Z"/>
+                            <g data-k="detect" style="opacity:0">
+                              <path class="ac" d="M-4 0H4M0 -4V4"/>
+                              <circle class="ac" r="18" style="opacity:0"/>
+                            </g>
+                          </g>
+                          <g data-k="cell" data-i="4" data-ph="1.1" data-amp="1.3" data-sp="1" data-cx="30.56" data-cy="118.06" transform="translate(30.56 118.06)">
+                            <circle class="k3 f2" r="13.5"/>
+                            <circle class="k3 f2" r="5.9" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="5" data-ph="1.3" data-amp="1.8" data-sp="0.9" data-cx="146.93" data-cy="179.5" transform="translate(146.93 179.5)">
+                            <circle class="k3 f2" r="13.9"/>
+                            <circle class="k3 f2" r="6.1" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="6" data-ph="3.7" data-amp="1.1" data-sp="0.7" data-cx="247.32" data-cy="147.16" transform="translate(247.32 147.16)">
+                            <circle class="k3 f2" r="11.9"/>
+                            <circle class="k3 f2" r="5.2" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="7" data-ph="5.8" data-amp="1.1" data-sp="0.9" data-cx="8.31" data-cy="93.22" transform="translate(8.31 93.22)">
+                            <circle class="k3 f2" r="13.6"/>
+                            <circle class="k3 f2" r="6" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="8" data-ph="3.1" data-amp="1.6" data-sp="0.7" data-cx="283.72" data-cy="58.47" transform="translate(283.72 58.47)">
+                            <circle class="k3 f2" r="12.2"/>
+                            <circle class="k3 f2" r="5.4" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="9" data-ph="2" data-amp="1.7" data-sp="0.9" data-cx="251.57" data-cy="42.82" transform="translate(251.57 42.82)">
+                            <circle class="k3 f2" r="11.1"/>
+                            <circle class="k3 f2" r="4.9" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="10" data-ph="1.7" data-amp="1.4" data-sp="0.5" data-cx="80.59" data-cy="17.87" transform="translate(80.59 17.87)">
+                            <circle class="k3 f2" r="15"/>
+                            <circle class="k3 f2" r="6.6" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="11" data-ph="1.8" data-amp="1.8" data-sp="0.7" data-cx="102.34" data-cy="154.66" transform="translate(102.34 154.66)">
+                            <circle class="k3 f2" r="13.3"/>
+                            <circle class="k3 f2" r="5.9" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="12" data-ph="5.4" data-amp="2" data-sp="0.8" data-cx="6.54" data-cy="184.67" transform="translate(6.54 184.67)">
+                            <circle class="k3 f2" r="13.4"/>
+                            <circle class="k3 f2" r="5.9" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="13" data-ph="4.1" data-amp="1.2" data-sp="0.6" data-cx="58.67" data-cy="165.4" transform="translate(58.67 165.4)">
+                            <circle class="k3 f2" r="12"/>
+                            <circle class="k3 f2" r="5.3" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="14" data-ph="3.2" data-amp="1.6" data-sp="0.8" data-cx="315.47" data-cy="4.69" transform="translate(315.47 4.69)">
+                            <circle class="k3 f2" r="12.1"/>
+                            <circle class="k3 f2" r="5.3" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="15" data-ph="4" data-amp="1.5" data-sp="0.5" data-cx="27.95" data-cy="17.67" transform="translate(27.95 17.67)">
+                            <circle class="k3 f2" r="13.6"/>
+                            <circle class="k3 f2" r="6" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="16" data-ph="3.5" data-amp="2" data-sp="0.6" data-cx="167.71" data-cy="51.67" transform="translate(167.71 51.67)">
+                            <circle class="k3 f2" r="13.9"/>
+                            <circle class="k3 f2" r="6.1" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="17" data-ph="1" data-amp="1.4" data-sp="0.9" data-cx="223.18" data-cy="107.88" transform="translate(223.18 107.88)">
+                            <circle class="k3 f2" r="14.8"/>
+                            <circle class="k3 f2" r="6.5" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="18" data-ph="5.9" data-amp="1.9" data-sp="0.7" data-cx="28.98" data-cy="66.03" transform="translate(28.98 66.03)">
+                            <circle class="k3 f2" r="11.6"/>
+                            <circle class="k3 f2" r="5.1" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="19" data-ph="0.1" data-amp="1.8" data-sp="0.7" data-cx="94.64" data-cy="189.55" transform="translate(94.64 189.55)">
+                            <circle class="k3 f2" r="11.4"/>
+                            <circle class="k3 f2" r="5" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="20" data-ph="5.5" data-amp="1.7" data-sp="0.5" data-cx="248.45" data-cy="184.62" transform="translate(248.45 184.62)">
+                            <circle class="k3 f2" r="11.4"/>
+                            <circle class="k3 f2" r="5" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="21" data-ph="3.7" data-amp="1.9" data-sp="1" data-cx="196.95" data-cy="130.51" transform="translate(196.95 130.51)">
+                            <circle class="k3 f2" r="11.2"/>
+                            <circle class="k3 f2" r="4.9" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="22" data-ph="2.8" data-amp="1.2" data-sp="0.8" data-cx="204.42" data-cy="187.97" transform="translate(204.42 187.97)">
+                            <circle class="k3 f2" r="12.3"/>
+                            <circle class="k3 f2" r="5.4" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="23" data-ph="3.6" data-amp="1.8" data-sp="0.6" data-cx="17.16" data-cy="154.33" transform="translate(17.16 154.33)">
+                            <circle class="k3 f2" r="12.8"/>
+                            <circle class="k3 f2" r="5.6" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="24" data-ph="3.7" data-amp="1.4" data-sp="0.8" data-cx="306.75" data-cy="37.88" transform="translate(306.75 37.88)">
+                            <circle class="k3 f2" r="14.1"/>
+                            <circle class="k3 f2" r="6.2" style="opacity:.8"/>
+                          </g>
+                          <g data-k="cell" data-i="25" data-ph="3.5" data-amp="1.4" data-sp="0.6" data-cx="242.93" data-cy="2.77" transform="translate(242.93 2.77)">
+                            <circle class="k3 f2" r="12.2"/>
+                            <circle class="k3 f2" r="5.4" style="opacity:.8"/>
+                          </g>
+                          <g data-k="scan" style="opacity:0">
+                            <rect class="scan s1" x="-22" y="0" width="5" height="200"/>
+                            <rect class="scan s2" x="-17" y="0" width="5" height="200"/>
+                            <rect class="scan s3" x="-12" y="0" width="5" height="200"/>
+                            <rect class="scan s4" x="-7" y="0" width="5" height="200"/>
+                            <path class="ac" d="M0 0V200"/>
+                          </g>
+                        </g>
+                      </svg>
+                    </div>
+                    <figcaption class="art__cap"><span class="art__tag">Illustration</span><span class="art__phase" data-k="phase"><b>smear</b> <i>&rarr;</i> <b>outline</b> <i>&rarr;</i> <b>mask</b></span><span class="art__hint">move to nudge the cells</span></figcaption>
+                  </figure>
+                </div>
+                <div class="project__content split">
+                  <div class="project__meta split__meta">
+                    <h4 class="label">Stack</h4>
+                    <ul class="tags">
+                      <li>PyTorch</li><li>V-Net</li>
+                    </ul>
+                  </div>
+                  <div class="project__body split__body">
+                    <h4 class="label">What it is</h4>
+                    <p class="project__what">A deep learning model that segments leukemia cells in blood smear&nbsp;images.</p>
+                    <h4 class="label">What I built</h4>
+                    <ul class="entry__list">
+                      <li>Developed a deep learning model using PyTorch and V-Net for automated leukemia cell&nbsp;segmentation.</li>
+                      <li>Processed blood smear medical images to identify and segment leukemia&nbsp;cells.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="project" id="project-voting" data-project="voting" data-tech="JavaScript|Node.js|PHP|MySQL|HTML|CSS">
+            <h3 class="project__row">
+              <button class="project__toggle" type="button" id="project-4-btn" aria-expanded="true" aria-controls="project-4-panel" aria-labelledby="project-4-title" aria-describedby="project-4-sum project-4-stack project-4-date">
+                <span class="project__no">04</span>
+                <span class="project__head">
+                  <span class="project__title" id="project-4-title">Digital Voting System</span>
+                  <span class="project__summary" id="project-4-sum"><span>OTP-authenticated voting with live result visualization.</span></span>
+                </span>
+                <span class="project__stack" id="project-4-stack"><span class="nowrap">Node.js</span> <span class="nowrap">PHP</span> <span class="nowrap">MySQL</span></span>
+                <span class="project__date" id="project-4-date">Aug 2024 – Oct 2024</span>
+                <svg class="project__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </h3>
+            <div class="project__panel" id="project-4-panel">
+              <div class="project__inner">
+                <div class="project__art-slot">
+                  <figure class="art" data-art="voting" aria-hidden="true">
+                    <div class="art__frame">
+                      <svg class="art__svg" data-art-svg="voting" viewBox="0 0 320 200" width="320" height="200" focusable="false" aria-hidden="true">
+                        <g class="k3" data-k="crop">
+                          <path d="M8 14V8h6M312 14V8h-6M8 186v6h6M312 186v6h-6"/>
+                        </g>
+                        <g data-k="world">
+                          <g data-k="otp">
+                            <rect class="k f1" x="20" y="20" width="280" height="68" rx="4"/>
+                            <text class="t" x="32" y="36">OTP</text>
+                            <g data-k="dbox" data-i="0" data-x="45">
+                              <rect class="k3" x="32" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="32" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="32" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="45" y="66.4" text-anchor="middle">4</text>
+                            </g>
+                            <g data-k="dbox" data-i="1" data-x="79">
+                              <rect class="k3" x="66" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="66" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="66" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="79" y="66.4" text-anchor="middle">8</text>
+                            </g>
+                            <g data-k="dbox" data-i="2" data-x="113">
+                              <rect class="k3" x="100" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="100" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="100" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="113" y="66.4" text-anchor="middle">2</text>
+                            </g>
+                            <g data-k="dbox" data-i="3" data-x="147">
+                              <rect class="k3" x="134" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="134" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="134" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="147" y="66.4" text-anchor="middle">9</text>
+                            </g>
+                            <g data-k="dbox" data-i="4" data-x="181">
+                              <rect class="k3" x="168" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="168" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="168" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="181" y="66.4" text-anchor="middle">1</text>
+                            </g>
+                            <g data-k="dbox" data-i="5" data-x="215">
+                              <rect class="k3" x="202" y="46" width="26" height="30" rx="2"/>
+                              <rect data-k="dfocus" class="k" x="202" y="46" width="26" height="30" rx="2" style="opacity:0"/>
+                              <rect data-k="dframe" class="ac" x="202" y="46" width="26" height="30" rx="2"/>
+                              <text data-k="digit" class="d" x="215" y="66.4" text-anchor="middle">7</text>
+                            </g>
+                            <g data-k="check">
+                              <circle data-k="cfill" class="acd" cx="262" cy="61" r="12"/>
+                              <path data-k="cmark" class="chk" d="M256.2 61.6L260.3 65.6 268 56.6"/>
+                            </g>
+                            <text data-k="verified" class="t ac-t" x="262" y="83" text-anchor="middle">VERIFIED</text>
+                            <rect data-k="caret" class="acd" x="0" y="52" width="1.3" height="18" style="opacity:0"/>
+                          </g>
+                          <g data-k="results">
+                            <rect data-k="rcard" class="k f1" x="20" y="100" width="280" height="82" rx="4"/>
+                            <circle data-k="lping" class="ac" cx="32" cy="113.5" r="2.6" style="opacity:0"/>
+                            <circle data-k="live" class="acd" cx="32" cy="113.5" r="2.6"/>
+                            <text class="t" x="42" y="116">LIVE RESULTS</text>
+                            <g data-k="row" data-i="0">
+                              <circle class="k2" cx="36" cy="129.5" r="4"/>
+                              <circle class="k2" cx="36" cy="128.2" r="1.3"/>
+                              <text class="t t65" x="45" y="131.9">CANDIDATE A</text>
+                              <text class="t cl-s" x="45" y="129.6">A</text>
+                              <rect class="trk" x="100" y="126" width="184" height="7" rx="2"/>
+                              <rect data-k="bar" class="barf" x="100" y="126" width="114.1" height="7" rx="2"/>
+                              <rect data-k="barac" class="acd" x="100" y="126" width="114.1" height="7" rx="2" style="opacity:0"/>
+                              <rect data-k="tick" class="acd" x="213.1" y="124.5" width="2" height="10" rx="1" style="opacity:0"/>
+                            </g>
+                            <g data-k="row" data-i="1">
+                              <circle class="k2" cx="36" cy="142.5" r="4"/>
+                              <circle class="k2" cx="36" cy="141.2" r="1.3"/>
+                              <text class="t t65" x="45" y="144.9">CANDIDATE B</text>
+                              <text class="t cl-s" x="45" y="142.6">B</text>
+                              <rect class="trk" x="100" y="139" width="184" height="7" rx="2"/>
+                              <rect data-k="bar" class="barf" x="100" y="139" width="123.3" height="7" rx="2"/>
+                              <rect data-k="barac" class="acd" x="100" y="139" width="123.3" height="7" rx="2" style="opacity:1"/>
+                              <rect data-k="tick" class="acd" x="222.3" y="137.5" width="2" height="10" rx="1" style="opacity:0"/>
+                            </g>
+                            <g data-k="row" data-i="2">
+                              <circle class="k2" cx="36" cy="155.5" r="4"/>
+                              <circle class="k2" cx="36" cy="154.2" r="1.3"/>
+                              <text class="t t65" x="45" y="157.9">CANDIDATE C</text>
+                              <text class="t cl-s" x="45" y="155.6">C</text>
+                              <rect class="trk" x="100" y="152" width="184" height="7" rx="2"/>
+                              <rect data-k="bar" class="barf" x="100" y="152" width="68.1" height="7" rx="2"/>
+                              <rect data-k="barac" class="acd" x="100" y="152" width="68.1" height="7" rx="2" style="opacity:0"/>
+                              <rect data-k="tick" class="acd" x="167.1" y="150.5" width="2" height="10" rx="1" style="opacity:0"/>
+                            </g>
+                            <g data-k="row" data-i="3">
+                              <circle class="k2" cx="36" cy="168.5" r="4"/>
+                              <circle class="k2" cx="36" cy="167.2" r="1.3"/>
+                              <text class="t t65" x="45" y="170.9">CANDIDATE D</text>
+                              <text class="t cl-s" x="45" y="168.6">D</text>
+                              <rect class="trk" x="100" y="165" width="184" height="7" rx="2"/>
+                              <rect data-k="bar" class="barf" x="100" y="165" width="47.8" height="7" rx="2"/>
+                              <rect data-k="barac" class="acd" x="100" y="165" width="47.8" height="7" rx="2" style="opacity:0"/>
+                              <rect data-k="tick" class="acd" x="146.8" y="163.5" width="2" height="10" rx="1" style="opacity:0"/>
+                            </g>
+                          </g>
+                        </g>
+                      </svg>
+                    </div>
+                    <figcaption class="art__cap"><span class="art__tag">Illustration</span><span class="art__phase" data-k="phase"><b>OTP</b> <i>&rarr;</i> <b>ballot</b> <i>&rarr;</i> <b>live tally</b></span><span class="art__hint">click a bar to vote</span></figcaption>
+                  </figure>
+                </div>
+                <div class="project__content split">
+                  <div class="project__meta split__meta">
+                    <h4 class="label">Stack</h4>
+                    <ul class="tags">
+                      <li>JavaScript</li><li>Node.js</li><li>PHP</li><li>MySQL</li><li>HTML</li><li>CSS</li>
+                    </ul>
+                    <a class="text-link project__src" href="https://github.com/Sagarms2005/digital-voting-system-" target="_blank" rel="noopener noreferrer">Source on GitHub<span class="sr-only"> (digital-voting-system- repository, opens in a new tab)</span></a>
+                  </div>
+                  <div class="project__body split__body">
+                    <h4 class="label">What it is</h4>
+                    <p class="project__what">A secure voting platform where voters authenticate with a one-time password&nbsp;(OTP).</p>
+                    <h4 class="label">What I built</h4>
+                    <ul class="entry__list">
+                      <li>Built a secure OTP-authenticated voting platform with candidate management and live result&nbsp;visualization.</li>
+                      <li>Backend logic in Node.js, PHP and&nbsp;MySQL.</li>
+                      <li>Responsive UI with modern&nbsp;animations.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <p class="projects__more"><a class="text-link" href="https://github.com/Sagarms2005" target="_blank" rel="noopener noreferrer">More on GitHub<span class="sr-only"> (opens in a new tab)</span></a></p>
+
+        <!-- ───────────── How I ship (static; js/fx/pipeline.js enhances it) ───────────── -->
+        <section class="ship split" data-fx="pipeline" id="how-i-ship" tabindex="-1" aria-labelledby="ship-title">
+          <p class="label split__meta"><span class="label__no">03.1</span> / How I ship</p>
+          <div class="split__body">
+            <h3 class="ship__title" id="ship-title">From container <em>to cloud.</em></h3>
+            <p class="ship__lede">The five parts of my cloud deployment project (Dec 2025 – Mar&nbsp;2026): containerize, automate, deploy, store, observe.</p>
+
+            <div class="ship__grid">
+              <figure class="ship__figure">
+                <div class="ship__stage">
+                  <svg class="ship__svg" viewBox="-12 -12 344 544" role="img" aria-labelledby="ship-svg-title ship-svg-desc" focusable="false">
+                    <title id="ship-svg-title">Overview of the cloud deployment stack</title>
+                    <desc id="ship-svg-desc">Illustrative, simplified flow of the components: Docker and Docker Compose, a GitHub Actions CI/CD pipeline, AWS EC2 with Nginx and IAM-based access, S3 storage, and CloudWatch monitoring and billing alerts.</desc>
+
+                    <g class="ship__links">
+                      <path class="ship__link ship__link--accent" d="M160 64V104"/>
+                      <path class="ship__link" d="M80 384V432"/>
+                      <path class="ship__link" d="M240 384V432"/>
+                    </g>
+
+                    <g class="ship__part" data-step="2">
+                      <rect class="ship__box" x="30" y="0" width="260" height="64" rx="2"/>
+                      <text class="ship__name" x="160" y="28" text-anchor="middle">GitHub Actions</text>
+                      <text class="ship__sub" x="160" y="49" text-anchor="middle">CI/CD pipeline</text>
+                    </g>
+
+                    <g class="ship__part" data-step="3">
+                      <rect class="ship__frame" x="0" y="104" width="320" height="280" rx="2"/>
+                      <text class="ship__tag" x="22" y="132">AWS EC2</text>
+                      <text class="ship__tag" x="160" y="364" text-anchor="middle">IAM-based access</text>
+                      <rect class="ship__box" x="24" y="260" width="272" height="56" rx="2"/>
+                      <text class="ship__name" x="160" y="294" text-anchor="middle">Nginx</text>
+                    </g>
+
+                    <g class="ship__part" data-step="1">
+                      <rect class="ship__box" x="24" y="152" width="272" height="84" rx="2"/>
+                      <text class="ship__name" x="160" y="188" text-anchor="middle">Docker Compose</text>
+                      <text class="ship__sub" x="160" y="210" text-anchor="middle">Containerized application</text>
+                    </g>
+
+                    <g class="ship__part" data-step="4">
+                      <rect class="ship__box" x="0" y="432" width="150" height="84" rx="2"/>
+                      <text class="ship__name" x="75" y="468" text-anchor="middle">S3</text>
+                      <text class="ship__sub" x="75" y="490" text-anchor="middle">Storage</text>
+                    </g>
+
+                    <g class="ship__part" data-step="5">
+                      <rect class="ship__box" x="170" y="432" width="150" height="84" rx="2"/>
+                      <text class="ship__name" x="245" y="462" text-anchor="middle">CloudWatch</text>
+                      <text class="ship__sub" x="245" y="484" text-anchor="middle">Monitoring</text>
+                      <text class="ship__sub" x="245" y="502" text-anchor="middle">Billing alerts</text>
+                    </g>
+
+                    <g class="ship__badges">
+                      <g transform="translate(30 0)"><circle r="10"/><text y="4" text-anchor="middle">2</text></g>
+                      <g transform="translate(0 104)"><circle r="10"/><text y="4" text-anchor="middle">3</text></g>
+                      <g transform="translate(24 152)"><circle r="10"/><text y="4" text-anchor="middle">1</text></g>
+                      <g transform="translate(0 432)"><circle r="10"/><text y="4" text-anchor="middle">4</text></g>
+                      <g transform="translate(170 432)"><circle r="10"/><text y="4" text-anchor="middle">5</text></g>
+                    </g>
+                  </svg>
+                </div>
+                <figcaption class="ship__caption"><span class="art__tag">Illustration</span><span>Simplified flow of the stack</span></figcaption>
+              </figure>
+
+              <ol class="ship__steps">
+                <li class="ship__step" data-step="1"><span class="ship__no">1</span><div><h4 class="ship__verb">Containerize</h4><p>The application, containerized with Docker and Docker&nbsp;Compose.</p></div></li>
+                <li class="ship__step" data-step="2"><span class="ship__no">2</span><div><h4 class="ship__verb">Automate</h4><p>A GitHub Actions CI/CD&nbsp;pipeline.</p></div></li>
+                <li class="ship__step" data-step="3"><span class="ship__no">3</span><div><h4 class="ship__verb">Deploy</h4><p>Deployed on AWS EC2 with Nginx and IAM-based&nbsp;access.</p></div></li>
+                <li class="ship__step" data-step="4"><span class="ship__no">4</span><div><h4 class="ship__verb">Store</h4><p>S3 storage integration.</p></div></li>
+                <li class="ship__step" data-step="5"><span class="ship__no">5</span><div><h4 class="ship__verb">Observe</h4><p>CloudWatch monitoring and billing&nbsp;alerts.</p></div></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ───────────── 04 Skills ───────────── -->
+    <section class="section" id="skills" tabindex="-1" aria-labelledby="skills-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">04</span> / Skills</p>
+          <h2 class="section__title split__body" id="skills-title">The toolkit, <em>as it stands.</em></h2>
+        </header>
+
+        <div class="skillbar" data-skillbar hidden>
+          <p class="skillbar__msg" role="status" data-skill-status>Select a skill to see where it appears.</p>
+          <span class="skillbar__links" data-skill-links></span>
+          <button class="link-btn" type="button" data-skill-clear aria-keyshortcuts="Escape" hidden>Clear</button>
+        </div>
+
+        <dl class="skills reveal">
+          <div class="skills__row"><dt class="label">Programming languages</dt><dd><ul class="inline-list"><li data-skill="Java">Java</li><li data-skill="Python">Python</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">Full-stack development</dt><dd><ul class="inline-list"><li data-skill="HTML">HTML</li><li data-skill="CSS">CSS</li><li data-skill="JavaScript">JavaScript</li><li data-skill="Node.js">Node.js</li><li data-skill="PHP">PHP</li><li data-skill="MySQL">MySQL</li><li data-skill="REST APIs">REST APIs</li><li data-skill="Flask">Flask</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">Cloud &amp; DevOps</dt><dd><ul class="inline-list"><li><span data-skill="AWS">AWS</span> (<span data-skill="EC2">EC2</span>, <span data-skill="S3">S3</span>, <span data-skill="IAM">IAM</span>, <span data-skill="VPC">VPC</span>, <span data-skill="RDS">RDS</span>)</li><li data-skill="Docker">Docker</li><li data-skill="Docker Compose">Docker Compose</li><li data-skill="CI/CD">CI/CD</li><li data-skill="GitHub Actions">GitHub Actions</li><li data-skill="Linux">Linux</li><li data-skill="Nginx">Nginx</li><li data-skill="CloudWatch">CloudWatch</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">AI / ML</dt><dd><ul class="inline-list"><li data-skill="PyTorch">PyTorch</li><li data-skill="V-Net">V-Net</li><li data-skill="AWS Rekognition">AWS Rekognition</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">Tools</dt><dd><ul class="inline-list"><li data-skill="Git">Git</li><li data-skill="GitHub">GitHub</li><li data-skill="VS Code">VS Code</li><li data-skill="Google Colab">Google Colab</li><li data-skill="XAMPP">XAMPP</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">Core CS</dt><dd><ul class="inline-list"><li>Object-Oriented Programming (OOP)</li><li>Data Structures &amp; Algorithms&nbsp;(basics)</li></ul></dd></div>
+          <div class="skills__row"><dt class="label">Soft skills</dt><dd><ul class="inline-list"><li>Communication</li><li>Time Management</li><li>Continuous Learning</li><li>Teamwork</li><li>Problem Solving</li></ul></dd></div>
+        </dl>
+
+        <!-- Stack map (js/fx/constellation.js): hidden until the module is live; the plain list above it is the accessible control.
+             It follows the list in the markup (a parser or screen reader meets the list first) and is placed above it on wide screens with CSS order. -->
+        <!-- The map's script loads when the figure nears the viewport (with JS on the figure reserves its box from the first paint, so it can be observed even before the script runs). -->
+        <figure class="constellation" data-fx="constellation" data-fx-src="js/fx/constellation.js" aria-hidden="true">
+          <div class="constellation__stage" aria-hidden="true">
+            <canvas class="constellation__canvas"></canvas>
+            <span class="constellation__tag">Stack map</span>
+            <span class="constellation__tag constellation__tag--end" data-constellation-count></span>
+            <span class="constellation__hint" data-constellation-hint>Hover &middot; click &middot; drag</span>
+          </div>
+          <figcaption class="constellation__caption" aria-hidden="true">
+            <span class="constellation__readout" data-constellation-readout>Each line joins a tool to the role or project that names it.</span>
+            <span class="constellation__legend">
+              <span class="constellation__key"><svg viewBox="0 0 12 12" width="12" height="12"><circle cx="6" cy="6" r="2.6" fill="currentColor"/></svg>Tool</span>
+              <span class="constellation__key"><svg viewBox="0 0 12 12" width="12" height="12"><path d="M6 1.6 10.4 6 6 10.4 1.6 6Z" fill="none" stroke="currentColor"/></svg>Role</span>
+              <span class="constellation__key"><svg viewBox="0 0 12 12" width="12" height="12"><circle cx="6" cy="6" r="4.4" fill="none" stroke="currentColor"/></svg>Project</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ───────────── 05 Education ───────────── -->
+    <section class="section" id="education" tabindex="-1" aria-labelledby="education-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">05</span> / Education</p>
+          <h2 class="section__title split__body" id="education-title">Polytechnic first, then a <em>B.E. in Computer Science.</em></h2>
+        </header>
+
+        <article class="entry split reveal">
+          <div class="entry__meta split__meta">
+            <p class="meta-date">2023 – 2026</p>
+          </div>
+          <div class="entry__body split__body">
+            <h3 class="entry__title">Malnad College of Engineering</h3>
+            <p class="entry__degree">Bachelor of Engineering, Computer Science</p>
+            <p class="score"><span class="label"><abbr title="Grade Point Average">GPA</abbr></span> <span class="score__value">8.2</span></p>
+          </div>
+        </article>
+
+        <article class="entry split reveal">
+          <div class="entry__meta split__meta">
+            <p class="meta-date">2020 – 2023</p>
+          </div>
+          <div class="entry__body split__body">
+            <h3 class="entry__title">Smt. L V Polytechnic</h3>
+            <p class="score"><span class="label"><abbr title="Cumulative Grade Point Average">CGPA</abbr></span> <span class="score__value">9.2</span></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───────────── 06 Achievements ───────────── -->
+    <section class="section" id="achievements" tabindex="-1" aria-labelledby="achievements-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">06</span> / Credentials</p>
+          <h2 class="section__title split__body" id="achievements-title">Practice, certifications <em>and coursework.</em></h2>
+        </header>
+
+        <div class="split record reveal">
+          <h3 class="label split__meta">Coding profiles</h3>
+          <div class="split__body">
+            <div class="stat" data-count-block>
+              <p class="stat__num" data-count="100" data-suffix="+"><span class="stat__value">100+</span></p>
+              <!-- One dot per solved problem, lit in step with the count-up. -->
+              <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="stat__text"><a class="text-link" href="https://leetcode.com/u/2005sagarms/" target="_blank" rel="noopener noreferrer">LeetCode<span class="sr-only"> (opens in a new tab)</span></a> problems solved, with consistent practice in Data Structures&nbsp;&amp;&nbsp;Algorithms.</p>
+            </div>
+            <ul class="rows">
+              <li class="rows__item"><span class="rows__key">CodingBat</span><span>Practiced Java and Python problems covering logic, control flow, strings, arrays and&nbsp;recursion.</span></li>
+              <li class="rows__item"><span class="rows__key"><a class="text-link" href="https://github.com/Sagarms2005" target="_blank" rel="noopener noreferrer">GitHub<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg><span class="sr-only"> (opens in a new tab)</span></a></span><span>Maintained and developed multiple academic and real-world software&nbsp;projects.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="split record reveal">
+          <h3 class="label split__meta">Certifications</h3>
+          <ol class="rows split__body">
+            <li class="rows__item"><span class="rows__key">01</span><span>AWS Academy Graduate – Cloud&nbsp;Foundations</span></li>
+            <li class="rows__item"><span class="rows__key">02</span><span>Data Science&nbsp;Certification</span></li>
+            <li class="rows__item"><span class="rows__key">03</span><span>Infosys Springboard – Essentials of Cloud&nbsp;Computing</span></li>
+            <li class="rows__item"><span class="rows__key">04</span><span>AWS Cloud Practitioner&nbsp;Essentials</span></li>
+          </ol>
+        </div>
+
+        <div class="split record reveal">
+          <h3 class="label split__meta">Relevant coursework</h3>
+          <ul class="grid-list split__body">
+            <li>Data Structures &amp; Algorithms&nbsp;(DSA)</li>
+            <li>Object-Oriented Programming (OOP)</li>
+            <li>Database Management Systems&nbsp;(DBMS)</li>
+            <li>Operating Systems</li>
+            <li>Computer Networks</li>
+            <li>Software Engineering</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── 07 Contact ───────────── -->
+    <section class="section section--last" id="contact" tabindex="-1" aria-labelledby="contact-title">
+      <div class="container">
+        <header class="section__head split reveal">
+          <p class="label split__meta"><span class="label__no">07</span> / Contact</p>
+          <h2 class="section__title split__body" id="contact-title">If any of this is interesting, <em>say hello.</em></h2>
+        </header>
+
+        <div class="split reveal">
+          <p class="label split__meta">Email</p>
+          <div class="split__body">
+            <p class="contact__mail">
+              <a class="contact__address" href="mailto:2005sagarms@gmail.com" data-email="2005sagarms@gmail.com">2005sagarms@gmail.com</a>
+              <button class="copy" type="button" data-copy-email aria-label="Copy email address" hidden>
+                <svg class="icon icon--sm copy__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 8.5v-2a1.5 1.5 0 0 0-1.5-1.5H6.5A1.5 1.5 0 0 0 5 6.5V14a1.5 1.5 0 0 0 1.5 1.5h2"/></svg>
+                <svg class="icon icon--sm copy__check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+                <span class="copy__label">Copy</span>
+              </button>
+            </p>
+            <ul class="rows contact__links">
+              <li class="rows__item"><span class="rows__key">GitHub</span><a class="text-link" href="https://github.com/Sagarms2005" target="_blank" rel="noopener noreferrer" data-link="GitHub">github.com/Sagarms2005<span class="sr-only"> (opens in a new tab)</span></a></li>
+              <li class="rows__item"><span class="rows__key">LinkedIn</span><a class="text-link" href="https://www.linkedin.com/in/sagar-m-s-867102337/" target="_blank" rel="noopener noreferrer" data-link="LinkedIn">linkedin.com/in/sagar-m-s-867102337<span class="sr-only"> (opens in a new tab)</span></a></li>
+              <li class="rows__item"><span class="rows__key">LeetCode</span><a class="text-link" href="https://leetcode.com/u/2005sagarms/" target="_blank" rel="noopener noreferrer" data-link="LeetCode">leetcode.com/u/2005sagarms<span class="sr-only"> (opens in a new tab)</span></a></li>
+              <li class="rows__item"><span class="rows__key">Resume</span><a class="text-link" href="assets/sagar-m-s-resume.pdf" target="_blank" rel="noopener noreferrer">Open PDF<span class="sr-only"> of the resume (opens in a new tab)</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__meta">© 2026 Sagar M S<span class="footer__updated">Last updated <time datetime="2026-10">October 2026</time></span></p>
+      <p class="footer__colophon">Set in Newsreader and JetBrains Mono. Plain HTML, CSS and JavaScript.</p>
+      <div class="footer__links">
+        <button class="footer__term" type="button" data-terminal-open aria-haspopup="dialog" aria-label="Open terminal" hidden>
+          <span class="footer__term-glyph" aria-hidden="true">&gt;<span class="footer__term-cur">_</span></span>
+          <span class="footer__term-label">Terminal</span>
+          <kbd class="footer__term-kbd" aria-hidden="true">Ctrl `</kbd>
+        </button>
+        <a class="text-link" href="assets/sagar-m-s-resume.pdf" target="_blank" rel="noopener noreferrer">Resume<span class="sr-only"> (PDF, opens in a new tab)</span></a>
+        <a class="text-link" href="#top">Back to top<span class="sr-only"> of the page</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Command palette (enhanced by js/main.js) -->
+  <dialog class="palette" id="palette" aria-label="Command palette">
+    <div class="palette__box">
+      <input class="palette__input" type="text" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" aria-label="Search sections and actions" placeholder="Jump to a section or action" autocomplete="off" spellcheck="false">
+      <div class="palette__list" id="palette-list" tabindex="-1" role="listbox" aria-label="Results"></div>
+      <p class="palette__empty" hidden>No matches</p>
+      <p class="sr-only" id="palette-count" role="status"></p>
+      <p class="palette__foot"><kbd>↑</kbd> <kbd>↓</kbd> to move · <kbd>Enter</kbd> to select · <kbd>Esc</kbd> to close</p>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Terminal easter egg (enhanced by js/fx/terminal.js; closed and inert without it) -->
+  <dialog class="tty" id="terminal" data-fx="terminal" aria-modal="true" aria-label="Terminal">
+    <div class="tty__bar">
+      <span class="tty__icon" aria-hidden="true">&gt;_</span>
+      <span class="tty__who" aria-hidden="true">sagar@portfolio:~</span>
+      <button class="tty__close" type="button" aria-label="Close terminal">
+        <kbd class="tty__esc" aria-hidden="true">esc</kbd>
+        <svg class="icon tty__x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="tty__log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Terminal output" tabindex="0"></div>
+    <div class="tty__chips" role="group" aria-label="Quick commands"></div>
+    <form class="tty__form" autocomplete="off">
+      <label class="tty__ps" for="terminal-input"><span class="tty__ps-text" aria-hidden="true">$</span><span class="sr-only tty__ps-label">Command</span></label>
+      <div class="tty__field">
+        <div class="tty__ghost" aria-hidden="true"></div>
+        <input class="tty__input" id="terminal-input" type="text" maxlength="160" placeholder="type help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" data-gramm="false">
+      </div>
+      <button class="tty__tab" type="button" aria-label="Autocomplete" hidden>Tab</button>
+    </form>
+  </dialog>
+
+  <script src="js/data.js" defer></script>
+  <script src="js/core.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/fx/hero.js" defer></script>
+  <script src="js/fx/terminal.js" defer></script>
+  <script src="js/fx/pipeline.js" defer></script>
+</body>
+</html>
