@@ -97,11 +97,13 @@
   <link rel="stylesheet" href="css/fx/terminal.css" media="print" data-late onload="this.media='all'">
   <link rel="stylesheet" href="css/fx/pipeline.css" media="print" data-late onload="this.media='all'">
   <link rel="stylesheet" href="css/fx/spot.css">
+  <link rel="stylesheet" href="css/fx/gallery.css" media="print" data-late onload="this.media='all'">
   <noscript>
     <link rel="stylesheet" href="css/fx/project-art.css">
     <link rel="stylesheet" href="css/fx/constellation.css">
     <link rel="stylesheet" href="css/fx/terminal.css">
     <link rel="stylesheet" href="css/fx/pipeline.css">
+    <link rel="stylesheet" href="css/fx/gallery.css">
   </noscript>
   <script>
     // Opening part-way down the page (a #deep-link, reload or back): those sections may be on screen straight away.
@@ -445,16 +447,84 @@
           <div class="split__body">
             <h2 class="section__title" id="projects-title">Selected work, <em>newest first.</em></h2>
             <p class="section__aside">
-              <span class="section__hint">Select a row to open it.</span>
+              <span class="section__hint">Select a cover or a row to open it.</span>
               <button class="link-btn" type="button" data-projects-toggle hidden>Expand all</button>
               <span class="art-hint" aria-hidden="true">Hover a row for a preview</span>
             </p>
           </div>
         </header>
 
+        <!-- Selected work, as a gallery wall: the four covers (js/fx/project-art.js fills each .gallery__cover with the drawing
+             from its panel below) beside a museum-style label. Every tile links to its row in the list; js/fx/gallery.js adds the
+             hover, tilt and carousel behavior. Without JavaScript the wall is hidden and the fully expanded list below is the page. -->
+        <div class="gallery" data-fx="gallery">
+          <p class="sr-only" id="gallery-hint">Opens this project in the list below.</p>
+          <ul class="gallery__wall" id="gallery-wall" aria-label="Project covers">
+            <li class="gallery__item" data-project="photo">
+              <a class="gallery__tile" href="#project-photo" aria-labelledby="gallery-1-title" aria-describedby="gallery-1-date gallery-1-stack gallery-hint">
+                <div class="gallery__plate" data-no="01" aria-hidden="true">
+                  <div class="gallery__cover" data-cover="photo"></div>
+                  <div class="gallery__spot"></div>
+                </div>
+                <span class="gallery__cap" aria-hidden="true"><span class="gallery__fig">Fig. 1</span><span class="gallery__ill">Illustration</span></span>
+                <span class="gallery__title" id="gallery-1-title">AI Event Photo Delivery System</span>
+              </a>
+              <p class="gallery__stack" id="gallery-1-stack"><span class="nowrap">Flask</span> <span class="nowrap">AWS Rekognition</span> <span class="nowrap">MySQL</span></p>
+              <p class="gallery__foot"><span class="gallery__date" id="gallery-1-date">Apr 2026 – Jul 2026</span></p>
+            </li>
+            <li class="gallery__item" data-project="cloud">
+              <a class="gallery__tile" href="#project-cloud" aria-labelledby="gallery-2-title" aria-describedby="gallery-2-date gallery-2-stack gallery-hint">
+                <div class="gallery__plate" data-no="02" aria-hidden="true">
+                  <div class="gallery__cover" data-cover="cloud"></div>
+                  <div class="gallery__spot"></div>
+                </div>
+                <span class="gallery__cap" aria-hidden="true"><span class="gallery__fig">Fig. 2</span><span class="gallery__ill">Illustration</span></span>
+                <span class="gallery__title" id="gallery-2-title">Cloud-Based Web Deployment with CI/CD &amp; Containers</span>
+              </a>
+              <p class="gallery__stack" id="gallery-2-stack"><span class="nowrap">Docker</span> <span class="nowrap">AWS EC2</span> <span class="nowrap">GitHub Actions</span></p>
+              <p class="gallery__foot"><span class="gallery__date" id="gallery-2-date">Dec 2025 – Mar 2026</span><a class="gallery__src" href="https://github.com/Sagarms2005/cloud-deployment-ci-cd" target="_blank" rel="noopener noreferrer"><span class="gallery__src-t">Source</span><span class="sr-only"> on GitHub (cloud-deployment-ci-cd repository, opens in a new tab)</span></a></p>
+            </li>
+            <li class="gallery__item" data-project="vnet">
+              <a class="gallery__tile" href="#project-vnet" aria-labelledby="gallery-3-title" aria-describedby="gallery-3-date gallery-3-stack gallery-hint">
+                <div class="gallery__plate" data-no="03" aria-hidden="true">
+                  <div class="gallery__cover" data-cover="vnet"></div>
+                  <div class="gallery__spot"></div>
+                </div>
+                <span class="gallery__cap" aria-hidden="true"><span class="gallery__fig">Fig. 3</span><span class="gallery__ill">Illustration</span></span>
+                <span class="gallery__title" id="gallery-3-title">Blood Smear Segmentation using V-Net</span>
+              </a>
+              <p class="gallery__stack" id="gallery-3-stack"><span class="nowrap">PyTorch</span> <span class="nowrap">V-Net</span></p>
+              <p class="gallery__foot"><span class="gallery__date" id="gallery-3-date">Aug 2025 – Oct 2025</span></p>
+            </li>
+            <li class="gallery__item" data-project="voting">
+              <a class="gallery__tile" href="#project-voting" aria-labelledby="gallery-4-title" aria-describedby="gallery-4-date gallery-4-stack gallery-hint">
+                <div class="gallery__plate" data-no="04" aria-hidden="true">
+                  <div class="gallery__cover" data-cover="voting"></div>
+                  <div class="gallery__spot"></div>
+                </div>
+                <span class="gallery__cap" aria-hidden="true"><span class="gallery__fig">Fig. 4</span><span class="gallery__ill">Illustration</span></span>
+                <span class="gallery__title" id="gallery-4-title">Digital Voting System</span>
+              </a>
+              <p class="gallery__stack" id="gallery-4-stack"><span class="nowrap">Node.js</span> <span class="nowrap">PHP</span> <span class="nowrap">MySQL</span></p>
+              <p class="gallery__foot"><span class="gallery__date" id="gallery-4-date">Aug 2024 – Oct 2024</span><a class="gallery__src" href="https://github.com/Sagarms2005/digital-voting-system-" target="_blank" rel="noopener noreferrer"><span class="gallery__src-t">Source</span><span class="sr-only"> on GitHub (digital-voting-system- repository, opens in a new tab)</span></a></p>
+            </li>
+          </ul>
+          <div class="gallery__nav" data-gallery-nav hidden>
+            <span class="gallery__count" aria-hidden="true"><span data-gallery-now>01</span> / 04</span>
+            <span class="gallery__arrows">
+              <button class="gallery__arrow" type="button" data-gallery-step="-1" aria-controls="gallery-wall" aria-label="Previous cover">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+              </button>
+              <button class="gallery__arrow" type="button" data-gallery-step="1" aria-controls="gallery-wall" aria-label="Next cover">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </button>
+            </span>
+          </div>
+        </div>
+
         <ol class="projects reveal" data-fx="project-art" data-fx-src="js/fx/project-art.js">
 
-          <li class="project is-open" id="project-photo" data-project="photo" data-tech="Flask|AWS Rekognition|AWS|MySQL|Node.js|PHP">
+          <li class="project" id="project-photo" data-project="photo" data-tech="Flask|AWS Rekognition|AWS|MySQL|Node.js|PHP">
             <h3 class="project__row">
               <button class="project__toggle" type="button" id="project-1-btn" aria-expanded="true" aria-controls="project-1-panel" aria-labelledby="project-1-title" aria-describedby="project-1-sum project-1-stack project-1-date">
                 <span class="project__no">01</span>
@@ -1476,5 +1546,6 @@
   <script src="js/fx/terminal.js" defer></script>
   <script src="js/fx/pipeline.js" defer></script>
   <script src="js/fx/spot.js" defer></script>
+  <script src="js/fx/gallery.js" defer></script>
 </body>
 </html>
