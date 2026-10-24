@@ -66,8 +66,8 @@
   }
 }
 
-/* The grain of the dark theme: the base grain is black, which a near-black page cannot show. Here it is a faint light film
-   (a tenth of the weight, a little warmer than the paper), and the hero's foot is re-matched to the page it sits on. */
+/* The grain of the dark theme: the base grain is black, which a near-black page cannot show. Here it is a faint, warm, light
+   film, and the hero's foot is re-matched to the page it sits on (so there is no seam under the hero). */
 :root[data-theme="dark"].atmos-on {
   --grain-opacity: 0.04;
   --hero-foot: color-mix(in srgb, rgb(var(--paper-rgb)), white calc(var(--grain-opacity) * 32%));
@@ -118,8 +118,9 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* Five weights of ink lines (l0..l4) and of accent index lines (a0..a4): the script sorts each line by how strongly it
-   blooms. Alphas come from the knobs above, so a theme change recolors the bands with no redraw. */
+/* Five weights of ink lines (l0..l4) and of accent index lines (a0..a4): the script sorts each line by how strong the band
+   is where the line runs (calm behind the text, fuller in the margins). Alphas come from the knobs above, so a theme change
+   recolors the bands with no redraw. */
 .atmos__band .l0 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.2)); }
 .atmos__band .l1 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.4)); }
 .atmos__band .l2 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.6)); }
@@ -131,22 +132,22 @@
 .atmos__band .a3 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 80%), transparent); }
 .atmos__band .a4 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 100%), transparent); }
 
-/* Parallax + bloom: while a band crosses the window it drifts against the page (about 17% slower, from 13vh low to 13vh
-   high) and is strongest as its rule passes the middle. A scroll-driven animation: it runs on the compositor, not in the
-   script. Where unsupported, and for reduced motion, the bands simply stay on the page. */
-@supports (animation-timeline: view()) {
+/* Parallax: one layer carries every band and is nudged against the scroll, so the bands trail the page by 18% (a band's rule
+   is level with the middle of the window when it passes it, and drifts a little either side). A scroll-driven animation:
+   no script runs per frame. Where unsupported, and for reduced motion, the bands simply stay on the page. The 18% of the
+   layer's height minus 18vh is 18% of the scrollable distance, so the drift is exact from the top of the page to the foot. */
+.atmos-doc__layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+@supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
-    .atmos__band {
-      animation: atmos-band linear both;
-      animation-timeline: view();
-    }
+    .atmos-doc__layer { animation: atmos-par linear both; animation-timeline: scroll(root block); }
   }
 }
-@keyframes atmos-band {
-  from { transform: translateY(-13vh); opacity: 0.5; }
-  50% { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(13vh); opacity: 0.5; }
-}
+@keyframes atmos-par { to { transform: translateY(calc(18% - 18vh)); } }
 
 .atmos__light {
   position: absolute;
@@ -210,9 +211,10 @@
   height: 1px;
   margin: -0.5px 0.2rem 0 0;
   background: var(--atmos-tick);
-  transition: background-color var(--t-med) var(--ease), width var(--t-med) var(--ease);
+  transform-origin: 100% 50%;
+  transition: background-color var(--t-med) var(--ease), transform var(--t-med) var(--ease);
 }
-.atmos-compass__tick.is-current { width: 0.8rem; background: var(--accent); }
+.atmos-compass__tick.is-current { transform: scaleX(1.6); background: var(--accent); }
 
 .atmos-compass__head {
   position: absolute;
@@ -252,18 +254,14 @@
 }
 .atmos-compass.is-reading .atmos-compass__no { color: var(--accent); }
 
-/* The thread follows the page: a scroll-driven animation (compositor only). The script moves it itself where unsupported.
-   The bezel turns three times down the page, unless motion is reduced. */
+/* The thread follows the page: a scroll-driven animation (no script per frame). The script moves it itself where unsupported.
+   It is a position indicator, not decoration, so it also runs when motion is reduced (like the masthead's progress line). */
 @supports (animation-timeline: scroll()) {
   .atmos-compass__head { animation: atmos-head linear both; animation-timeline: scroll(root block); }
   .atmos-compass__fill { animation: atmos-fill linear both; animation-timeline: scroll(root block); }
-  @media (prefers-reduced-motion: no-preference) {
-    .atmos-compass__bezel { animation: atmos-spin linear both; animation-timeline: scroll(root block); }
-  }
 }
 @keyframes atmos-head { from { transform: translateY(0); } to { transform: translateY(var(--ct)); } }
 @keyframes atmos-fill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes atmos-spin { to { transform: rotate(1080deg); } }
 
 /* Running head: a book's folio, turned on its side. Wide screens only (a 240 px margin and up). */
 @media (min-width: 1600px) {

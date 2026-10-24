@@ -9,9 +9,9 @@
         scroll speed (transform and paint only, so no line can re-wrap);
      4. magnetic arrows on buttons.
 
-   Scrolling costs (almost) nothing here: the bands are vector strips laid in the page, the parallax, the
-   bloom and the compass thread are CSS scroll-driven animations (compositor only) and, where a browser lacks them, the
-   bands simply stay put and the thread is moved from here. The script starts after load, in idle time, on the shared
+   Scrolling costs (almost) nothing here: the bands are vector strips laid in the page, and the parallax and the compass
+   thread are three CSS scroll-driven animations (no script per frame); where a browser lacks them the bands simply stay
+   on the page and the thread is moved from here. The script starts after load, in idle time, on the shared
    frame loop (Portfolio.frame), and only runs while something is happening. Reduced motion keeps the bands and the
    compass and drops everything that moves on its own. Classic script, no dependencies. */
 (function () {
@@ -71,6 +71,7 @@
     started: false,
     stop: null,          // unsubscribe from the shared frame loop (null = asleep)
     awakeUntil: 0,
+    scroll: 0,           // scroll offset, kept by the scroll listener (reading it inside a frame would force a style flush)
     y: 0,                // scroll offset of the last frame
     vs: 0,               // smoothed scroll velocity, px/s
     poolY: -1e9          // scroll offset the band strips were last matched to
@@ -78,7 +79,7 @@
 
   var G = {              // geometry, measured outside the frame loop
     w: 0, h: 0, docH: 0, heroEnd: 0, cl: 0, cr: 0, scrollable: 0,
-    rules: [],           // page y of each section rule (the bands bloom here)
+    rules: [],           // page y of each section rule (a band is laid at each)
     tops: [],            // scroll-spy tops (same rule as the masthead: js/main.js)
     links: []            // { id, no, label } of each section in the index
   };
@@ -86,7 +87,8 @@
   /* ---------- 1. The stack ---------- */
 
   // .atmos is fixed (only the paper light lives there); .atmos-doc is laid in the page, behind everything, as long as the
-  // page: the contour bands are placed in it at their section rules and scroll with the page.
+  // page. Inside it one layer carries every contour band, each placed at its section rule; the layer is nudged against the
+  // scroll (a scroll-driven CSS animation) so the bands trail the page: that is the parallax.
   var stack = {};
 
   function buildStack() {
@@ -96,6 +98,8 @@
     stack.wrap.appendChild(stack.light);
     stack.doc = el('div', 'atmos-doc');
     stack.doc.setAttribute('aria-hidden', 'true');
+    stack.layer = el('div', 'atmos-doc__layer');
+    stack.doc.appendChild(stack.layer);
     document.body.insertBefore(stack.doc, document.body.firstChild);
     document.body.insertBefore(stack.wrap, document.body.firstChild);
   }
@@ -108,6 +112,7 @@
     var hero = $('.hero');
     var column = $('main .container');
 
+    S.scroll = window.pageYOffset;
     G.docH = root.scrollHeight;
     G.scrollable = Math.max(0, G.docH - window.innerHeight);
     G.heroEnd = hero ? pageTop(hero) + hero.offsetHeight : 0;
@@ -131,7 +136,7 @@
     var footer = $('.footer');
     if (footer) G.rules.push(pageTop(footer) + (parseFloat(window.getComputedStyle(footer).borderTopWidth) || 0));
 
-    stack.doc.style.height = G.docH + 'px';
+    stack.doc.style.height = stack.layer.style.height = G.docH + 'px';
     stack.doc.style.setProperty('--atmos-start', G.heroEnd + 'px');
 
     var resized = w !== G.w || h !== G.h;
@@ -158,13 +163,14 @@
 
   // Each section rule gets one band: a strip of contour lines (an inline SVG, so vector: a bitmap layer per band would cost
   // more on every scroll frame than everything else here) laid in the page at the rule. Strips exist only for rules within a
-  // few screens of the window. Their colors come from CSS tokens, the parallax and the bloom are scroll-driven CSS
-  // animations; the lines are rebuilt when a strip is placed and, slowly, while the page is idle ("drift").
+  // screen or so of the window. Their colors come from CSS tokens and their parallax from one scroll-driven CSS animation on
+  // the layer that holds them; the lines are rebuilt when a strip is placed and, slowly, while the page is idle ("drift").
   var NB = 5;             // alpha buckets: one stroke() per bucket instead of one per line
   var REACH = 250;        // a band reaches this far above and below its rule (px) ...
   var SIGMA = 105;        // ... and fades with a Gaussian of this width
   var PITCH = 16;         // contour interval of the field
   var POOL = 6;
+  var DRIFT = 0.18;       // the layer trails the page by this much of the scroll (see atmos-par in css/fx/atmos.css)
 
   var SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -182,6 +188,9 @@
     turn: 0,
     lastDrift: 0
   };
+
+  // How far the layer trails the page right now: none where the animation is unavailable or motion is reduced.
+  function trail() { return SCROLL_LINKED && !P.reduced ? DRIFT : 0; }
 
   // Calm waves behind the text column, fuller topographic swells in the margins (wide screens show them best).
   bands.columns = function () {
@@ -243,7 +252,7 @@
       svg.appendChild(path);
       paths.push(path);
     }
-    stack.doc.appendChild(svg);
+    stack.layer.appendChild(svg);
     var strip = { svg: svg, paths: paths, rule: -1, top: NaN, dirty: true };
     bands.pool.push(strip);
     sizeStrip(strip);
@@ -353,14 +362,19 @@
     bands.pool.forEach(function (strip) { strip.svg.style.display = 'none'; });
   };
 
-  // Match the strips to the rules within a screen or two of the window (a strip must exist before its band can be seen). New
-  // and stale ones are only marked: step() draws them, one per frame.
+  // Match the strips to the rules whose bands are within a screen of the window (a strip must exist before its band can be
+  // seen). A band's centre sits at (1 - trail) * (rule - scroll) + trail * half the window; the layer's own motion supplies
+  // the scroll-dependent part, so a strip is placed at rule * (1 - trail) + trail * half - reach. New and stale strips are
+  // only marked: step() draws them, one per frame.
   bands.sync = function (y) {
     if (!bands.on) return;
     S.poolY = y;
-    var from = y - G.h * 0.5 - REACH, to = y + G.h * 1.5 + REACH;
+    var k = trail(), half = G.h * 0.5;
     var wanted = {};
-    G.rules.forEach(function (rule, i) { if (rule > from && rule < to) wanted[i] = true; });
+    G.rules.forEach(function (rule, i) {
+      var c = (1 - k) * (rule - y) + k * half;
+      if (c > -REACH - G.h * 0.5 && c < G.h * 1.5 + REACH) wanted[i] = true;
+    });
 
     bands.pool.forEach(function (strip) {
       if (strip.rule >= 0 && !wanted[strip.rule]) { strip.rule = -1; strip.svg.style.display = 'none'; }
@@ -377,9 +391,14 @@
       if (strip.rule !== i) strip.dirty = true;
       strip.rule = i;
       if (strip.svg.style.display) strip.svg.style.display = '';
-      var top = Math.round(G.rules[i] - REACH);
+      var top = Math.round(G.rules[i] * (1 - k) + k * half - REACH);
       if (top !== strip.top) { strip.top = top; strip.svg.style.top = top + 'px'; }
     });
+  };
+
+  bands.relayout = function () {
+    bands.pool.forEach(function (strip) { strip.top = NaN; });
+    bands.sync(S.scroll);
   };
 
   // Draw the stale strip nearest the middle of the window.
@@ -519,7 +538,7 @@
     var from = active < 0 ? 0 : G.tops[active];
     var to = active + 1 < G.tops.length && isFinite(G.tops[active + 1]) ? G.tops[active + 1] : G.docH;
     var sp = to > from ? clamp((y + G.h * 0.45 - from) / (to - from), 0, 1) : 0;
-    if (Math.abs(sp - compass.last.sp) > 0.008) {
+    if (Math.abs(sp - compass.last.sp) > 0.04) {
       compass.last.sp = sp;
       compass.arc.style.strokeDashoffset = (1 - sp).toFixed(3);
     }
@@ -551,7 +570,7 @@
 
   /* ---------- 6. Headlines ---------- */
 
-  var heads = { all: [], near: [], shown: false };
+  var heads = { all: [], near: [], step: 0 };
 
   function setupHeadlines() {
     heads.all = $$('.section__title');
@@ -581,7 +600,7 @@
     var seen = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         var i = heads.near.indexOf(entry.target);
-        if (entry.isIntersecting && i < 0) heads.near.push(entry.target);
+        if (entry.isIntersecting && i < 0) { heads.near.push(entry.target); heads.step = NaN; }
         else if (!entry.isIntersecting && i > -1) { clearHeading(entry.target); heads.near.splice(i, 1); }
       });
     }, { threshold: 0 });
@@ -593,15 +612,15 @@
     heading.style.webkitTextStrokeWidth = '';
   }
 
-  // Returns true while any headline is still away from rest.
+  // Returns true while any headline is still away from rest. The response moves in steps of 1/16 of its range, so a steady
+  // scroll changes nothing from one frame to the next (no style work) and a change is a single small step.
   function headlinesUpdate() {
     var live = !P.reduced && P.quality >= 0.7;
-    var n = live ? clamp(S.vs / 2200, -1, 1) : 0;
-    var a = Math.abs(n);
-    if (a < 0.012) {
-      if (heads.shown) { heads.near.forEach(clearHeading); heads.shown = false; }
-      return false;
-    }
+    var step = live ? Math.round(clamp(S.vs / 2200, -1, 1) * 16) : 0;
+    if (step === heads.step) return step !== 0;
+    heads.step = step;
+    if (step === 0) { heads.near.forEach(clearHeading); return false; }
+    var n = step / 16, a = Math.abs(n);
     var transform = 'skewX(' + (-n * 2.1).toFixed(2) + 'deg) scaleX(' + (1 + a * 0.0034).toFixed(4) + ')';
     var stroke = (a * 0.4).toFixed(2) + 'px';
     heads.near.forEach(function (heading) {
@@ -610,7 +629,6 @@
       heading.style.transform = transform;
       heading.style.webkitTextStrokeWidth = stroke;
     });
-    heads.shown = true;
     return true;
   }
 
@@ -650,7 +668,7 @@
   }
 
   function tick(dt, time) {
-    var y = window.pageYOffset;
+    var y = S.scroll;
     var moved = y - S.y;
     S.y = y;
     S.vs += ((dt > 0 ? moved / dt * 1000 : 0) - S.vs) * (1 - Math.exp(-dt / 110));
@@ -688,7 +706,7 @@
 
   function start() {
     readIndex();
-    S.y = window.pageYOffset;
+    S.scroll = S.y = window.pageYOffset;
     buildStack();
     bands.init();
     guard('compass build', buildCompass);
@@ -698,10 +716,13 @@
 
     root.classList.add('atmos-on');
 
-    window.addEventListener('scroll', function () { wake(1600); }, { passive: true });
+    window.addEventListener('scroll', function () { S.scroll = window.pageYOffset; wake(1600); }, { passive: true });
     window.addEventListener('resize', measureSoon);
     if ('ResizeObserver' in window) new ResizeObserver(measureSoon).observe(document.body);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureSoon);
+
+    var reducedQuery = media('(prefers-reduced-motion: reduce)');
+    if (reducedQuery.addEventListener) reducedQuery.addEventListener('change', function () { guard('relayout', bands.relayout); wake(900); });
 
     if (fine.matches) {
       document.addEventListener('pointermove', onPointer, { passive: true });
