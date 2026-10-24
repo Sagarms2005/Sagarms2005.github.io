@@ -963,6 +963,7 @@ html.js :is(.section, .footer)[data-cv="done"] { content-visibility: visible; }
 
 .projects { border-top: 1px solid var(--ink); }
 .projects__more { margin-top: var(--s4); font: 400 var(--fs-small) var(--font-mono); }
+.gallery { display: none; }   /* the cover wall (css/fx/gallery.css) shows itself: without that stylesheet, or without JavaScript, the page is just the list */
 .rows__key .text-link { display: inline-flex; align-items: center; gap: 0.35em; }
 .rows__key .icon { width: 0.9em; height: 0.9em; }
 .project { position: relative; border-bottom: 1px solid var(--rule); }

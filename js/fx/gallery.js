@@ -7,8 +7,9 @@
      - hovering a row of the list below lights its cover instead of the floating preview card (event 'row-link', see
        project-art.js), and hovering a cover tints its row;
      - below 1100 px the wall is a snap carousel: arrows, a counter, arrow-key roving; on touch the centered cover wakes;
-     - a skill picked in the Skills section marks the covers whose project uses it.
-   All of it stands down for reduced motion, coarse pointers (no tilt) and the low quality tier. */
+     - a skill picked in the Skills section marks the covers whose project uses it;
+     - a wall that starts below the fold hangs itself: the tiles arrive one after another when it first comes into view.
+   The drawings themselves (and their first-view "develop" pass) belong to js/fx/project-art.js. All of it stands down for reduced motion, coarse pointers (no tilt) and the low quality tier. */
 (function () {
   'use strict';
 
@@ -58,7 +59,7 @@
         spot: li.querySelector('.gallery__spot'),
         row: document.getElementById('project-' + id),
         hover: false, focus: false, linked: false, current: false, awake: false,
-        u: 0, v: 0, cu: 0, cv: 0, mx: 50, my: 35, sx: 50, sy: 35, tilting: false
+        u: 0, v: 0, cu: 0, cv: 0, mx: 50, my: 35, sx: 50, sy: 35, w: 0, h: 0, tilting: false
       };
       byId[id] = t;
       return t;
@@ -89,8 +90,8 @@
     function settle(t) {
       t.plate.style.transform = '';
       t.cover.style.transform = '';
-      t.spot.style.removeProperty('--mx');
-      t.spot.style.removeProperty('--my');
+      t.spot.style.removeProperty('--lx');
+      t.spot.style.removeProperty('--ly');
       t.li.classList.remove('is-tilting');
       t.tilting = false;
     }
@@ -111,8 +112,8 @@
         busy = busy || moving;
         t.plate.style.transform = 'perspective(900px) rotateX(' + r2(-t.cv * 2.4) + 'deg) rotateY(' + r2(t.cu * 3.2) + 'deg)';
         t.cover.style.transform = 'translate3d(' + r2(-t.cu * 6) + 'px,' + r2(-t.cv * 4) + 'px,0) scale(1.05)';
-        t.spot.style.setProperty('--mx', r2(t.sx) + '%');
-        t.spot.style.setProperty('--my', r2(t.sy) + '%');
+        t.spot.style.setProperty('--lx', r2(t.sx * t.w / 100) + 'px');
+        t.spot.style.setProperty('--ly', r2(t.sy * t.h / 100) + 'px');
       });
       if (!busy && unsub) { unsub(); unsub = null; }
     }
@@ -121,6 +122,7 @@
       if (!fancy()) return;
       var box = t.plate.getBoundingClientRect();
       if (!box.width) return;
+      t.w = t.plate.offsetWidth; t.h = t.plate.offsetHeight;   // untransformed size: the light is placed in the plate's own pixels
       var x = (event.clientX - box.left) / box.width, y = (event.clientY - box.top) / box.height;
       t.u = clamp(x * 2 - 1, -1, 1);
       t.v = clamp(y * 2 - 1, -1, 1);

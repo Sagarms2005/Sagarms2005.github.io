@@ -504,26 +504,11 @@
       c.tile.addEventListener('pointerleave', function () { inst.over = false; });
     }
 
+    // One cover per idle slice (a cover is a few KB of SVG to parse): no single long task however slow the device.
     function buildCovers() {
       if (built) return;
       built = true;
-      qa(document, '.gallery [data-cover]').forEach(function (slot) {
-        var kind = slot.getAttribute('data-cover'), tile = slot.closest('.gallery__item');
-        if (!pristine[kind] || coverBy[kind] || !tile) return;
-        var holder = document.createElement('div');
-        holder.innerHTML = pristine[kind];
-        var fig = holder.firstChild, cap = fig.querySelector('figcaption');
-        if (cap) cap.parentNode.removeChild(cap);   // the tile carries its own label
-        fig.classList.add('art--cover');
-        slot.appendChild(fig);
-        var c = { kind: kind, inst: new Inst(fig), slot: slot, tile: tile, awake: tile.classList.contains('is-awake') };
-        c.inst.wall = true;
-        wireCover(c);
-        covers.push(c); coverBy[kind] = c;
-        if (calm()) c.inst.poster(); else c.inst.blank();
-        slot.classList.add('is-ready'); slot.parentNode.classList.add('is-ready'); tile.classList.add('has-cover');
-        if (c.awake && !calm()) c.inst.wake();
-      });
+      var slots = qa(document, '.gallery [data-cover]');
       var wall = document.querySelector('[data-fx="gallery"]');
       if (wall && 'IntersectionObserver' in window) {
         var watch = new IntersectionObserver(function (entries) {
@@ -532,14 +517,40 @@
         }, { threshold: 0.3 });
         watch.observe(wall);
       } else { seen = true; developAll(); }
+      (function next() {
+        var slot = slots.shift();
+        if (!slot) return;
+        buildCover(slot);
+        if (slots.length) P.whenIdle(next, 400);
+      }());
     }
 
+    function buildCover(slot) {
+      var kind = slot.getAttribute('data-cover'), tile = slot.closest('.gallery__item');
+      if (!pristine[kind] || coverBy[kind] || !tile) return;
+      var holder = document.createElement('div');
+      holder.innerHTML = pristine[kind];
+      var fig = holder.firstChild, cap = fig.querySelector('figcaption');
+      if (cap) cap.parentNode.removeChild(cap);   // the tile carries its own label
+      fig.classList.add('art--cover');
+      slot.appendChild(fig);
+      var c = { kind: kind, inst: new Inst(fig), slot: slot, tile: tile, awake: tile.classList.contains('is-awake') };
+      c.inst.wall = true;
+      wireCover(c);
+      covers.push(c); coverBy[kind] = c;
+      if (calm()) c.inst.poster(); else c.inst.blank();
+      slot.classList.add('is-ready'); slot.parentNode.classList.add('is-ready'); tile.classList.add('has-cover');
+      if (c.awake && !calm()) c.inst.wake();
+      else if (developed && !calm()) developOne(c, 0);
+    }
+
+    function developOne(c, delay) {
+      window.setTimeout(function () { if (!c.awake && !calm()) c.inst.develop(); }, delay);
+    }
     function developAll() {
-      if (developed || !covers.length || calm()) return;
+      if (developed || calm()) return;
       developed = true;
-      covers.forEach(function (c, i) {
-        window.setTimeout(function () { if (!c.awake && !calm()) c.inst.develop(); }, i * 190);
-      });
+      covers.forEach(function (c, i) { developOne(c, i * 190); });
     }
 
     P.on('art-wake', function (d) {
@@ -627,7 +638,7 @@
       var a = box.right + 8, free = vw - 8 - a;
       return { left: a, edge: box.right, free: free, k: Math.min(1, (free - SLACK) / W_CARD) };
     }
-    function wallOn() { return !!document.querySelector('.gallery__item'); }
+    function wallOn() { var g = document.querySelector('.gallery'); return !!g && window.getComputedStyle(g).display !== 'none'; }   // the wall shows only with its stylesheet and JS
     function laneFits() {
       return !!root.querySelector('.project__row') && laneFor().k >= K_MIN;
     }

@@ -12,7 +12,7 @@
   margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
 }
 :root[data-theme="dark"] .gallery { --gal-glow: color-mix(in srgb, var(--accent) 17%, transparent); }
-html:not(.js) .gallery { display: none; }
+.js .gallery { display: block; }
 @media (min-width: 640px) { .gallery { --gal-w: clamp(17rem, 38vw, 22rem); } }
 
 /* ---- the wall: a snap carousel that bleeds to the screen edges, a four-column grid from 1100 px ---- */
@@ -36,6 +36,7 @@ html:not(.js) .gallery { display: none; }
   flex: 0 0 var(--gal-w);
   flex-direction: column;
   min-width: 0;
+  isolation: isolate;                 /* keeps the stretched link's z-index inside the tile */
   scroll-snap-align: start;
 }
 
@@ -58,7 +59,7 @@ html:not(.js) .gallery { display: none; }
   color: inherit;
   text-decoration: none;
 }
-.gallery__tile::after { content: ""; position: absolute; inset: 0; }
+.gallery__tile::after { content: ""; position: absolute; inset: 0; z-index: 1; }   /* above the stack's positioned separators, below the source link */
 .gallery__tile:focus-visible { outline: 0; }
 .gallery__tile:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 5px; border-radius: var(--radius); }
 
@@ -97,10 +98,22 @@ html:not(.js) .gallery { display: none; }
 .gallery__spot {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  background: radial-gradient(14rem circle at var(--mx, 50%) var(--my, 35%), var(--gal-glow), transparent 70%);
   transition: opacity var(--t-med) var(--ease);
+}
+/* The light is a disc moved with a transform (gallery.js sets --lx / --ly in px), so following the cursor never repaints the cover. */
+.gallery__spot::before {
+  content: "";
+  position: absolute;
+  left: -8rem;
+  top: -8rem;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gal-glow), transparent 68%);
+  transform: translate3d(var(--lx, 50%), var(--ly, 40%), 0);
 }
 
 /* ---- the label ---- */
@@ -114,7 +127,6 @@ html:not(.js) .gallery { display: none; }
   text-transform: uppercase;
   color: var(--ink-3);
   white-space: nowrap;
-  transition: opacity var(--t-med) var(--ease);
 }
 .gallery__fig { color: var(--accent); }
 .gallery__item:not(.has-cover) .gallery__ill { visibility: hidden; }   /* the label belongs to a drawing: none yet, none claimed */
@@ -133,9 +145,8 @@ html:not(.js) .gallery { display: none; }
 
 .gallery__title {
   display: block;
-  min-height: 2.4em;
   margin-top: var(--s2);
-  font-size: clamp(1.1rem, 1rem + 0.45vw, 1.3rem);
+  font-size: clamp(1.1rem, 0.9rem + 0.4vw, 1.2rem);
   line-height: 1.2;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -145,7 +156,9 @@ html:not(.js) .gallery { display: none; }
   display: flex;
   flex-wrap: wrap;
   column-gap: 2.2ch;
-  margin: var(--s2) 0 var(--s3);
+  margin: auto 0 var(--s3);           /* with the date row, pinned to the bottom of the tile so every tile's label lines up */
+  padding-top: var(--s2);
+  overflow: hidden;                   /* a separator that lands at the start of a wrapped line hangs outside the box: clipped */
   font: 400 var(--fs-label) / 1.5 var(--font-mono);
   color: var(--ink-3);
 }
@@ -158,7 +171,6 @@ html:not(.js) .gallery { display: none; }
   align-items: center;
   justify-content: space-between;
   gap: var(--s3);
-  margin-top: auto;
   padding-top: var(--s2);
   border-top: 1px solid var(--rule);
   font: 400 var(--fs-label) / 1.5 var(--font-mono);
@@ -196,12 +208,15 @@ html:not(.js) .gallery { display: none; }
 .gallery__item.is-hot .gallery__plate { border-color: var(--ink-3); box-shadow: 0 22px 40px -26px rgb(0 0 0 / 0.38); }
 :root[data-theme="dark"] .gallery__item.is-hot .gallery__plate { box-shadow: 0 22px 40px -22px rgb(0 0 0 / 0.75); }
 .gallery__item.is-hot .gallery__title { color: var(--accent); }
-.gallery__item.is-awake .gallery__spot { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .gallery__item.is-awake .gallery__spot { opacity: 1; }
+}
 .gallery__item.is-tilting .gallery__plate { will-change: transform; }
-.gallery__item.is-tilting .gallery__cover { will-change: transform; }
+.gallery__item.is-tilting .gallery__cover,
+.gallery__item.is-tilting .gallery__spot::before { will-change: transform; }
 
 /* A selected skill (js/main.js) marks the covers whose project uses it; the rest step back. */
-.gallery.has-skill .gallery__item:not(.is-match) :is(.gallery__plate, .gallery__cap) { opacity: 0.4; }   /* the covers step back; the text keeps its contrast */
+.gallery.has-skill .gallery__item:not(.is-match) .gallery__plate { opacity: 0.4; }   /* the covers step back; the text keeps its contrast */
 
 /* Hanging the work: while the wall is still below the fold (gallery.js arms it), the tiles wait, then arrive in turn. */
 @media (prefers-reduced-motion: no-preference) {
