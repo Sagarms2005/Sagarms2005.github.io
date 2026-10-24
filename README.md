@@ -2,6 +2,8 @@
 
 The source of my personal portfolio: a single-page site in plain HTML, CSS and JavaScript, with no build step.
 
+**Live site: <https://sagarms2005.github.io/>**
+
 ## What's inside
 
 - **Editorial single-page layout.** Experience, four projects, skills, education and contact on one page, readable with JavaScript switched off.
@@ -65,7 +67,7 @@ Needs Node 20 or newer and installs nothing. The same script runs on every push 
 
 Measured on the final build:
 
-- About 173 KB gzipped for all of the HTML, CSS, JavaScript and page images (roughly 576 KB uncompressed), not counting web fonts, the hero video or the resume PDF.
+- About 213 KB gzipped for all of the HTML, CSS, JavaScript and page images (roughly 616 KB uncompressed; a first visit on a phone fetches only one 6 to 12 KB portrait, a desktop visit adds the 9 to 25 KB About portrait when it scrolls near), not counting web fonts, the hero video or the resume PDF.
 - First and largest paint under 1.5 s (about 0.8 to 1.2 s across runs) with the CPU throttled 4x, on a fast connection.
 - Cumulative layout shift below 0.01.
 - The hero video is not downloaded on phones, with Save-Data on, or with reduced motion; those visitors get a still image.
