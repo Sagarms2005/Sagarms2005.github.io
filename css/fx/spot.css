@@ -76,8 +76,10 @@
 
 .section__head--spot { --spot-w: 5rem; --spot-k: 0.4; position: relative; }
 .section__head--spot > .label { min-height: calc(var(--spot-w) * 0.48 - 0.4rem); }
-@media (min-width: 640px) {
-  .section__head--spot { --spot-w: 7rem; --spot-k: 0.56; }
+/* From 480 px the title (never wider than 20ch) leaves the corner free, so the label row keeps its natural height. */
+@media (min-width: 480px) {
+  .section__head--spot { --spot-w: 6rem; --spot-k: 0.48; }
+  .section__head--spot > .label { min-height: 0; }
 }
 
 .spot { position: relative; margin: 0; color: var(--ink); }
@@ -95,25 +97,30 @@
   .section__head--spot > .label { min-height: 0; }
   .section__head--spot > .split__body { grid-row: 1 / span 2; }
   .section__head--spot > .spot {
-    --k: 0.88;
-    position: static;
+    --k: 0.8;
+    position: relative;
     grid-column: 1;
     grid-row: 2;
     align-self: start;
-    width: min(100%, 11rem);
+    width: min(100%, 10rem);
     margin-top: 0;
   }
 }
 
-@media (min-width: 860px) and (max-width: 1159.98px) {
-  .section__head--spot > .spot { --k: 0.76; width: 9.5rem; }
+@media (min-width: 860px) and (max-width: 1019.98px) {
+  .section__head--spot > .spot { --k: 0.64; width: 8rem; }
 }
 
-/* A small flourish for the pointer: the seal turns a little, like a stamp being lifted. */
+/* Small flourishes for a pointer: the seal turns like a stamp being lifted, the sheets part, the letter peeks out further. */
 .spot__rosette { transform-origin: 52px 58px; }
-@media (hover: hover) and (pointer: fine) {
-  .spot__rosette { transition: transform 0.6s var(--ease-spring); }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .spot__rosette,
+  .spot[data-spot="layers"] .spot__slab,
+  .spot__letter { transition: transform 0.6s var(--ease-spring); }
   .spot:hover .spot__rosette { transform: rotate(-7deg) scale(1.04); }
+  .spot[data-spot="layers"]:hover .spot__slab:nth-child(2) { transform: translateY(-4px); }
+  .spot[data-spot="layers"]:hover .spot__slab:nth-child(3) { transform: translateY(-9px); }
+  .spot:hover .spot__letter { transform: translateY(-6px); }
 }
 
 /* 4. Outside the code ------------------------------------------------------- */
@@ -127,12 +134,12 @@
   border-top: 1px solid var(--rule);
 }
 .outside__title { padding-top: 0.1rem; }
-.outside__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s4); }
+.outside__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3) var(--s4); }
 @media (min-width: 640px) {
   .outside__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 .outside__item { display: grid; align-content: start; gap: 0; }
-.ico { --k: 0.833; display: block; width: 6.25rem; height: auto; margin-bottom: var(--s2); }
+.ico { --k: 0.833; display: block; width: 6.25rem; height: auto; margin-bottom: var(--s1); }
 @media (min-width: 640px) {
   .ico { --k: 1.067; width: 8rem; }
 }
@@ -140,6 +147,10 @@
 .outside__note { margin-top: 0.15rem; font-size: 0.875rem; font-style: italic; line-height: 1.3; color: var(--ink-3); }
 @media (hover: hover) and (pointer: fine) {
   .outside__item:hover .outside__name { color: var(--accent); }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .ico { transition: transform 0.5s var(--ease-spring); }
+  .outside__item:hover .ico { transform: translateY(-3px); }
 }
 
 .ico__gear--a { transform-origin: 46px 38px; }
@@ -199,7 +210,7 @@
   transform-origin: left center;
 }
 @media screen {
-  .js .section__head.reveal::before { transition: transform 1.1s var(--ease-out) 0.12s; }
+  .js .section__head.reveal::before { transition: transform 1.3s cubic-bezier(0.55, 0, 0.1, 1) 0.1s; }
   .js .section__head.reveal--pending::before { transform: scaleX(0); }
 }
 
@@ -227,7 +238,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--s3);
+  gap: 0;
   min-height: 7.25rem;
   padding-left: calc(5rem - 1.875rem);
   text-decoration: none;
@@ -247,37 +258,49 @@
 }
 .finale__btn .icon { width: 1.5rem; height: 1.5rem; transition: transform var(--t-med) var(--ease-spring); }
 .finale__text {
+  margin-left: 3.75rem;               /* clear of the orbit lines that run on past the button */
   font-size: clamp(1.9rem, 1.4rem + 2.4vw, 2.6rem);
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 .finale__text em { color: var(--accent); }
-.finale__link:focus-visible { outline-offset: 6px; }
+.finale__link:focus-visible { outline: 0; }
+.finale__link:focus-visible .finale__btn { outline: 2px solid var(--accent); outline-offset: 4px; }
+.finale__link:focus-visible .finale__text { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
 @media (hover: hover) and (pointer: fine) {
   .finale__link:hover .finale__btn { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .finale__link:hover .finale__btn .icon { transform: translate(2px, -2px); }
 }
 
-/* Wide screens: the finale sits in the empty column to the right of the links, and the links give it the room. */
-@media (min-width: 1160px) {
-  .contact__links { max-width: 34rem; }
+/* Where there is room the finale sits in the empty column to the right of the links (the links give it the room), so it
+   adds no height: tablets in portrait (single column, 760-859) and everything from 1020 up. Phones and narrow desktops keep the
+   compact row above. */
+@media (min-width: 760px) and (max-width: 859.98px), (min-width: 1020px) {
+  .contact__links { max-width: 28rem; }
   #contact .split__body { position: relative; }
   .finale {
-    --k: 0.933;
+    --k: 0.8;
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 17.5rem;
+    width: 15rem;
     aspect-ratio: 300 / 220;
     min-height: 0;
     margin-top: 0;
   }
   .finale__art { top: 0; width: 100%; translate: none; }
   .finale__link { display: block; height: 100%; min-height: 0; padding-left: 0; }
-  .finale__btn { position: absolute; top: calc(50% - 2.625rem); left: calc(50% - 2.625rem); width: 5.25rem; height: 5.25rem; }
+  .finale__btn { position: absolute; top: calc(50% - 2.25rem); left: calc(50% - 2.25rem); width: 4.5rem; height: 4.5rem; }
+  .finale__btn .icon { width: 1.625rem; height: 1.625rem; }
+  .finale__text { position: absolute; right: 0; bottom: 0; left: 0; margin-left: 0; text-align: center; font-size: 2rem; }
+}
+@media (min-width: 1160px) {
+  .contact__links { max-width: 34rem; }
+  .finale { --k: 0.933; width: 17.5rem; }
+  .finale__btn { top: calc(50% - 2.625rem); left: calc(50% - 2.625rem); width: 5.25rem; height: 5.25rem; }
   .finale__btn .icon { width: 1.75rem; height: 1.75rem; }
-  .finale__text { position: absolute; right: 0; bottom: 0; left: 0; text-align: center; }
+  .finale__text { font-size: clamp(1.9rem, 1.4rem + 2.4vw, 2.6rem); }
 }
 
 /* 9. Closing mark ---------------------------------------------------------------- */
