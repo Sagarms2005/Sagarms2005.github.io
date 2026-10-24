@@ -96,6 +96,7 @@
   <link rel="stylesheet" href="css/fx/constellation.css" media="print" data-late onload="this.media='all'">
   <link rel="stylesheet" href="css/fx/terminal.css" media="print" data-late onload="this.media='all'">
   <link rel="stylesheet" href="css/fx/pipeline.css" media="print" data-late onload="this.media='all'">
+  <link rel="stylesheet" href="css/fx/spot.css">
   <noscript>
     <link rel="stylesheet" href="css/fx/project-art.css">
     <link rel="stylesheet" href="css/fx/constellation.css">
@@ -279,12 +280,88 @@
             <dl class="facts">
               <div class="facts__row"><dt class="label">Based in</dt><dd>Bangalore, India</dd></div>
               <div class="facts__row"><dt class="label">Languages</dt><dd>English, Kannada</dd></div>
-              <div class="facts__row"><dt class="label">Interests</dt><dd>Cloud Computing, Automation, System Design, Listening to Music</dd></div>
             </dl>
           </div>
-          <div class="prose split__body reveal">
-            <p class="prose__lead">Software engineer with hands-on experience in full-stack development, AWS cloud, automation and AI-based applications. I work in Java, Python, Node.js, PHP and MySQL, build REST APIs, and ship them with Docker and&nbsp;AWS.</p>
-            <p>At IMTMA I work on exhibition and visitor-management applications and manage Docker-based deployments, Nginx configuration and AWS infrastructure for application&nbsp;hosting. My education is a B.E. in Computer Science at Malnad College of Engineering (2023 –&nbsp;2026).</p>
+          <div class="about__main split__body reveal">
+            <div class="prose">
+              <p class="prose__lead">Software engineer with hands-on experience in full-stack development, AWS cloud, automation and AI-based applications. I work in Java, Python, Node.js, PHP and MySQL, build REST APIs, and ship them with Docker and&nbsp;AWS.</p>
+              <p>At IMTMA I work on exhibition and visitor-management applications and manage Docker-based deployments, Nginx configuration and AWS infrastructure for application&nbsp;hosting. My education is a B.E. in Computer Science at Malnad College of Engineering (2023 –&nbsp;2026).</p>
+            </div>
+
+            <!-- The four interests from the resume (js/data.js: interests), drawn as hairline icons in the page's ink and vermilion.
+                 They move only while on screen and sit still for reduced motion (css/fx/spot.css, js/fx/spot.js). The captions are
+                 plain one-liners about the subjects, not claims about me. -->
+            <div class="outside" data-spot="outside">
+              <h3 class="label outside__title" id="outside-title">Outside the code<span class="sr-only"> (interests)</span></h3>
+              <ul class="outside__list" aria-labelledby="outside-title">
+                <li class="outside__item">
+                  <svg class="ico ico--cloud" viewBox="0 0 120 72" aria-hidden="true" focusable="false">
+                    <path class="ico__soft ico__far fade" d="M82 24a6 6 0 0 1 1.25-11.85a9 9 0 0 1 16.5-2a7 7 0 0 1 8.75 13.85Z"/>
+                    <path class="ico__ink ico__cloud draw" pathLength="1" d="M30 50a12 12 0 0 1 2.5-23.7a18 18 0 0 1 33-4a14 14 0 0 1 17.5 27.7Z"/>
+                    <path class="ico__acc ico__up fade" d="M50 67V58M46.5 61.5 50 58l3.5 3.5"/>
+                    <path class="ico__soft ico__down fade" d="M66 58v9M62.5 63.5 66 67l3.5-3.5"/>
+                  </svg>
+                  <p class="outside__name">Cloud Computing</p>
+                  <p class="outside__note">Compute, on demand.</p>
+                </li>
+                <li class="outside__item">
+                  <svg class="ico ico--gears" viewBox="0 0 120 72" aria-hidden="true" focusable="false">
+                    <g class="ico__gear ico__gear--a">
+                      <path class="ico__ink draw" pathLength="1" d="M65.3 35L70.6 35.2L70.6 40.8L65.3 41L63.3 46.9L67.6 50.2L64.3 54.7L59.8 51.7L54.8 55.4L56.2 60.6L51 62.3L49.1 57.2L42.9 57.2L41 62.3L35.8 60.6L37.2 55.4L32.2 51.7L27.7 54.7L24.4 50.2L28.7 46.9L26.7 41L21.4 40.8L21.4 35.2L26.7 35L28.7 29.1L24.4 25.8L27.7 21.3L32.2 24.3L37.2 20.6L35.8 15.4L41 13.7L42.9 18.8L49.1 18.8L51 13.7L56.2 15.4L54.8 20.6L59.8 24.3L64.3 21.3L67.6 25.8L63.3 29.1Z"/>
+                      <circle class="ico__soft fade" cx="46" cy="38" r="7.5"/>
+                    </g>
+                    <g class="ico__gear ico__gear--b">
+                      <path class="ico__acc draw" pathLength="1" d="M93.8 41.4L97.9 43.8L95.1 48.5L91 46.2L85.2 49.6L85.2 54.3L79.6 54.3L79.6 49.6L73.8 46.2L69.7 48.5L66.9 43.8L71 41.4L71 34.6L66.9 32.2L69.7 27.5L73.8 29.8L79.6 26.4L79.6 21.7L85.2 21.7L85.2 26.4L91 29.8L95.1 27.5L97.9 32.2L93.8 34.6Z"/>
+                      <circle class="ico__acc fade" cx="82.4" cy="38" r="3.4"/>
+                    </g>
+                  </svg>
+                  <p class="outside__name">Automation</p>
+                  <p class="outside__note">Let the machines repeat.</p>
+                </li>
+                <li class="outside__item">
+                  <svg class="ico ico--system" viewBox="0 0 120 72" aria-hidden="true" focusable="false">
+                    <g class="ico__soft">
+                      <path class="draw" pathLength="1" d="M60 20V25H25V30M60 25H95V30" style="--i:1"/>
+                      <path class="draw" pathLength="1" d="M25 44V57H46M95 44V57H74" style="--i:2"/>
+                    </g>
+                    <g class="ico__ink">
+                      <path class="draw" pathLength="1" d="M44 6H76a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H44a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/>
+                      <path class="draw" pathLength="1" d="M10 30H40a2 2 0 0 1 2 2V42a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V32a2 2 0 0 1 2-2Z" style="--i:1"/>
+                      <path class="draw" pathLength="1" d="M80 30H110a2 2 0 0 1 2 2V42a2 2 0 0 1-2 2H80a2 2 0 0 1-2-2V32a2 2 0 0 1 2-2Z" style="--i:2"/>
+                      <path class="draw" pathLength="1" d="M46 56v8c0 2.2 6.3 4 14 4s14-1.8 14-4v-8M46 56c0 2.2 6.3 4 14 4s14-1.8 14-4-6.3-4-14-4-14 1.8-14 4Z" style="--i:3"/>
+                    </g>
+                    <g class="ico__packets">
+                      <path pathLength="1" d="M60 20V25H25V30" style="--n:0"/>
+                      <path pathLength="1" d="M25 44V57H46" style="--n:1"/>
+                      <path pathLength="1" d="M60 20V25H95V30" style="--n:2"/>
+                      <path pathLength="1" d="M95 44V57H74" style="--n:3"/>
+                    </g>
+                  </svg>
+                  <p class="outside__name">System Design</p>
+                  <p class="outside__note">Boxes, arrows, trade-offs.</p>
+                </li>
+                <li class="outside__item">
+                  <svg class="ico ico--music" viewBox="0 0 120 72" aria-hidden="true" focusable="false">
+                    <path class="ico__soft ico__base fade" d="M6 36H114"/>
+                    <g class="ico__bars">
+                      <line class="ico__bar" x1="12" x2="12" y1="30" y2="42" style="--b:1"/>
+                      <line class="ico__bar" x1="21.6" x2="21.6" y1="25" y2="47" style="--b:3"/>
+                      <line class="ico__bar" x1="31.2" x2="31.2" y1="19" y2="53" style="--b:5"/>
+                      <line class="ico__bar" x1="40.8" x2="40.8" y1="23" y2="49" style="--b:2"/>
+                      <line class="ico__bar" x1="50.4" x2="50.4" y1="13" y2="59" style="--b:6"/>
+                      <line class="ico__bar ico__bar--acc" x1="60" x2="60" y1="17" y2="55" style="--b:4"/>
+                      <line class="ico__bar" x1="69.6" x2="69.6" y1="10" y2="62" style="--b:0"/>
+                      <line class="ico__bar" x1="79.2" x2="79.2" y1="21" y2="51" style="--b:5"/>
+                      <line class="ico__bar" x1="88.8" x2="88.8" y1="16" y2="56" style="--b:2"/>
+                      <line class="ico__bar" x1="98.4" x2="98.4" y1="26" y2="46" style="--b:6"/>
+                      <line class="ico__bar" x1="108" x2="108" y1="30" y2="42" style="--b:3"/>
+                    </g>
+                  </svg>
+                  <p class="outside__name">Listening to Music</p>
+                  <p class="outside__note">Rhythm, structure, repeat.</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -293,9 +370,34 @@
     <!-- ───────────── 02 Experience ───────────── -->
     <section class="section" id="experience" tabindex="-1" aria-labelledby="experience-title">
       <div class="container">
-        <header class="section__head split reveal">
+        <header class="section__head split reveal section__head--spot">
           <p class="label split__meta"><span class="label__no">02</span> / Experience</p>
           <h2 class="section__title split__body" id="experience-title">Cloud intern, then <em>software engineer.</em></h2>
+          <figure class="spot" data-spot="stair" aria-hidden="true">
+            <svg class="spot__svg" viewBox="0 0 200 96" focusable="false">
+              <g class="spot__slab " style="--i:4">
+                <path class="spot__sheet fade" d="M98 16.4L122 4.4L153.2 20L153.2 59.6L129.2 71.6L98 56Z"/>
+                <path class="draw" pathLength="1" d="M98 16.4L122 4.4L153.2 20L129.2 32Z"/>
+                <path class="draw" pathLength="1" d="M98 16.4L98 56L129.2 71.6L153.2 59.6L153.2 20M129.2 32L129.2 71.6"/>
+              </g>
+              <g class="spot__slab " style="--i:2">
+                <path class="spot__sheet fade" d="M74 41.6L98 29.6L129.2 45.2L129.2 71.6L105.2 83.6L74 68Z"/>
+                <path class="draw" pathLength="1" d="M74 41.6L98 29.6L129.2 45.2L105.2 57.2Z"/>
+                <path class="draw" pathLength="1" d="M74 41.6L74 68L105.2 83.6L129.2 71.6L129.2 45.2M105.2 57.2L105.2 83.6"/>
+              </g>
+              <g class="spot__slab spot__slab--soft" style="--i:0">
+                <path class="spot__sheet fade" d="M50 66.8L74 54.8L105.2 70.4L105.2 83.6L81.2 95.6L50 80Z"/>
+                <path class="draw" pathLength="1" d="M50 66.8L74 54.8L105.2 70.4L81.2 82.4Z"/>
+                <path class="draw" pathLength="1" d="M50 66.8L50 80L81.2 95.6L105.2 83.6L105.2 70.4M81.2 82.4L81.2 95.6"/>
+              </g>
+              <path class="spot__acc spot__trail draw" pathLength="1" d="M77.6 68.6Q82.6 27.4 101.6 43.4Q106.6 2.2 125.6 18.2" data-stair/>
+              <circle class="spot__ring" cx="125.6" cy="18.2" r="4"/>
+              <circle class="spot__dot" cx="125.6" cy="18.2" r="3.4"/>
+            </svg>
+          </figure>
+
+
+
         </header>
 
         <div class="timeline" data-timeline>
@@ -1140,9 +1242,29 @@
     <!-- ───────────── 05 Education ───────────── -->
     <section class="section" id="education" tabindex="-1" aria-labelledby="education-title">
       <div class="container">
-        <header class="section__head split reveal">
+        <header class="section__head split reveal section__head--spot">
           <p class="label split__meta"><span class="label__no">05</span> / Education</p>
           <h2 class="section__title split__body" id="education-title">Polytechnic first, then a <em>B.E. in Computer Science.</em></h2>
+          <figure class="spot" data-spot="layers" aria-hidden="true">
+            <svg class="spot__svg" viewBox="0 0 200 96" focusable="false">
+              <g class="spot__slab spot__slab--soft" style="--i:0">
+                <path class="spot__sheet fade" d="M44 66L100 46L156 66V71L100 91L44 71Z"/>
+                <path class="draw" pathLength="1" d="M44 66L100 46L156 66L100 86Z"/>
+                <path class="draw" pathLength="1" d="M44 66V71L100 91L156 71V66M100 86V91"/>
+              </g>
+              <g class="spot__slab" style="--i:1">
+                <path class="spot__sheet fade" d="M44 46L100 26L156 46V51L100 71L44 51Z"/>
+                <path class="draw" pathLength="1" d="M44 46L100 26L156 46L100 66Z"/>
+                <path class="draw" pathLength="1" d="M44 46V51L100 71L156 51V46M100 66V71"/>
+              </g>
+              <g class="spot__slab spot__slab--acc" style="--i:2">
+                <path class="spot__sheet fade" d="M44 26L100 6L156 26V31L100 51L44 31Z"/>
+                <path class="draw" pathLength="1" d="M44 26L100 6L156 26L100 46Z"/>
+                <path class="draw" pathLength="1" d="M44 26V31L100 51L156 31V26M100 46V51"/>
+                <path class="spot__ruled draw" pathLength="1" d="M72 24L100 34M82.1 20.4L110.1 30.4M92.2 16.8L120.2 26.8"/>
+              </g>
+            </svg>
+          </figure>
         </header>
 
         <article class="entry split reveal">
@@ -1152,7 +1274,7 @@
           <div class="entry__body split__body">
             <h3 class="entry__title">Malnad College of Engineering</h3>
             <p class="entry__degree">Bachelor of Engineering, Computer Science</p>
-            <p class="score"><span class="label"><abbr title="Grade Point Average">GPA</abbr></span> <span class="score__value">8.2</span></p>
+            <p class="score"><span class="label"><abbr title="Grade Point Average">GPA</abbr></span> <span class="score__value" data-spot="score">8.2</span></p>
           </div>
         </article>
 
@@ -1162,7 +1284,7 @@
           </div>
           <div class="entry__body split__body">
             <h3 class="entry__title">Smt. L V Polytechnic</h3>
-            <p class="score"><span class="label"><abbr title="Cumulative Grade Point Average">CGPA</abbr></span> <span class="score__value">9.2</span></p>
+            <p class="score"><span class="label"><abbr title="Cumulative Grade Point Average">CGPA</abbr></span> <span class="score__value" data-spot="score">9.2</span></p>
           </div>
         </article>
       </div>
@@ -1171,9 +1293,25 @@
     <!-- ───────────── 06 Achievements ───────────── -->
     <section class="section" id="achievements" tabindex="-1" aria-labelledby="achievements-title">
       <div class="container">
-        <header class="section__head split reveal">
+        <header class="section__head split reveal section__head--spot">
           <p class="label split__meta"><span class="label__no">06</span> / Credentials</p>
           <h2 class="section__title split__body" id="achievements-title">Practice, certifications <em>and coursework.</em></h2>
+          <figure class="spot" data-spot="seal" aria-hidden="true">
+            <svg class="spot__svg" viewBox="0 0 200 96" focusable="false">
+              <path class="spot__line draw" pathLength="1" d="M60 8H192V76H60Z" style="--i:0"/>
+              <path class="spot__soft draw" pathLength="1" d="M66 14H186V70H66Z" style="--i:1"/>
+              <path class="spot__acc draw" pathLength="1" d="M118 24H160" style="--i:3"/>
+              <path class="spot__soft draw" pathLength="1" d="M88 36H168M88 44H168M88 52H146" style="--i:4"/>
+              <g class="spot__rosette">
+                <path class="spot__ribbon fade" d="M44 76L36 94L45 90L50 96L53 78M60 76L68 94L59 90L54 96L51 78"/>
+                <path class="spot__sheet fade" d="M52 36A6.4 6.4 0 0 1 61.5 38.2A6.4 6.4 0 0 1 69.2 44.3A6.4 6.4 0 0 1 73.4 53.1A6.4 6.4 0 0 1 73.4 62.9A6.4 6.4 0 0 1 69.2 71.7A6.4 6.4 0 0 1 61.5 77.8A6.4 6.4 0 0 1 52 80A6.4 6.4 0 0 1 42.5 77.8A6.4 6.4 0 0 1 34.8 71.7A6.4 6.4 0 0 1 30.6 62.9A6.4 6.4 0 0 1 30.6 53.1A6.4 6.4 0 0 1 34.8 44.3A6.4 6.4 0 0 1 42.5 38.2A6.4 6.4 0 0 1 52 36Z"/>
+                <path class="spot__acc draw" pathLength="1" d="M52 36A6.4 6.4 0 0 1 61.5 38.2A6.4 6.4 0 0 1 69.2 44.3A6.4 6.4 0 0 1 73.4 53.1A6.4 6.4 0 0 1 73.4 62.9A6.4 6.4 0 0 1 69.2 71.7A6.4 6.4 0 0 1 61.5 77.8A6.4 6.4 0 0 1 52 80A6.4 6.4 0 0 1 42.5 77.8A6.4 6.4 0 0 1 34.8 71.7A6.4 6.4 0 0 1 30.6 62.9A6.4 6.4 0 0 1 30.6 53.1A6.4 6.4 0 0 1 34.8 44.3A6.4 6.4 0 0 1 42.5 38.2A6.4 6.4 0 0 1 52 36Z" style="--i:2"/>
+                <path class="spot__line draw" pathLength="1" d="M37 58a15 15 0 1 1 30 0a15 15 0 1 1-30 0Z" style="--i:3"/>
+                <path class="spot__soft draw" pathLength="1" d="M41 58a11 11 0 1 1 22 0a11 11 0 1 1-22 0Z" style="--i:4"/>
+                <path class="spot__acc spot__star draw" pathLength="1" d="M52 51.5L53.8 56.2L58.5 58L53.8 59.8L52 64.5L50.2 59.8L45.5 58L50.2 56.2Z" style="--i:5"/>
+              </g>
+            </svg>
+          </figure>
         </header>
 
         <div class="split record reveal">
@@ -1219,9 +1357,24 @@
     <!-- ───────────── 07 Contact ───────────── -->
     <section class="section section--last" id="contact" tabindex="-1" aria-labelledby="contact-title">
       <div class="container">
-        <header class="section__head split reveal">
+        <header class="section__head split reveal section__head--spot">
           <p class="label split__meta"><span class="label__no">07</span> / Contact</p>
           <h2 class="section__title split__body" id="contact-title">If any of this is interesting, <em>say hello.</em></h2>
+          <figure class="spot" data-spot="envelope" data-behind="48 14 152 82" aria-hidden="true">
+            <svg class="spot__svg" viewBox="0 0 200 96" focusable="false">
+              <ellipse class="spot__orbit" cx="100" cy="54" rx="88" ry="24" transform="rotate(-14 100 54)"/>
+              <g class="spot__letter">
+                <path class="spot__acc draw" pathLength="1" d="M62 36V14H138V36" style="--i:3"/>
+                <path class="spot__acc draw" pathLength="1" d="M76 23H116M76 29H102" style="--i:4"/>
+              </g>
+              <path class="spot__sheet fade" d="M48 36H152V82H48Z"/>
+              <path class="spot__line draw" pathLength="1" d="M48 36H152V82H48Z"/>
+              <path class="spot__line draw" pathLength="1" d="M48 36L100 66L152 36" style="--i:1"/>
+              <path class="spot__soft draw" pathLength="1" d="M48 82L86 55M152 82L114 55" style="--i:2"/>
+            </svg>
+            <i class="spot__orbiter" data-orbit="100 54 88 24 -14 0.07 0.1" style="left:86.3%;top:52.6%"></i>
+            <i class="spot__orbiter spot__orbiter--ink" data-orbit="100 54 88 24 -14 -0.045 0.6" style="left:13.8%;top:59.9%"></i>
+          </figure>
         </header>
 
         <div class="split reveal">
@@ -1241,6 +1394,22 @@
               <li class="rows__item"><span class="rows__key">LeetCode</span><a class="text-link" href="https://leetcode.com/u/2005sagarms/" target="_blank" rel="noopener noreferrer" data-link="LeetCode">leetcode.com/u/2005sagarms<span class="sr-only"> (opens in a new tab)</span></a></li>
               <li class="rows__item"><span class="rows__key">Resume</span><a class="text-link" href="assets/sagar-m-s-resume.pdf" target="_blank" rel="noopener noreferrer">Open PDF<span class="sr-only"> of the resume (opens in a new tab)</span></a></li>
             </ul>
+            <!-- Closing gesture: a second, larger way to write (same address as above). The orbit lines are decoration; the link is
+                 named by its own label. js/fx/spot.js nudges the arrow toward a fine pointer. -->
+            <div class="finale" data-spot="finale">
+              <span class="finale__art" aria-hidden="true">
+              <svg class="finale__svg" viewBox="0 0 300 220" focusable="false">
+                <ellipse class="finale__orbit" cx="150" cy="110" rx="140" ry="44" transform="rotate(-16 150 110)"/>
+                <ellipse class="finale__orbit finale__orbit--b" cx="150" cy="110" rx="110" ry="30" transform="rotate(22 150 110)"/>
+              </svg>
+                <i class="finale__sat" data-orbit="150 110 140 44 -16 0.05 0.12" style="left:85.5%;top:50.4%"></i>
+                <i class="finale__sat finale__sat--ink" data-orbit="150 110 110 30 22 -0.034 0.55" style="left:18.8%;top:28.3%"></i>
+              </span>
+              <a class="finale__link" href="mailto:2005sagarms@gmail.com" aria-label="Say hello: write to 2005sagarms@gmail.com">
+                <span class="finale__btn" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                <span class="finale__text" aria-hidden="true">Say <em>hello</em></span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1248,6 +1417,8 @@
   </main>
 
   <footer class="footer">
+    <!-- A closing mark: the monogram from the masthead sits in a hairline that draws out from it. -->
+    <div class="container footer__orn" data-spot="orn" aria-hidden="true"><span class="footer__orn-line"></span><span class="footer__orn-mark">S</span><span class="footer__orn-line"></span></div>
     <div class="container footer__inner">
       <p class="footer__meta">© 2026 Sagar M S<span class="footer__updated">Last updated <time datetime="2026-10">October 2026</time></span></p>
       <p class="footer__colophon">Set in Newsreader and JetBrains Mono. Plain HTML, CSS and JavaScript.</p>
@@ -1304,5 +1475,6 @@
   <script src="js/fx/hero.js" defer></script>
   <script src="js/fx/terminal.js" defer></script>
   <script src="js/fx/pipeline.js" defer></script>
+  <script src="js/fx/spot.js" defer></script>
 </body>
 </html>
