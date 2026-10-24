@@ -1,0 +1,418 @@
+/* ==========================================================================
+   css/fx/atmos.css — ATMOSPHERE module (js/fx/atmos.js)
+
+   The quiet layer between the sections: nothing here adds a block to the page or moves one.
+
+   1. Knobs         every tunable number, light and dark
+   2. Ambient stack contour bands at the section rules over a faint warm glow, and the paper light that follows a pointer
+   3. Margin        the scroll compass (right) and the running head (left, wide screens)
+   4. Headlines     the drawn stroke under the accent phrase, velocity response
+   5. Links         underline draw, fill sweeps, magnetic arrows, pressed states (one motion language)
+   6. Motion, forced colors, print
+
+   Everything is gated on <html class="atmos-on">, which the script sets once it has started, so a page without the
+   script (or after a failure) is exactly the page without this file. Colors come from the base tokens only.
+   ========================================================================== */
+
+/* 1. Knobs ------------------------------------------------------------------ */
+
+:root {
+  /* Contour bands: alpha of the hairlines at full weight (ink) and of every fourth "index" line (accent) */
+  --atmos-line: 0.11;
+  --atmos-index: 0.34;
+  /* The paper light that follows a fine pointer: warm paper, a little lighter than the page */
+  --atmos-light-1: rgb(255 251 240 / 0.8);
+  --atmos-light-2: rgb(255 248 230 / 0.4);
+  --atmos-light-3: rgb(255 246 226 / 0.13);
+  /* A warm glow, one tile (1900 px) repeated down the page and nothing at the tile's edges: daylight pooling on the paper,
+     and a breath of accent low on the right. The pools start below the hero. */
+  --atmos-glow:
+    radial-gradient(60% 17% at 50% 24%, rgb(255 250 238 / 0.72), rgb(255 250 238 / 0) 100%),
+    radial-gradient(36% 12% at 90% 70%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 100%);
+  /* The accent-phrase stroke: one slightly uneven pen line (accent, light) */
+  --atmos-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'%3E%3Cpath d='M2 4.7C44 3.5 84 5.2 122 4.3S172 3.7 198 4.4' fill='none' stroke='%23a9361a' stroke-width='2.3' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --atmos-tick: rgb(var(--ink-rgb) / 0.32);
+  /* Where the margin ornaments sit, measured from the edge of the window to their centers: halfway across the margin beside
+     the column (the column is min(100% - 2 gutters, 70rem)), but never more than 4.75rem out from the column, so on a
+     very wide screen they stay with the content instead of drifting to the edges. */
+  --atmos-margin: calc((100% - min(100% - 2 * var(--gutter), var(--max))) / 2);
+  --atmos-gap: max(calc(var(--atmos-margin) / 2), calc(var(--atmos-margin) - 4.75rem));
+}
+
+:root[data-theme="dark"] {
+  --atmos-line: 0.11;
+  --atmos-index: 0.38;
+  --atmos-light-1: color-mix(in srgb, var(--accent) 11%, transparent);
+  --atmos-light-2: color-mix(in srgb, var(--accent) 5.5%, transparent);
+  --atmos-light-3: color-mix(in srgb, var(--accent) 1.8%, transparent);
+  /* Embers instead of daylight */
+  --atmos-glow:
+    radial-gradient(64% 16% at 50% 74%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 100%),
+    radial-gradient(34% 11% at 6% 30%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 100%);
+  --atmos-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'%3E%3Cpath d='M2 4.7C44 3.5 84 5.2 122 4.3S172 3.7 198 4.4' fill='none' stroke='%23f58a68' stroke-width='2.3' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --atmos-line: 0.11;
+    --atmos-index: 0.38;
+    --atmos-light-1: color-mix(in srgb, var(--accent) 11%, transparent);
+    --atmos-light-2: color-mix(in srgb, var(--accent) 5.5%, transparent);
+    --atmos-light-3: color-mix(in srgb, var(--accent) 1.8%, transparent);
+    --atmos-glow:
+      radial-gradient(64% 16% at 50% 74%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 100%),
+      radial-gradient(34% 11% at 6% 30%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 100%);
+    --atmos-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'%3E%3Cpath d='M2 4.7C44 3.5 84 5.2 122 4.3S172 3.7 198 4.4' fill='none' stroke='%23f58a68' stroke-width='2.3' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  }
+}
+
+/* The grain of the dark theme: the base grain is black, which a near-black page cannot show. Here it is a faint light film
+   (a tenth of the weight, a little warmer than the paper), and the hero's foot is re-matched to the page it sits on. */
+:root[data-theme="dark"].atmos-on {
+  --grain-opacity: 0.04;
+  --hero-foot: color-mix(in srgb, rgb(var(--paper-rgb)), white calc(var(--grain-opacity) * 32%));
+}
+:root[data-theme="dark"].atmos-on body::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .96 0 0 0 0 .9 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 2. Ambient stack ----------------------------------------------------------- */
+
+/* Both layers sit below the paper grain (z -1, css/styles.css) and above the page color; the hero paints over them, so
+   they are only ever seen on the sections. .atmos is fixed and holds the paper light. .atmos-doc is laid in the page, as
+   long as the page, and holds the contour bands (SVGs the script places at each section rule) over the warm glow.
+   Neither takes part in layout. */
+.atmos {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.atmos-doc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: -2;
+  overflow: clip;            /* clip, not hidden: the bands' scroll-driven animation must see the page as its scroller */
+  pointer-events: none;
+  background-image: var(--atmos-glow);
+  background-size: 100% 1900px;
+  background-repeat: repeat-y;
+  background-position: 0 var(--atmos-start, 0px);
+  opacity: 0;
+  transition: opacity 1100ms var(--ease-out);
+}
+.atmos-on .atmos-doc { opacity: 1; }
+
+.atmos__band {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  fill: none;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Five weights of ink lines (l0..l4) and of accent index lines (a0..a4): the script sorts each line by how strongly it
+   blooms. Alphas come from the knobs above, so a theme change recolors the bands with no redraw. */
+.atmos__band .l0 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.2)); }
+.atmos__band .l1 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.4)); }
+.atmos__band .l2 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.6)); }
+.atmos__band .l3 { stroke: rgb(var(--ink-rgb) / calc(var(--atmos-line) * 0.8)); }
+.atmos__band .l4 { stroke: rgb(var(--ink-rgb) / var(--atmos-line)); }
+.atmos__band .a0 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 20%), transparent); }
+.atmos__band .a1 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 40%), transparent); }
+.atmos__band .a2 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 60%), transparent); }
+.atmos__band .a3 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 80%), transparent); }
+.atmos__band .a4 { stroke: color-mix(in srgb, var(--accent) calc(var(--atmos-index) * 100%), transparent); }
+
+/* Parallax + bloom: while a band crosses the window it drifts against the page (about 17% slower, from 13vh low to 13vh
+   high) and is strongest as its rule passes the middle. A scroll-driven animation: it runs on the compositor, not in the
+   script. Where unsupported, and for reduced motion, the bands simply stay on the page. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .atmos__band {
+      animation: atmos-band linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes atmos-band {
+  from { transform: translateY(-13vh); opacity: 0.5; }
+  50% { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(13vh); opacity: 0.5; }
+}
+
+.atmos__light {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 46rem;
+  height: 46rem;
+  margin: -23rem 0 0 -23rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--atmos-light-1), var(--atmos-light-2) 40%, var(--atmos-light-3) 72%, transparent);
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+.atmos__light.is-on { opacity: 1; will-change: transform; }
+
+/* 3. Margin: scroll compass + running head ----------------------------------- */
+
+/* Both live in the page margins (see --atmos-gap) and only where a margin is wide enough to hold them: 40 px at 1024,
+   80 at 1280, 400 at 1920. */
+.atmos-compass,
+.atmos-folio { display: none; }
+
+@media (min-width: 1024px) {
+  .atmos-compass {
+    --cw: 1.75rem;                      /* ring diameter */
+    --ct: min(54vh, 30rem);              /* thread length */
+    display: block;
+    position: fixed;
+    z-index: 4;
+    top: 50%;
+    width: var(--cw);
+    height: var(--ct);
+    margin-top: calc(var(--ct) / -2);
+    right: calc(var(--atmos-gap) - var(--cw) / 2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1000ms var(--ease-out) 300ms;
+  }
+  .atmos-on .atmos-compass { opacity: 1; }
+}
+@media (min-width: 1280px) {
+  .atmos-compass { --cw: 2.25rem; }
+}
+
+.atmos-compass__track,
+.atmos-compass__fill {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  margin-left: -0.5px;
+}
+.atmos-compass__track { background: var(--rule); }
+.atmos-compass__fill { background: var(--accent); transform-origin: 50% 0; transform: scaleY(0); }
+
+.atmos-compass__tick {
+  position: absolute;
+  right: 50%;
+  width: 0.5rem;
+  height: 1px;
+  margin: -0.5px 0.2rem 0 0;
+  background: var(--atmos-tick);
+  transition: background-color var(--t-med) var(--ease), width var(--t-med) var(--ease);
+}
+.atmos-compass__tick.is-current { width: 0.8rem; background: var(--accent); }
+
+.atmos-compass__head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--cw);
+  height: var(--cw);
+  margin-top: calc(var(--cw) / -2);
+}
+.atmos-compass__ring,
+.atmos-compass__bezel { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
+.atmos-compass__disc { fill: var(--paper); stroke: var(--rule); stroke-width: 1; }
+.atmos-compass__bezel { fill: none; stroke: var(--atmos-tick); stroke-width: 1; stroke-linecap: round; }
+.atmos-compass__arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transform: rotate(-90deg);
+  transform-origin: 20px 20px;
+}
+.atmos-compass__no {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 500 0.5625rem / 1 var(--font-mono);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  transition: color var(--t-med) var(--ease);
+}
+@media (min-width: 1280px) {
+  .atmos-compass__no { font-size: 0.625rem; }
+}
+.atmos-compass.is-reading .atmos-compass__no { color: var(--accent); }
+
+/* The thread follows the page: a scroll-driven animation (compositor only). The script moves it itself where unsupported.
+   The bezel turns three times down the page, unless motion is reduced. */
+@supports (animation-timeline: scroll()) {
+  .atmos-compass__head { animation: atmos-head linear both; animation-timeline: scroll(root block); }
+  .atmos-compass__fill { animation: atmos-fill linear both; animation-timeline: scroll(root block); }
+  @media (prefers-reduced-motion: no-preference) {
+    .atmos-compass__bezel { animation: atmos-spin linear both; animation-timeline: scroll(root block); }
+  }
+}
+@keyframes atmos-head { from { transform: translateY(0); } to { transform: translateY(var(--ct)); } }
+@keyframes atmos-fill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes atmos-spin { to { transform: rotate(1080deg); } }
+
+/* Running head: a book's folio, turned on its side. Wide screens only (a 240 px margin and up). */
+@media (min-width: 1600px) {
+  .atmos-folio {
+    display: block;
+    position: fixed;
+    z-index: 4;
+    top: 50%;
+    left: var(--atmos-gap);
+    writing-mode: vertical-rl;
+    transform: translate(-50%, -50%) rotate(180deg);
+    font: 400 0.6875rem / 1 var(--font-mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink-3);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1000ms var(--ease-out) 400ms;
+  }
+  .atmos-on .atmos-folio { opacity: 1; }
+}
+.atmos-folio__no { color: var(--accent); }
+.atmos-folio__sep { margin-block: 0.9em; color: var(--rule); }
+.atmos-folio__name { display: inline-block; transition: opacity var(--t-med) var(--ease); }
+.atmos-folio__name.is-swap { opacity: 0; }
+
+/* 4. Headlines --------------------------------------------------------------- */
+
+/* The accent phrase of a section headline carries one pen stroke. Fully drawn by default (no JS, reduced motion,
+   print); the script holds it back for headlines still below the fold and lets it draw when they arrive. */
+.atmos-on .section__title em,
+.atmos-on .ship__title em {
+  padding-bottom: 0.12em;
+  background-image: var(--atmos-stroke);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.15em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Scroll-velocity response (transform and paint only: no line can re-wrap). The script writes the inline transform. */
+.atmos-on .section__title { transform-origin: 0 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .atmos-on .ink-pending em { background-size: 0% 0.15em; }
+  .atmos-on .ink-pending.is-inked em {
+    background-size: 100% 0.15em;
+    transition: background-size 1100ms var(--ease-out) 480ms;
+  }
+}
+
+/* 5. Links and buttons: one motion language ------------------------------------ */
+
+/* Draw = a line grows from the left in --m-draw with --ease-out and pulls back the same way. Fill = the same sweep behind
+   the label. Press = a 2.5% squeeze in --m-press. Arrows lean toward the pointer (js/fx/atmos.js writes --ax / --ay on
+   the control; `translate` composes with the transforms the base page and the hero already use). */
+
+.atmos-on .btn {
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), scale var(--m-press) var(--ease-out);
+}
+.atmos-on .copy {
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), scale var(--m-press) var(--ease-out);
+}
+.atmos-on .tool {
+  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease), scale var(--m-press) var(--ease-out);
+}
+.atmos-on .text-link,
+.atmos-on .link-btn {
+  transition: color var(--t-fast) var(--ease), background-size var(--m-draw) var(--ease-out), opacity var(--m-press) var(--ease-out);
+}
+
+/* Pressed: every control gives a little under the finger or the click. */
+.atmos-on .btn:active,
+.atmos-on .copy:active { scale: 0.975; }
+.atmos-on .tool:active { scale: 0.9; }
+.atmos-on .text-link:active,
+.atmos-on .link-btn:active { opacity: 0.7; }
+
+@media (hover: hover) and (pointer: fine) {
+  /* Underlines. The resting hairline and the drawn line are both gradients centered on the text (50% plus the distance from the
+     middle of the line to just under the baseline), so they sit right whatever the box height, wrapping or flex alignment. */
+  .atmos-on .text-link,
+  .atmos-on .link-btn {
+    --ul-y: 0.445em;               /* serif: the middle of the line to 0.2em under the baseline */
+    width: fit-content;            /* the line is as long as the words, not as the grid cell or row that holds them */
+    max-width: 100%;
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 calc(50% + var(--ul-y)), 0 calc(50% + var(--ul-y));
+    background-size: 0% 2px, 100% 1px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* The mono links (JetBrains Mono sits lower in its line box than Newsreader does). */
+  .atmos-on :is(.link-btn, .project__src, .projects__more .text-link, .rows__key .text-link, .footer .text-link) { --ul-y: 0.58em; }
+  .atmos-on .text-link:hover,
+  .atmos-on .text-link:focus-visible,
+  .atmos-on .link-btn:hover,
+  .atmos-on .link-btn:focus-visible { background-size: 100% 2px, 100% 1px; }
+
+  /* Buttons: the hover fill sweeps in from the left instead of switching. */
+  .atmos-on .btn--solid {
+    background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 0 / 0% 100%, var(--ink);
+    transition-property: background-size, color, border-color, scale;
+    transition-duration: var(--m-draw), var(--t-fast), var(--t-fast), var(--m-press);
+    transition-timing-function: var(--ease-out), var(--ease), var(--ease), var(--ease-out);
+  }
+  .atmos-on .btn--solid:hover { background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 0 / 100% 100%, var(--ink); }
+  .atmos-on .btn--ghost {
+    background: linear-gradient(var(--tint), var(--tint)) no-repeat 0 0 / 0% 100%;
+    transition-property: background-size, color, border-color, scale;
+    transition-duration: var(--m-draw), var(--t-fast), var(--t-fast), var(--m-press);
+    transition-timing-function: var(--ease-out), var(--ease), var(--ease), var(--ease-out);
+  }
+  .atmos-on .btn--ghost:hover { background: linear-gradient(var(--tint), var(--tint)) no-repeat 0 0 / 100% 100%; }
+
+  /* Magnetic arrows (and the document glyph): they lean toward the pointer a few pixels. */
+  .atmos-on .btn .icon,
+  .atmos-on .arrow-link .icon {
+    translate: var(--ax, 0px) var(--ay, 0px);
+    transition: transform var(--t-med) var(--ease), translate 220ms var(--ease-out);
+  }
+}
+
+/* 6. Motion, forced colors, print ---------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .atmos-doc, .atmos-compass, .atmos-folio { transition: none; }
+  .atmos__light { display: none; }
+}
+
+/* Low tier (core.js adds .is-lowfx on a struggling or data-saving device): no paper light. */
+.is-lowfx .atmos__light { display: none; }
+
+@media (forced-colors: active) {
+  .atmos, .atmos-doc, .atmos-compass, .atmos-folio { display: none; }
+  .atmos-on .section__title em,
+  .atmos-on .ship__title em { background: none; }
+  .atmos-on .text-link,
+  .atmos-on .link-btn { text-decoration: underline; background: none; }
+}
+
+@media print {
+  .atmos, .atmos-doc, .atmos-compass, .atmos-folio { display: none; }
+  .atmos-on .section__title em,
+  .atmos-on .ship__title em { background: none; padding: 0; }
+  .atmos-on .text-link,
+  .atmos-on .link-btn { text-decoration: underline; background: none; }
+}
