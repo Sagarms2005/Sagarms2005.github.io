@@ -255,6 +255,17 @@
     });
   }
 
+  // The orbiting figures measure their drawing, which would lay out a section that is still skipped (css/styles.css, content-visibility):
+  // they are set up the first time they come into view instead, when that section has been drawn anyway.
+  function wake(fig) {
+    if (fig.__awake) return;
+    fig.__awake = true;
+    if (root.classList.contains('is-lowfx')) return;
+    var type = kind(fig);
+    if (type === 'finale') initOrbit(fig);
+    else if (type === 'envelope') initOrbitOnly(fig);
+  }
+
   function start() {
     var motion = !P.reduced;
     var observer = null;
@@ -264,6 +275,7 @@
         entries.forEach(function (entry) {
           var fig = entry.target;
           if (entry.isIntersecting) {
+            wake(fig);
             enter(fig);
             // A figure that has just started drawing begins its loops a moment later, so the two do not fight over the same strokes.
             var wait = fig.classList.contains('is-armed') && !fig.__looped ? 900 : 0;
@@ -279,21 +291,28 @@
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.2 });
     }
 
-    figures.forEach(function (fig) {
+    // All the measuring first, then all the changes: no layout is forced between two figures.
+    var below = figures.map(function (fig) { return !!observer && belowFold(fig); });
+
+    figures.forEach(function (fig, i) {
       var type = kind(fig);
-      if (observer && belowFold(fig)) {
+      if (below[i]) {
         if (type === 'score' && !buildOdometer(fig)) return;
         fig.classList.add('is-armed');
       }
       if (!motion) return;
-      if (type === 'finale') { if (!root.classList.contains('is-lowfx')) initOrbit(fig); }
-      else if (type === 'envelope') { if (!root.classList.contains('is-lowfx')) initOrbitOnly(fig); }
       if (observer) observer.observe(fig);
+      else wake(fig);
       if (HEADS.indexOf(type) > -1) fig.addEventListener('click', function () { replay(fig); });
     });
   }
 
-  try { start(); } catch (error) { bail(error); }
+  // Nothing here is needed for the first screen: the figures are armed once the page has loaded and the browser is idle (they are
+  // all below the fold, so nothing visible changes), and measuring waits for that moment too.
+  function go() { try { start(); } catch (error) { bail(error); } }
+  if (document.readyState === 'complete') P.whenIdle(go, 800);
+  else window.addEventListener('load', function () { P.whenIdle(go, 800); });
+
   window.addEventListener('beforeprint', function () {
     figures.forEach(function (fig) { fig.classList.add('is-in'); });
   });
