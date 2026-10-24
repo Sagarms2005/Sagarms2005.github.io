@@ -815,7 +815,7 @@ html.js:not(.no-cv) :is(.section, .footer) { content-visibility: auto; contain-i
 html.js :is(.section, .footer)[data-cv="done"] { content-visibility: visible; }
 #about { --cv: 770px; }
 #experience { --cv: 1020px; }
-#projects { --cv: 2700px; }
+#projects { --cv: 2400px; }
 #skills { --cv: 1890px; }
 #education { --cv: 520px; }
 #achievements { --cv: 1510px; }
@@ -824,7 +824,7 @@ html.js :is(.section, .footer)[data-cv="done"] { content-visibility: visible; }
 @media (min-width: 700px) {
   #about { --cv: 690px; }
   #experience { --cv: 830px; }
-  #projects { --cv: 2740px; }
+  #projects { --cv: 2300px; }
   #skills { --cv: 1690px; }
   #education { --cv: 535px; }
   #achievements { --cv: 1120px; }
@@ -834,7 +834,7 @@ html.js :is(.section, .footer)[data-cv="done"] { content-visibility: visible; }
 @media (min-width: 1100px) {
   #about { --cv: 570px; }
   #experience { --cv: 730px; }
-  #projects { --cv: 2570px; }
+  #projects { --cv: 2200px; }
   #skills { --cv: 1330px; }
   #education { --cv: 490px; }
   #achievements { --cv: 1010px; }

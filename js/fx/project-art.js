@@ -337,6 +337,7 @@
       this.t0 = null; this.last = 0; this.k = 1; this.hov = 0; this.over = false; this.mx = -1; this.my = -1;
       this.px = 0; this.py = 0; this.tx = 0; this.ty = 0; this.rx = 0; this.ry = 0;
       this.pops = []; this.rp = 0; this.restart = 0; this.once = false; this.unsub = null; this.fr = 0;
+      this.speed = 1; this.until = 0; this.wall = false;   // wall covers: play faster until a time, or rest on their own
       this.ctx = { k: 1, dt: 16, hov: 0, mx: -1, my: -1, pops: this.pops };
       var self = this;
       if (window.ResizeObserver) {
@@ -378,17 +379,18 @@
         this.rp = clamp((now - this.restart) / 180, 0, 1);
         if (this.rp >= 1) { this.t0 = now; this.restart = 0; this.rp = 0; this.pops.length = 0; }
       }
-      var t = (now - this.t0) / 1000;
+      var sp = this.speed, t = (now - this.t0) / 1000 * sp;
+      if (this.until && t >= this.until) { this.until = 0; this.speed = 1; this.stop(); this.poster(); return; }
       if (t >= S.L) {
         if (this.once) { this.stop(); this.poster(); return; }
-        t -= S.L * Math.floor(t / S.L); this.t0 = now - t * 1000; this.pops.length = 0;
+        t -= S.L * Math.floor(t / S.L); this.t0 = now - t * 1000 / sp; this.pops.length = 0;
       }
       this.t = t;
       var k = 1 - Math.exp(-dt / 140);
       this.hov += ((this.over ? 1 : 0) - this.hov) * k;
       this.px += (this.tx - this.px) * k; this.py += (this.ty - this.py) * k;
       this.render(t, dt);
-      if (this.manual) return;
+      if (this.manual || this.wall) return;   // wall covers rest only when the gallery says so (rest, below)
       this.tilt(k);
       if (!this.over && t >= S.tp && t < S.fade[0] && now - lastInput > IDLE_MS) this.nap();
     };
@@ -411,6 +413,40 @@
     Inst.prototype.nap = function () {
       this.stop(); this.poster();
       napping.push(this);
+    };
+    /* Covers on the gallery wall. Resting is the resolved frame. Awake, the scene plays from the top (the resting frame fades
+       out first, as for a replay) and loops while the cover is hovered, focused or centered. Leaving lets it finish and rest. */
+    Inst.prototype.blank = function () { this.t = 0; this.render(0, 16); };
+    Inst.prototype.setSpeed = function (v) {   // changes the playback rate without moving the scene's current time
+      if (this.unsub && this.t0 !== null && v !== this.speed) {
+        var now = window.performance.now();
+        this.t0 = now - (now - this.t0) * this.speed / v;
+      }
+      this.speed = v;
+    };
+    Inst.prototype.wake = function () {
+      this.until = 0; this.once = false;
+      if (this.unsub) { this.setSpeed(1); return; }
+      this.speed = 1;
+      var now = window.performance.now();
+      this.start();
+      this.t0 = now - this.S.tp * 1000; this.last = now; this.restart = now;
+    };
+    Inst.prototype.rest = function () {
+      if (!this.unsub) return;
+      var t = this.t || 0, S = this.S;
+      this.over = false;
+      if (this.restart) { this.restart = 0; this.rp = 0; }
+      if (t < S.tp) { this.until = S.tp; this.setSpeed(Math.max(1.6, (S.tp - t) / 1.1)); }
+      else if (t < S.fade[0]) { this.stop(); this.poster(); }
+      else this.once = true;
+    };
+    // The first view of the wall: the cover is built once, fast-forwarded to its resolved frame (about 2.6 s).
+    Inst.prototype.develop = function () {
+      if (this.unsub) return;
+      this.speed = Math.max(2.2, this.S.tp / 2.6); this.until = this.S.tp; this.once = false;
+      this.t0 = null;
+      this.start();
     };
     Inst.prototype.replay = function (now) {
       if (!this.unsub && !this.manual) { this.once = true; this.t0 = null; this.start(); } // still mode: play one pass from the poster
@@ -450,6 +486,81 @@
       return inst;
     });
 
+    /* ---------- Covers on the gallery wall (js/fx/gallery.js) ----------
+       Each .gallery__cover gets a clone of its panel's drawing, shapes only (the labels would be 5 px). Covers rest on the
+       resolved frame. Their first view "develops" them once, fast-forwarded; a tile that is hovered, focused or centered
+       (gallery.js: 'art-wake') plays its scene. Reduced motion and Save-Data: the resolved frame, nothing else. */
+    var covers = [], coverBy = {}, built = false, developed = false, seen = false;
+
+    function wireCover(c) {
+      var inst = c.inst;
+      function local(e) {
+        var r = inst.svg.getBoundingClientRect();
+        if (!r.width) return;
+        inst.mx = (e.clientX - r.left) / r.width * 320; inst.my = (e.clientY - r.top) / r.height * 200;
+      }
+      c.tile.addEventListener('pointerenter', function (e) { if (e.pointerType === 'touch' || calm()) return; inst.over = true; local(e); });
+      c.tile.addEventListener('pointermove', function (e) { if (e.pointerType === 'touch' || calm()) return; inst.over = true; local(e); });
+      c.tile.addEventListener('pointerleave', function () { inst.over = false; });
+    }
+
+    function buildCovers() {
+      if (built) return;
+      built = true;
+      qa(document, '.gallery [data-cover]').forEach(function (slot) {
+        var kind = slot.getAttribute('data-cover'), tile = slot.closest('.gallery__item');
+        if (!pristine[kind] || coverBy[kind] || !tile) return;
+        var holder = document.createElement('div');
+        holder.innerHTML = pristine[kind];
+        var fig = holder.firstChild, cap = fig.querySelector('figcaption');
+        if (cap) cap.parentNode.removeChild(cap);   // the tile carries its own label
+        fig.classList.add('art--cover');
+        slot.appendChild(fig);
+        var c = { kind: kind, inst: new Inst(fig), slot: slot, tile: tile, awake: tile.classList.contains('is-awake') };
+        c.inst.wall = true;
+        wireCover(c);
+        covers.push(c); coverBy[kind] = c;
+        if (calm()) c.inst.poster(); else c.inst.blank();
+        slot.classList.add('is-ready'); slot.parentNode.classList.add('is-ready'); tile.classList.add('has-cover');
+        if (c.awake && !calm()) c.inst.wake();
+      });
+      var wall = document.querySelector('[data-fx="gallery"]');
+      if (wall && 'IntersectionObserver' in window) {
+        var watch = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (e) { return e.isIntersecting; })) return;
+          watch.disconnect(); seen = true; developAll();
+        }, { threshold: 0.3 });
+        watch.observe(wall);
+      } else { seen = true; developAll(); }
+    }
+
+    function developAll() {
+      if (developed || !covers.length || calm()) return;
+      developed = true;
+      covers.forEach(function (c, i) {
+        window.setTimeout(function () { if (!c.awake && !calm()) c.inst.develop(); }, i * 190);
+      });
+    }
+
+    P.on('art-wake', function (d) {
+      var c = d && coverBy[d.kind];
+      if (!c) return;
+      c.awake = !!d.on;
+      if (calm()) return;
+      if (c.awake) { hidePeek(true); c.inst.wake(); } else c.inst.rest();
+    });
+
+    function applyCovers() {
+      covers.forEach(function (c) {
+        c.inst.stop(); c.inst.speed = 1; c.inst.until = 0;
+        if (calm()) c.inst.poster();
+        else if (c.awake) c.inst.wake();
+        else if (developed) c.inst.poster();
+        else c.inst.blank();
+      });
+      if (!calm() && built && seen) developAll();
+    }
+
     function applyMode() {
       panels.forEach(function (inst) {
         inst.stop();
@@ -469,10 +580,11 @@
     function setup() {
       napping.length = 0;
       if (P.reduced || P.saveData) applyStill(); else applyMode();
-      if (hint) hint.classList.toggle('is-on', !calm() && !P.coarse && laneFits());
+      applyCovers();
+      if (hint) hint.classList.toggle('is-on', !calm() && !P.coarse && (laneFits() || wallOn()));
     }
     // print always gets the resolved frame
-    window.addEventListener('beforeprint', function () { panels.forEach(function (inst) { inst.stop(); inst.poster(); }); });
+    window.addEventListener('beforeprint', function () { panels.concat(covers.map(function (c) { return c.inst; })).forEach(function (inst) { inst.stop(); inst.poster(); }); });
     window.addEventListener('afterprint', setup);
 
     /* ---------- Floating preview card (fine pointers only, never under reduced motion) ---------- */
@@ -515,6 +627,7 @@
       var a = box.right + 8, free = vw - 8 - a;
       return { left: a, edge: box.right, free: free, k: Math.min(1, (free - SLACK) / W_CARD) };
     }
+    function wallOn() { return !!document.querySelector('.gallery__item'); }
     function laneFits() {
       return !!root.querySelector('.project__row') && laneFor().k >= K_MIN;
     }
@@ -601,22 +714,47 @@
       qa(root, '.project').forEach(function (item) {
         var row = item.querySelector('.project__row');
         if (!row) return;
+        var by = { hover: false, focus: false };
+        // The wall above the list shows the same drawing: while this row's cover is on screen, hovering (or keyboard-focusing)
+        // the row lights that cover (gallery.js) and the floating card stays away; with the cover scrolled out of view, the card is back.
+        function link(source, on) {
+          var was = by.hover || by.focus;
+          by[source] = on;
+          if ((by.hover || by.focus) !== was) P.emit('row-link', { id: item.getAttribute('data-project'), on: by.hover || by.focus });
+        }
+        function coverOnScreen() {
+          var plate = document.querySelector('.gallery__item[data-project="' + item.getAttribute('data-project') + '"] .gallery__plate');
+          if (!plate) return false;
+          var box = plate.getBoundingClientRect(), bar = document.getElementById('masthead');
+          var seenH = Math.min(box.bottom, window.innerHeight) - Math.max(box.top, bar ? bar.offsetHeight : 0);
+          var seenW = Math.min(box.right, window.innerWidth) - Math.max(box.left, 0);
+          return box.height > 0 && seenH > box.height * 0.6 && seenW > box.width * 0.6;
+        }
         // Below 860 px the rows stack (the date sits under the title), so there is no clear lane for the card: no preview.
         function blocked(e) { return dismissed === item || !laneFits() || e.pointerType === 'touch' || P.coarse || P.reduced || P.saveData || window.innerWidth < 860 || item.classList.contains('is-open'); }
         row.addEventListener('pointerenter', function (e) {
           ptr.x = e.clientX; ptr.y = e.clientY;
+          if (e.pointerType !== 'touch' && !P.coarse && coverOnScreen()) { link('hover', true); hidePeek(true); return; }
           if (!blocked(e)) showPeek(item);
         });
         row.addEventListener('pointermove', function (e) {
           ptr.x = e.clientX; ptr.y = e.clientY;
+          if (by.hover) return;
           if (cur && cur.item === item) placeTarget();
           else if (!blocked(e)) showPeek(item);
         });
         row.addEventListener('pointerleave', function () {
+          link('hover', false);
           if (dismissed === item) dismissed = null;
           if (cur && cur.item === item) hidePeek(false);
         });
         row.addEventListener('click', function () { if (cur && cur.item === item) hidePeek(false); });
+        row.addEventListener('focusin', function (e) {
+          var visible = true;
+          try { visible = e.target.matches(':focus-visible'); } catch (x) { visible = true; }
+          if (visible && coverOnScreen()) link('focus', true);
+        });
+        row.addEventListener('focusout', function () { link('focus', false); });
       });
       P.on('project', function (d) { if (d && d.open && cur && cur.item.getAttribute('data-project') === d.id) hidePeek(false); });
       document.addEventListener('keydown', function (e) {
@@ -628,10 +766,11 @@
 
     wireRows();
     setup();
+    buildCovers();
     if (!calm() && !P.coarse) P.whenIdle(function () { if (!peek) { buildPeek(); Object.keys(pristine).forEach(peekInst); } }, 2500);
     var onChange = function () { setup(); };
     var rzTimer = 0;
-    window.addEventListener('resize', function () { window.clearTimeout(rzTimer); rzTimer = window.setTimeout(function () { if (hint && !cur) hint.classList.toggle('is-on', !calm() && !P.coarse && laneFits()); }, 150); });
+    window.addEventListener('resize', function () { window.clearTimeout(rzTimer); rzTimer = window.setTimeout(function () { if (hint && !cur) hint.classList.toggle('is-on', !calm() && !P.coarse && (laneFits() || wallOn())); }, 150); });
     if (mqReduced.addEventListener) mqReduced.addEventListener('change', onChange);
     else if (mqReduced.addListener) mqReduced.addListener(onChange);
     root.setAttribute('data-fx-ready', '');

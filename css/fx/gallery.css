@@ -1,0 +1,266 @@
+/* css/fx/gallery.css — GALLERY module: "selected work" as a gallery wall at the head of Projects. Four framed covers (the
+   drawings from the panels below, filled in by js/fx/project-art.js) on a strict grid, each with a museum-style label:
+   Fig. n, Illustration, title, stack, dates, source. A strict four-column grid on wide screens, a snap carousel with a
+   visible peek and arrows below that. Each tile is one link to its row in the list (js/main.js opens the row and scrolls);
+   js/fx/gallery.js adds the tilt, spotlight and carousel controls. Colors come from the page tokens, so dark mode is native.
+   Without JavaScript the wall is hidden and the fully expanded list is the page. */
+
+.gallery {
+  --gal-w: min(78vw, 20rem);          /* carousel tile width: the next tile peeks in at the edge */
+  --gal-gap: var(--s5);
+  --gal-glow: rgb(255 255 255 / 0.6);
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+:root[data-theme="dark"] .gallery { --gal-glow: color-mix(in srgb, var(--accent) 17%, transparent); }
+html:not(.js) .gallery { display: none; }
+@media (min-width: 640px) { .gallery { --gal-w: clamp(17rem, 38vw, 22rem); } }
+
+/* ---- the wall: a snap carousel that bleeds to the screen edges, a four-column grid from 1100 px ---- */
+.gallery__wall {
+  display: flex;
+  gap: var(--gal-gap);
+  margin: -0.5rem calc(var(--gutter) * -1);
+  padding: 0.5rem var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.gallery__wall::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: no-preference) { .gallery__wall { scroll-behavior: smooth; } }
+
+.gallery__item {
+  position: relative;
+  display: flex;
+  flex: 0 0 var(--gal-w);
+  flex-direction: column;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 1100px) {
+  .gallery__wall {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .gallery__item { flex: none; }
+}
+
+/* ---- one tile: the whole card is the link (the ::after stretches it over the tile); the source link sits above it ---- */
+.gallery__tile {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+.gallery__tile::after { content: ""; position: absolute; inset: 0; }
+.gallery__tile:focus-visible { outline: 0; }
+.gallery__tile:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 5px; border-radius: var(--radius); }
+
+.gallery__plate {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  contain: layout paint;              /* cover repaints stay inside the frame */
+  border: var(--hair) solid var(--rule);
+  border-radius: var(--radius);
+  background-color: var(--paper-2);
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 11%, transparent) 0.9px, transparent 1.3px);
+  background-size: 16px 16px;
+  transition: border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), opacity var(--t-med) var(--ease);
+}
+/* Until the drawing arrives (or when it cannot): the figure number, set large and faint. */
+.gallery__plate::before {
+  content: attr(data-no);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: italic 300 clamp(2.75rem, 7vw, 4.5rem) / 1 var(--font-serif);
+  color: color-mix(in srgb, var(--ink) 15%, transparent);
+  transition: opacity var(--t-slow) var(--ease);
+}
+.gallery__plate.is-ready::before { opacity: 0; }
+
+.gallery__cover { position: absolute; inset: 0; opacity: 0; transition: opacity var(--t-slow) var(--ease); }
+.gallery__cover.is-ready { opacity: 1; }
+.gallery .art--cover { width: 100%; max-width: none; height: 100%; }
+.gallery .art--cover .art__frame { height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; background: none; }
+/* At this size the labels would be 5 or 6 px: the cover keeps the shapes, the opened panel carries the labeled drawing. */
+.gallery .art--cover .art__svg text:not(.d) { display: none; }
+
+.gallery__spot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(14rem circle at var(--mx, 50%) var(--my, 35%), var(--gal-glow), transparent 70%);
+  transition: opacity var(--t-med) var(--ease);
+}
+
+/* ---- the label ---- */
+.gallery__cap {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: var(--s2);
+  font: 400 var(--fs-label) / 1.5 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  transition: opacity var(--t-med) var(--ease);
+}
+.gallery__fig { color: var(--accent); }
+.gallery__item:not(.has-cover) .gallery__ill { visibility: hidden; }   /* the label belongs to a drawing: none yet, none claimed */
+.gallery__ill::before { content: ""; display: inline-block; width: 0.5rem; height: 1px; margin-right: 0.5rem; vertical-align: 0.28em; background: currentColor; }
+.gallery__item.is-open .gallery__fig::after,
+.gallery__item.is-match .gallery__fig::after {
+  content: "";
+  display: inline-block;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-left: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 0.06em;
+}
+
+.gallery__title {
+  display: block;
+  min-height: 2.4em;
+  margin-top: var(--s2);
+  font-size: clamp(1.1rem, 1rem + 0.45vw, 1.3rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  transition: color var(--t-fast) var(--ease);
+}
+.gallery__stack {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2.2ch;
+  margin: var(--s2) 0 var(--s3);
+  font: 400 var(--fs-label) / 1.5 var(--font-mono);
+  color: var(--ink-3);
+}
+/* Separators are drawn, not typed: a wrapped line never ends with one. */
+.gallery__stack > span + span { position: relative; }
+.gallery__stack > span + span::before { content: "·"; position: absolute; left: -1.6ch; width: 1ch; text-align: center; }
+
+.gallery__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: auto;
+  padding-top: var(--s2);
+  border-top: 1px solid var(--rule);
+  font: 400 var(--fs-label) / 1.5 var(--font-mono);
+  color: var(--ink-3);
+}
+.gallery__date { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gallery__src {
+  position: relative;
+  z-index: 1;                          /* above the stretched tile link */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  margin-block: -0.4rem;               /* the box is taller than the line; equal negative margins hand the height back */
+  margin-block: calc((1lh - 2rem) / 2);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease);
+}
+.gallery__src-t {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--accent);
+}
+.gallery__src::after { content: "\2197"; content: "\2197" / ""; margin-left: 0.3em; }
+.gallery__src:focus-visible { outline-offset: 2px; }
+@media (hover: none), (pointer: coarse) {
+  .gallery__src { min-height: 2.75rem; margin-block: -0.8rem; margin-block: calc((1lh - 2.75rem) / 2); padding-inline: var(--s2); margin-inline: calc(var(--s2) * -1); }
+}
+
+/* ---- states: hover, keyboard focus, the matching row being hovered (is-hot); the cover is awake ---- */
+@media (hover: hover) and (pointer: fine) {
+  .gallery__item:hover .gallery__title,
+  .gallery__src:hover { color: var(--accent); }
+}
+.gallery__item.is-hot .gallery__plate { border-color: var(--ink-3); box-shadow: 0 22px 40px -26px rgb(0 0 0 / 0.38); }
+:root[data-theme="dark"] .gallery__item.is-hot .gallery__plate { box-shadow: 0 22px 40px -22px rgb(0 0 0 / 0.75); }
+.gallery__item.is-hot .gallery__title { color: var(--accent); }
+.gallery__item.is-awake .gallery__spot { opacity: 1; }
+.gallery__item.is-tilting .gallery__plate { will-change: transform; }
+.gallery__item.is-tilting .gallery__cover { will-change: transform; }
+
+/* A selected skill (js/main.js) marks the covers whose project uses it; the rest step back. */
+.gallery.has-skill .gallery__item:not(.is-match) :is(.gallery__plate, .gallery__cap) { opacity: 0.4; }   /* the covers step back; the text keeps its contrast */
+
+/* Hanging the work: while the wall is still below the fold (gallery.js arms it), the tiles wait, then arrive in turn. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .gallery.is-armed .gallery__item { transition: opacity var(--t-slow) var(--ease), transform 700ms var(--ease-out); }
+  .js .gallery.is-armed:not(.is-in) .gallery__item { opacity: 0; transform: translateY(18px); }
+  .js .gallery.is-armed.is-in .gallery__item:nth-child(2) { transition-delay: 90ms; }
+  .js .gallery.is-armed.is-in .gallery__item:nth-child(3) { transition-delay: 180ms; }
+  .js .gallery.is-armed.is-in .gallery__item:nth-child(4) { transition-delay: 270ms; }
+}
+.gallery__item.is-match .gallery__plate { border-color: var(--accent); }
+
+/* The row for the hovered or focused cover (the list below), tinted like a skill preview. */
+.project.is-linked {
+  background: var(--tint-soft);
+  box-shadow: -0.75rem 0 0 var(--tint-soft), 0.75rem 0 0 var(--tint-soft);
+}
+
+/* ---- carousel controls ---- */
+.gallery__nav { display: flex; align-items: center; justify-content: space-between; margin-top: var(--s4); }
+.gallery__nav[hidden] { display: none; }
+@media (min-width: 1100px) { .gallery__nav { display: none; } }
+.gallery__count { font: 400 var(--fs-label) / 1.5 var(--font-mono); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.gallery__arrows { display: flex; gap: var(--s2); }
+.gallery__arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .gallery__arrow:hover:not([aria-disabled="true"]) { border-color: var(--ink); color: var(--accent); }
+}
+.gallery__arrow[aria-disabled="true"] { opacity: 0.35; cursor: default; }
+
+/* ---- the list under the wall becomes a tighter index ---- */
+@media (min-width: 860px) {
+  .js .gallery + .projects .project__toggle { padding-block: var(--s4); }
+}
+
+/* ---- calm and forced colors ---- */
+@media (prefers-reduced-motion: reduce) {
+  .gallery__spot { display: none; }
+}
+@media (forced-colors: active) {
+  .gallery__plate { border-color: CanvasText; }
+  .gallery__plate::before, .gallery__spot { display: none; }
+  .gallery__item.is-hot .gallery__plate,
+  .gallery__item.is-match .gallery__plate { outline: 2px solid Highlight; outline-offset: 1px; }
+  .gallery__arrow { border-color: ButtonText; }
+  .gallery__foot { border-top-color: CanvasText; }
+  .project.is-linked { outline: 1px solid Highlight; }
+}
+@media print {
+  .gallery { display: none; }
+}
