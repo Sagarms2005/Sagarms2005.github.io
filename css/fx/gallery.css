@@ -277,5 +277,5 @@
   .project.is-linked { outline: 1px solid Highlight; }
 }
 @media print {
-  .gallery { display: none; }
+  .js .gallery { display: none; }
 }

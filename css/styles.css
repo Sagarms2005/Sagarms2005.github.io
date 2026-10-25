@@ -210,6 +210,10 @@ body::before {
 }
 
 .is-lowfx body::before { display: none; }
+/* No grain, so nothing darkens the page: the foot of the hero (css/fx/hero.css) is derived from the grain's strength, and must stop
+   darkening too, or it shows as a faint seam. */
+:root.is-lowfx,
+:root[data-theme].is-lowfx { --grain-opacity: 0; }
 
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -815,33 +819,33 @@ html:not(.js) .tool--theme { display: none; }
    script sets .no-cv, the browser restores an exact position in a fully laid-out page) or in print. */
 html.js:not(.no-cv) :is(.section, .footer) { content-visibility: auto; contain-intrinsic-block-size: auto var(--cv, 900px); }
 html.js :is(.section, .footer)[data-cv="done"] { content-visibility: visible; }
-#about { --cv: 770px; }
+#about { --cv: 1018px; }
 #experience { --cv: 1020px; }
-#projects { --cv: 2400px; }
+#projects { --cv: 2430px; }
 #skills { --cv: 1890px; }
 #education { --cv: 520px; }
 #achievements { --cv: 1510px; }
-#contact { --cv: 780px; }
-.footer { --cv: 150px; }
+#contact { --cv: 855px; }
+.footer { --cv: 186px; }
 @media (min-width: 700px) {
-  #about { --cv: 690px; }
+  #about { --cv: 874px; }
   #experience { --cv: 830px; }
-  #projects { --cv: 2300px; }
+  #projects { --cv: 2100px; }
   #skills { --cv: 1690px; }
   #education { --cv: 535px; }
   #achievements { --cv: 1120px; }
   #contact { --cv: 650px; }
-  .footer { --cv: 100px; }
+  .footer { --cv: 140px; }
 }
 @media (min-width: 1100px) {
-  #about { --cv: 570px; }
+  #about { --cv: 840px; }
   #experience { --cv: 730px; }
-  #projects { --cv: 2200px; }
+  #projects { --cv: 1860px; }
   #skills { --cv: 1330px; }
   #education { --cv: 490px; }
   #achievements { --cv: 1010px; }
-  #contact { --cv: 600px; }
-  .footer { --cv: 90px; }
+  #contact { --cv: 680px; }
+  .footer { --cv: 106px; }
 }
 
 .section__head {

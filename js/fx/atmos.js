@@ -113,7 +113,9 @@
     var column = $('main .container');
 
     S.scroll = window.pageYOffset;
-    G.docH = root.scrollHeight;
+    // The page's own height (the body), not root.scrollHeight: the strip below is as tall as the last measure, so it would
+    // hold the page open after a section is drawn at its real, shorter size (content-visibility placeholders).
+    G.docH = Math.round(document.body.getBoundingClientRect().bottom + window.pageYOffset);
     G.scrollable = Math.max(0, G.docH - window.innerHeight);
     G.heroEnd = hero ? pageTop(hero) + hero.offsetHeight : 0;
     if (column) {
@@ -708,6 +710,12 @@
     readIndex();
     S.scroll = S.y = window.pageYOffset;
     buildStack();
+    // Without its stylesheet (a failed request) the two layers would be ordinary blocks and the page would grow with them: stand down.
+    if (window.getComputedStyle(stack.doc).position !== 'absolute') {
+      document.body.removeChild(stack.wrap);
+      document.body.removeChild(stack.doc);
+      return;
+    }
     bands.init();
     guard('compass build', buildCompass);
     S.started = true;

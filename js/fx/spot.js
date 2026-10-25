@@ -309,7 +309,13 @@
 
   // Nothing here is needed for the first screen: the figures are armed once the page has loaded and the browser is idle (they are
   // all below the fold, so nothing visible changes), and measuring waits for that moment too.
-  function go() { try { start(); } catch (error) { bail(error); } }
+  // The stylesheet is fetched late (index.html). If it has not arrived, the markup is left exactly as shipped: arming a figure or
+  // rolling a numeral without its styles would only show the parts.
+  function styled() {
+    var probe = document.querySelector('.finale__sat, .spot__orbiter');
+    return !probe || window.getComputedStyle(probe).position === 'absolute';
+  }
+  function go() { if (!styled()) return; try { start(); } catch (error) { bail(error); } }
   if (document.readyState === 'complete') P.whenIdle(go, 800);
   else window.addEventListener('load', function () { P.whenIdle(go, 800); });
 

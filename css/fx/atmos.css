@@ -68,7 +68,7 @@
 
 /* The grain of the dark theme: the base grain is black, which a near-black page cannot show. Here it is a faint, warm, light
    film, and the hero's foot is re-matched to the page it sits on (so there is no seam under the hero). */
-:root[data-theme="dark"].atmos-on {
+:root[data-theme="dark"].atmos-on:not(.is-lowfx) {
   --grain-opacity: 0.04;
   --hero-foot: color-mix(in srgb, rgb(var(--paper-rgb)), white calc(var(--grain-opacity) * 32%));
 }
@@ -165,12 +165,13 @@
 
 /* 3. Margin: scroll compass + running head ----------------------------------- */
 
-/* Both live in the page margins (see --atmos-gap) and only where a margin is wide enough to hold them: 40 px at 1024,
-   80 at 1280, 400 at 1920. */
+/* Both live in the page margins (see --atmos-gap) and only where a margin is wide enough to hold them: 40 px at 1100,
+   80 at 1280, 400 at 1920. The compass starts at 1100, where the project wall stops being a carousel (a carousel bleeds to
+   the window edge and would run under the thread). */
 .atmos-compass,
 .atmos-folio { display: none; }
 
-@media (min-width: 1024px) {
+@media (min-width: 1100px) {
   .atmos-compass {
     --cw: 1.75rem;                      /* ring diameter */
     --ct: min(54vh, 30rem);              /* thread length */
