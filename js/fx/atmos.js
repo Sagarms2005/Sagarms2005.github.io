@@ -325,9 +325,9 @@
           var code = (va >= L ? 8 : 0) | (vb >= L ? 4 : 0) | (vc >= L ? 2 : 0) | (vd >= L ? 1 : 0);
           var list = SEGMENTS[code];
           if (list === null) {
-            // saddle: the centre decides which corners are joined
-            var centre = (va + vb + vc + vd) * 0.25 >= L;
-            list = code === 5 ? (centre ? [[0, 3], [2, 1]] : [[0, 1], [3, 2]]) : (centre ? [[0, 1], [3, 2]] : [[0, 3], [2, 1]]);
+            // saddle: the center decides which corners are joined
+            var center = (va + vb + vc + vd) * 0.25 >= L;
+            list = code === 5 ? (center ? [[0, 3], [2, 1]] : [[0, 1], [3, 2]]) : (center ? [[0, 1], [3, 2]] : [[0, 3], [2, 1]]);
           }
           if (!list.length) continue;
           var x0 = j * cs;
@@ -365,7 +365,7 @@
   };
 
   // Match the strips to the rules whose bands are within a screen of the window (a strip must exist before its band can be
-  // seen). A band's centre sits at (1 - trail) * (rule - scroll) + trail * half the window; the layer's own motion supplies
+  // seen). A band's center sits at (1 - trail) * (rule - scroll) + trail * half the window; the layer's own motion supplies
   // the scroll-dependent part, so a strip is placed at rule * (1 - trail) + trail * half - reach. New and stale strips are
   // only marked: step() draws them, one per frame.
   bands.sync = function (y) {
@@ -444,7 +444,7 @@
     wake(P.reduced || P.quality < 0.75 ? 700 : 6000);
   }
 
-  // Follows the pointer with a little lag; returns true while it is still travelling.
+  // Follows the pointer with a little lag; returns true while it is still traveling.
   function lampUpdate(y, dt) {
     var want = !P.reduced && P.quality >= 0.7 && lamp.inside && lamp.ty + y > G.heroEnd - 30;
     if (want !== lamp.shown) {
